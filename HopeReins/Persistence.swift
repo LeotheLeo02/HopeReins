@@ -10,6 +10,10 @@ import CoreData
 struct PersistenceController {
     static let shared = PersistenceController()
 
+    var persistentStoreURL: URL? {
+        return container.persistentStoreCoordinator.persistentStores.first?.url
+    }
+
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */; };
-		BE16E2092AAEB20B004052B8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2082AAEB20B004052B8 /* ContentView.swift */; };
+		BE16E2092AAEB20B004052B8 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2082AAEB20B004052B8 /* MainView.swift */; };
 		BE16E20B2AAEB20C004052B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE16E20A2AAEB20C004052B8 /* Assets.xcassets */; };
 		BE16E20E2AAEB20C004052B8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE16E20D2AAEB20C004052B8 /* Preview Assets.xcassets */; };
 		BE16E2102AAEB20C004052B8 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E20F2AAEB20C004052B8 /* Persistence.swift */; };
@@ -18,7 +18,7 @@
 /* Begin PBXFileReference section */
 		BE16E2032AAEB20B004052B8 /* HopeReins.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HopeReins.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HopeReinsApp.swift; sourceTree = "<group>"; };
-		BE16E2082AAEB20B004052B8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BE16E2082AAEB20B004052B8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BE16E20A2AAEB20C004052B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BE16E20D2AAEB20C004052B8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BE16E20F2AAEB20C004052B8 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */,
-				BE16E2082AAEB20B004052B8 /* ContentView.swift */,
+				BE16E2082AAEB20B004052B8 /* MainView.swift */,
 				BE16E20A2AAEB20C004052B8 /* Assets.xcassets */,
 				BE16E20F2AAEB20C004052B8 /* Persistence.swift */,
 				BE16E2142AAEB20C004052B8 /* HopeReins.entitlements */,
@@ -146,7 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE16E2102AAEB20C004052B8 /* Persistence.swift in Sources */,
-				BE16E2092AAEB20B004052B8 /* ContentView.swift in Sources */,
+				BE16E2092AAEB20B004052B8 /* MainView.swift in Sources */,
 				BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */,
 				BE16E2132AAEB20C004052B8 /* HopeReins.xcdatamodeld in Sources */,
 			);
