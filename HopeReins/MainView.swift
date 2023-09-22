@@ -7,14 +7,40 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct ContentView: View {
+    @SceneStorage("selection") private var selectedTab: String?
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationSplitView(sidebar: {
+            Sidebar(selectedTab: $selectedTab)
+                .frame(minWidth: 250)
+        }, detail: {
+            DetailView(selectedTab: $selectedTab)
+        })
     }
 }
 
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
+#Preview {
+    ContentView()
+}
+
+struct DetailView: View {
+    @Binding var selectedTab: String?
+    var body: some View {
+        switch selectedTab {
+        case "Profile":
+             ProfileView()
+        case "Home":
+            Text("Home")
+        case "New Entry":
+            Text("New Entry")
+        case "Schedular":
+            Text("Schedular")
+        case "Media":
+            Text("Media")
+        case .none:
+            Text("None Selected")
+        case .some(_):
+            Text("None Selected")
+        }
     }
 }

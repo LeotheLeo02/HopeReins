@@ -7,9 +7,38 @@
 
 import SwiftUI
 
+enum SettingsType {
+    case coreData
+    case profile
+}
+
 struct ProfileView: View {
+    @State var settingsType: SettingsType = .profile
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView {
+            VStack {
+                Picker(selection: $settingsType) {
+                    Text("Profile")
+                        .tag(SettingsType.profile)
+                    Text("Data")
+                        .tag(SettingsType.coreData)
+                } label: {
+                    Text("Settings")
+                }
+                .labelsHidden()
+                .pickerStyle(.segmented)
+                
+                switch settingsType {
+                case .coreData:
+                    CopyPathsView()
+                case .profile:
+                    VStack {
+                        Text("Nate Suarez")
+                    }
+                }
+            }
+            .padding()
+        }
     }
 }
 
