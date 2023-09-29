@@ -14,6 +14,7 @@ enum SettingsType {
 
 struct ProfileView: View {
     @State var settingsType: SettingsType = .profile
+    @Environment(\.modelContext) private var modelContext
     var body: some View {
         ScrollView {
             VStack {

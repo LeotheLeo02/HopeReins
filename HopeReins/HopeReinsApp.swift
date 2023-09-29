@@ -10,11 +10,26 @@ import SwiftData
 
 @main
 struct HopeReinsApp: App {
-    let persistenceController = PersistenceController.shared
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema ([
+            Patient.self,
+        ])
+        let fileManager = FileManager.default
+        var modelConfiguration = ModelConfiguration()
+        if let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let storeURL = documentDirectory.appendingPathComponent("HopeReins.sqlite")
+            modelConfiguration = ModelConfiguration(schema: schema, url: storeURL)
+        }
+        do  {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .modelContainer(sharedModelContainer)
         }
     }
 }

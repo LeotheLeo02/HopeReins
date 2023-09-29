@@ -9,11 +9,7 @@ import SwiftUI
 import CoreData
 
 struct CopyPathsView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    var persistentStoreURL: URL? {
-        PersistenceController.shared.persistentStoreURL
-    }
-
+    @Environment(\.modelContext) var modelContext
     var body: some View {
         VStack {
             Text("Configure Backup Operations:")
@@ -36,13 +32,13 @@ struct CopyPathsView: View {
             } label: {
                 Label("Select and Copy Backup Folder Path", systemImage: "folder.fill")
             }
+            Button {
+                replaceCoreDataFile()
+            } label: {
+                Label("Select and Replace CoreData File", systemImage: "arrow.right.arrow.left.square")
+            }
         }
         .padding()
     }
 }
 
-struct CopyDataPathsView_Previews: PreviewProvider {
-    static var previews: some View {
-        CopyPathsView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}

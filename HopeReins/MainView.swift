@@ -32,7 +32,7 @@ struct DetailView: View {
         case "Home":
             Text("Home")
         case "New Entry":
-            Text("New Entry")
+            EntryView()
         case "Schedular":
             Text("Schedular")
         case "Media":
