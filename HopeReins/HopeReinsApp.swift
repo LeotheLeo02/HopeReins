@@ -13,6 +13,7 @@ struct HopeReinsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema ([
             Patient.self,
+            ReleaseStatement.self,
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()

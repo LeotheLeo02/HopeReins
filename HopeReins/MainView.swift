@@ -30,11 +30,13 @@ struct DetailView: View {
         case "Profile":
              ProfileView()
         case "Home":
-            Text("Home")
+            HomeView()
         case "New Entry":
             EntryView()
-        case "Schedular":
-            Text("Schedular")
+        case "All Patients":
+            Text("All Patients")
+        case "Scheduler":
+            Text("Scheduler")
         case "Media":
             Text("Media")
         case .none:

@@ -12,18 +12,55 @@ struct EntryView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Patient.name, order: .forward)
     var patients: [Patient]
+    @State var formType: FormType = .physicalTherapy
     var body: some View {
-        List {
-            Button("Add") {
-                modelContext.insert(Patient(name: "Bob Parker"))
-            }
-            ForEach(patients) { patient in
-                Text(patient.name)
-                Button("Delete") {
-                    modelContext.delete(patient)
+        NavigationStack {
+            VStack {
+                Picker(selection: $formType) {
+                    ForEach(FormType.allCases, id: \.rawValue) { form in
+                        Text(form.rawValue)
+                            .tag(form)
+                    }
+                } label: {
+                    Label("Form Type:", systemImage: "doc.fill")
+                }
+                switch formType {
+                case .adaptiveRiding:
+                    ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
+                        NavigationLink {
+                            RidingFormView(rideFormType: rideForm)
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text(rideForm.rawValue)
+                                    .tag(rideForm)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                            }
+                            .padding()
+                        }
+                        
+                    }
+                case .physicalTherapy:
+                    ForEach(PhysicalTherabyFormType.allCases, id: \.rawValue) { phyiscalForm in
+                        NavigationLink {
+                            PhysicalFormView(physicalFormType: phyiscalForm)
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text(phyiscalForm.rawValue)
+                                    .tag(phyiscalForm)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                            }
+                            .padding()
+                        }
+                        
+                    }
                 }
             }
-         }
+            .padding()
+        }
     }
 }
 
