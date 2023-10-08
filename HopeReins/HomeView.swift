@@ -24,9 +24,15 @@ struct HomeView: View {
                         NSWorkspace.shared.open(url)
                     }
                 }) {
-                    Image(nsImage: image)
-                        .resizable()
-                        .scaledToFit()
+                    HStack {
+                        Image(nsImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 200, height: 200)
+                        Text(releaseStatement.patientName)
+                        Spacer()
+                    }
+                    .padding()
                 }
             }
         }

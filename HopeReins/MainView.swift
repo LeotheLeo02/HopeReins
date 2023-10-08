@@ -34,7 +34,7 @@ struct DetailView: View {
         case "New Entry":
             EntryView()
         case "All Patients":
-            Text("All Patients")
+            PatientsView()
         case "Scheduler":
             Text("Scheduler")
         case "Media":

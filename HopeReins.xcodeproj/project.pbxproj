@@ -18,12 +18,11 @@
 		BE1711002ACB374B00CC27BB /* RidingFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */; };
 		BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */; };
 		BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */; };
-		BE8624DD2AC4F67600DF4D34 /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8624DC2AC4F67600DF4D34 /* Patient.swift */; };
+		BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */; };
 		BE89F25F2ABE5BCD0057CA20 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE89F25E2ABE5BCD0057CA20 /* EntryView.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
 		BEA939432ACB644800AA9D7C /* ReleaseStatementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA939422ACB644800AA9D7C /* ReleaseStatementView.swift */; };
-		BEB29A262AD1AE1D0023B4CB /* ReleaseStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB29A252AD1AE1D0023B4CB /* ReleaseStatement.swift */; };
 		BEB29A282AD1AF3D0023B4CB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB29A272AD1AF3D0023B4CB /* HomeView.swift */; };
 		BED042EB2ABC7B5000958DB9 /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED042EA2ABC7B5000958DB9 /* SideBar.swift */; };
 		BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED042EC2ABC7B9700958DB9 /* Tab.swift */; };
@@ -43,12 +42,11 @@
 		BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFormType.swift; sourceTree = "<group>"; };
 		BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFormType.swift; sourceTree = "<group>"; };
 		BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlanView.swift; sourceTree = "<group>"; };
-		BE8624DC2AC4F67600DF4D34 /* Patient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
+		BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsView.swift; sourceTree = "<group>"; };
 		BE89F25E2ABE5BCD0057CA20 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BEA939422ACB644800AA9D7C /* ReleaseStatementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseStatementView.swift; sourceTree = "<group>"; };
-		BEB29A252AD1AE1D0023B4CB /* ReleaseStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseStatement.swift; sourceTree = "<group>"; };
 		BEB29A272AD1AF3D0023B4CB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BED042EA2ABC7B5000958DB9 /* SideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBar.swift; sourceTree = "<group>"; };
 		BED042EC2ABC7B9700958DB9 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
@@ -107,13 +105,12 @@
 				BED042EC2ABC7B9700958DB9 /* Tab.swift */,
 				BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */,
 				BEB29A272AD1AF3D0023B4CB /* HomeView.swift */,
+				BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */,
 				BE0F078A2ABE53D0004B71D5 /* Profile */,
 				BE89F25D2ABE5BAB0057CA20 /* Entry */,
 				BE16E20A2AAEB20C004052B8 /* Assets.xcassets */,
 				BE16E2142AAEB20C004052B8 /* HopeReins.entitlements */,
 				BE16E20C2AAEB20C004052B8 /* Preview Content */,
-				BE8624DC2AC4F67600DF4D34 /* Patient.swift */,
-				BEB29A252AD1AE1D0023B4CB /* ReleaseStatement.swift */,
 			);
 			path = HopeReins;
 			sourceTree = "<group>";
@@ -227,8 +224,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEB29A262AD1AE1D0023B4CB /* ReleaseStatement.swift in Sources */,
 				BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */,
+				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
 				BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */,
 				BE1710FB2ACB360B00CC27BB /* RidingFormView.swift in Sources */,
@@ -243,7 +240,6 @@
 				BE89F25F2ABE5BCD0057CA20 /* EntryView.swift in Sources */,
 				BE1710F72ACB35CF00CC27BB /* PhysicalFormView.swift in Sources */,
 				BED042EB2ABC7B5000958DB9 /* SideBar.swift in Sources */,
-				BE8624DD2AC4F67600DF4D34 /* Patient.swift in Sources */,
 				BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
