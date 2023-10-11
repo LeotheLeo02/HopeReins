@@ -6,15 +6,13 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ReleaseStatementView: View {
     @Environment(\.modelContext) var modelContext
-    @Query(sort: \Patient.dateOfBirth, order: .forward)
-    var patients: [Patient]
     @State private var selectedFileName: String? = nil
     @State private var selectedFileData: Data? = nil
     @State var selectedPatient: Patient? = nil
+    @State var selectPatient: Bool = false
     private var selectedImage: Image? {
         if let data = selectedFileData, let nsImage = NSImage(data: data) {
             return Image(nsImage: nsImage)
@@ -48,16 +46,13 @@ struct ReleaseStatementView: View {
                         .frame(width: 200, height: 200)
                         .padding()
                 }
-                Menu {
-                    ForEach(patients) { patient in
-                        Button {
-                            selectedPatient = patient
-                        } label: {
-                            Text(patient.name)
-                        }
-                    }
+                Button {
+                    selectPatient.toggle()
                 } label: {
-                    Text("Patient: \(selectedPatient?.name ?? "None Selected")")
+                    Label("\(selectedPatient == nil ? "Select Patient" : "Selected Patient: \(selectedPatient!.name)")", systemImage: "person.fill")
+                }
+                .sheet(isPresented: $selectPatient) {
+                    PatientSelectionView(selection: $selectedPatient)
                 }
                 HStack {
                     Spacer()
@@ -76,7 +71,6 @@ struct ReleaseStatementView: View {
         }
     }
 }
-
 
 #Preview {
     RidingFormView(rideFormType: .releaseStatement)

@@ -19,6 +19,8 @@
 		BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */; };
 		BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */; };
 		BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */; };
+		BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */; };
+		BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */; };
 		BE89F25F2ABE5BCD0057CA20 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE89F25E2ABE5BCD0057CA20 /* EntryView.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
@@ -43,6 +45,8 @@
 		BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFormType.swift; sourceTree = "<group>"; };
 		BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlanView.swift; sourceTree = "<group>"; };
 		BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsView.swift; sourceTree = "<group>"; };
+		BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSelectionView.swift; sourceTree = "<group>"; };
+		BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
 		BE89F25E2ABE5BCD0057CA20 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -100,12 +104,13 @@
 		BE16E2052AAEB20B004052B8 /* HopeReins */ = {
 			isa = PBXGroup;
 			children = (
+				BE676A4F2AD63EE800E8ADD7 /* Utils */,
 				BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */,
 				BED042EA2ABC7B5000958DB9 /* SideBar.swift */,
 				BED042EC2ABC7B9700958DB9 /* Tab.swift */,
 				BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */,
 				BEB29A272AD1AF3D0023B4CB /* HomeView.swift */,
-				BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */,
+				BE676A4E2AD63ED700E8ADD7 /* Patients */,
 				BE0F078A2ABE53D0004B71D5 /* Profile */,
 				BE89F25D2ABE5BAB0057CA20 /* Entry */,
 				BE16E20A2AAEB20C004052B8 /* Assets.xcassets */,
@@ -141,6 +146,23 @@
 				BEA939422ACB644800AA9D7C /* ReleaseStatementView.swift */,
 			);
 			path = Adaptive_Riding;
+			sourceTree = "<group>";
+		};
+		BE676A4E2AD63ED700E8ADD7 /* Patients */ = {
+			isa = PBXGroup;
+			children = (
+				BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */,
+				BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */,
+			);
+			path = Patients;
+			sourceTree = "<group>";
+		};
+		BE676A4F2AD63EE800E8ADD7 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		BE89F25D2ABE5BAB0057CA20 /* Entry */ = {
@@ -225,9 +247,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */,
+				BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */,
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
 				BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */,
+				BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */,
 				BE1710FB2ACB360B00CC27BB /* RidingFormView.swift in Sources */,
 				BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */,
 				BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */,

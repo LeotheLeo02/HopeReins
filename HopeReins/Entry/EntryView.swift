@@ -6,12 +6,9 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct EntryView: View {
     @Environment(\.modelContext) var modelContext
-    @Query(sort: \Patient.name, order: .forward)
-    var patients: [Patient]
     @AppStorage("selectedFormType") var formTypeRawValue: String = FormType.physicalTherapy.rawValue
 
     var formType: FormType {
