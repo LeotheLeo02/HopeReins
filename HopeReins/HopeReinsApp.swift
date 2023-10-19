@@ -9,14 +9,14 @@ import SwiftUI
 import SwiftData
 
 typealias Patient = HopeReinsSchemaV2.Patient
-typealias ReleaseStatement = HopeReinsSchemaV2.ReleaseStatement
+typealias PatientFile = HopeReinsSchemaV2.PatientFile
 
 @main
 struct HopeReinsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema ([
             Patient.self,
-            ReleaseStatement.self,
+            PatientFile.self
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()
@@ -78,26 +78,23 @@ enum HopeReinsSchemaV2: VersionedSchema {
         var name: String
         var dateOfBirth: Date
         
+        @Relationship(deleteRule: .cascade)
+        var files: [PatientFile] = []
+        
         init(name: String, dateOfBirth: Date) {
             self.name = name
             self.dateOfBirth = dateOfBirth
         }
     }
 
-    @Model final class ReleaseStatement {
+    @Model final class PatientFile {
         var id = UUID()
         var data: Data
+        var fileType: String
         
-        @Relationship(deleteRule: .nullify)
-        var patient: Patient?
-        
-        @Transient
-        var patientName: String {
-            return patient?.name ?? ""
-        }
-        
-        init(data: Data) {
+        init(data: Data, fileType: String) {
             self.data = data
+            self.fileType = fileType
         }
     }
 }

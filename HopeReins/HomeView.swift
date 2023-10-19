@@ -9,44 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @Query(sort: \ReleaseStatement.id, order: .forward)
-    var releaseStatements: [ReleaseStatement]
-
-    @State private var selectedFileURL: URL?
+    @Query(sort: \Patient.dateOfBirth, order: .forward)
+    var patients: [Patient]
     
-
     var body: some View {
-        List(releaseStatements) { releaseStatement in
-            if let image = NSImage(data: releaseStatement.data) {
-                Button(action: {
-                    if let url = saveToTemporaryFile(data: releaseStatement.data) {
-                        self.selectedFileURL = url
-                        NSWorkspace.shared.open(url)
-                    }
-                }) {
-                    HStack {
-                        Image(nsImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 200)
-                        Text(releaseStatement.patientName)
-                        Spacer()
-                    }
-                    .padding()
+        NavigationStack {
+            List(patients) { patient in
+                NavigationLink {
+                    PatientDetailView(patient: patient)
+                } label: {
+                    Text(patient.name)
                 }
             }
-        }
-    }
 
-    func saveToTemporaryFile(data: Data) -> URL? {
-        let temporaryDirectory = FileManager.default.temporaryDirectory
-        let fileURL = temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        do {
-            try data.write(to: fileURL)
-            return fileURL
-        } catch {
-            print("Error saving to temporary file: \(error)")
-            return nil
         }
     }
 }

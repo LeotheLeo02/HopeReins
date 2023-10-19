@@ -15,14 +15,12 @@ struct RidingFormView: View {
                 switch rideFormType {
                 case .releaseStatement:
                     ReleaseStatementView()
+                case .coverLetter:
+                    CoverLetterView()
+                case .updateCoverLetter:
+                    Text("Update Cover Letter")
                 case .ridingLessonPlan:
                     RidingLessonPlanView()
-                case .yearlyReview:
-                    Text("Yearly Review")
-                case .medicalForm:
-                    Text("Medical Form")
-                case .missedVisit:
-                    Text("Missed Visit")
                 }
             }
             .padding()

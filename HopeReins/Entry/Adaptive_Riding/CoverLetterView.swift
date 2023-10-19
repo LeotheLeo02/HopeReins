@@ -1,13 +1,13 @@
 //
-//  ReleaseStatementView.swift
+//  CoverLetterView.swift
 //  HopeReins
 //
-//  Created by Nathanael Suarez on 10/2/23.
+//  Created by Nathanael Suarez on 10/18/23.
 //
 
 import SwiftUI
 
-struct ReleaseStatementView: View {
+struct CoverLetterView: View {
     @Environment(\.modelContext) var modelContext
     @State private var selectedFileData: Data? = nil
     @State var selectedPatient: Patient? = nil
@@ -19,9 +19,9 @@ struct ReleaseStatementView: View {
                     Spacer()
                     if let data = selectedFileData, let patient = selectedPatient {
                         Button("Save") {
-                            let releaseStatement = PatientFile(data: data, fileType: "ReleaseStatement")
-                            modelContext.insert(releaseStatement)
-                            patient.files.append(releaseStatement)
+                            let coverLetter = PatientFile(data: data, fileType: "CoverLetter")
+                            modelContext.insert(coverLetter)
+                            patient.files.append(coverLetter)
                         }
                         .buttonStyle(.borderedProminent)
                     }
@@ -34,5 +34,5 @@ struct ReleaseStatementView: View {
 }
 
 #Preview {
-    RidingFormView(rideFormType: .releaseStatement)
+    CoverLetterView()
 }

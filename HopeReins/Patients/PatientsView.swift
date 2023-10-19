@@ -13,13 +13,34 @@ struct PatientsView: View {
     @Query(sort: \Patient.dateOfBirth, order: .forward)
     var patients: [Patient]
     @State var addPatient: Bool = false
+    @State var selectionId: Patient.ID? = nil
+    @State var showDeleteAlert: Bool = false
     var body: some View {
-        Table(patients) {
+        Table(patients, selection: $selectionId) {
             TableColumn("Name", value: \.name)
             TableColumn("Date of Birth") { patient in
                 Text(patient.dateOfBirth.formatted(date: .abbreviated, time: .omitted))
             }
         }
+        .contextMenu(forSelectionType: Patient.ID.self, menu: { patients in
+            if patients.count == 1 {
+                Button(action: {
+                    showDeleteAlert.toggle()
+                }, label: {
+                    Text("Delete")
+                })
+            }
+        })
+        .alert("Delete \(selectedPatient().name)", isPresented: $showDeleteAlert, actions: {
+            Button(role: .destructive) {
+                if let _selectionId = selectionId {
+                    let patientModel = modelContext.model(for: _selectionId)
+                    modelContext.delete(patientModel)
+                }
+            } label: {
+                Text("Delete")
+            }
+        })
         .sheet(isPresented: $addPatient, content: {
             AddPatientView()
         })
@@ -33,11 +54,8 @@ struct PatientsView: View {
             }
         }
     }
-    
-    func dateOfBirthFormatter(patient: Patient) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: patient.dateOfBirth)
+    func selectedPatient() -> Patient {
+        return patients.first { element in  return element.id == selectionId} ?? .init(name: "", dateOfBirth: .now)
     }
 }
 

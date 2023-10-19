@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE06844C2AE0CEF1004CABE7 /* PatientDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE06844B2AE0CEF1004CABE7 /* PatientDetailView.swift */; };
+		BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE06844D2AE0D01F004CABE7 /* FileUploadView.swift */; };
+		BE0684502AE0D5AB004CABE7 /* CoverLetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE06844F2AE0D5AB004CABE7 /* CoverLetterView.swift */; };
 		BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0F07882ABE53C2004B71D5 /* ProfileView.swift */; };
 		BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */; };
 		BE16E2092AAEB20B004052B8 /* CopyPathsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2082AAEB20B004052B8 /* CopyPathsView.swift */; };
@@ -31,6 +34,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BE06844B2AE0CEF1004CABE7 /* PatientDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetailView.swift; sourceTree = "<group>"; };
+		BE06844D2AE0D01F004CABE7 /* FileUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadView.swift; sourceTree = "<group>"; };
+		BE06844F2AE0D5AB004CABE7 /* CoverLetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverLetterView.swift; sourceTree = "<group>"; };
 		BE0F07882ABE53C2004B71D5 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		BE16E2032AAEB20B004052B8 /* HopeReins.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HopeReins.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HopeReinsApp.swift; sourceTree = "<group>"; };
@@ -116,6 +122,7 @@
 				BE16E20A2AAEB20C004052B8 /* Assets.xcassets */,
 				BE16E2142AAEB20C004052B8 /* HopeReins.entitlements */,
 				BE16E20C2AAEB20C004052B8 /* Preview Content */,
+				BE06844D2AE0D01F004CABE7 /* FileUploadView.swift */,
 			);
 			path = HopeReins;
 			sourceTree = "<group>";
@@ -144,6 +151,7 @@
 				BE1710FA2ACB360B00CC27BB /* RidingFormView.swift */,
 				BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */,
 				BEA939422ACB644800AA9D7C /* ReleaseStatementView.swift */,
+				BE06844F2AE0D5AB004CABE7 /* CoverLetterView.swift */,
 			);
 			path = Adaptive_Riding;
 			sourceTree = "<group>";
@@ -153,6 +161,7 @@
 			children = (
 				BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */,
 				BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */,
+				BE06844B2AE0CEF1004CABE7 /* PatientDetailView.swift */,
 			);
 			path = Patients;
 			sourceTree = "<group>";
@@ -255,11 +264,14 @@
 				BE1710FB2ACB360B00CC27BB /* RidingFormView.swift in Sources */,
 				BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */,
 				BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */,
+				BE06844C2AE0CEF1004CABE7 /* PatientDetailView.swift in Sources */,
 				BEA939432ACB644800AA9D7C /* ReleaseStatementView.swift in Sources */,
 				BE16E2092AAEB20B004052B8 /* CopyPathsView.swift in Sources */,
 				BEB29A282AD1AF3D0023B4CB /* HomeView.swift in Sources */,
 				BE1711002ACB374B00CC27BB /* RidingFormType.swift in Sources */,
+				BE0684502AE0D5AB004CABE7 /* CoverLetterView.swift in Sources */,
 				BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */,
+				BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */,
 				BE1710FE2ACB373100CC27BB /* FormType.swift in Sources */,
 				BE89F25F2ABE5BCD0057CA20 /* EntryView.swift in Sources */,
 				BE1710F72ACB35CF00CC27BB /* PhysicalFormView.swift in Sources */,
