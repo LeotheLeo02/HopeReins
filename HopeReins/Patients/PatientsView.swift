@@ -14,48 +14,53 @@ struct PatientsView: View {
     var patients: [Patient]
     @State var addPatient: Bool = false
     @State var selectionId: Patient.ID? = nil
+    @State var selectedPatient: Patient?
     @State var showDeleteAlert: Bool = false
     var body: some View {
-        Table(patients, selection: $selectionId) {
-            TableColumn("Name", value: \.name)
-            TableColumn("Date of Birth") { patient in
-                Text(patient.dateOfBirth.formatted(date: .abbreviated, time: .omitted))
-            }
-        }
-        .contextMenu(forSelectionType: Patient.ID.self, menu: { patients in
-            if patients.count == 1 {
-                Button(action: {
-                    showDeleteAlert.toggle()
-                }, label: {
-                    Text("Delete")
-                })
-            }
-        })
-        .alert("Delete \(selectedPatient().name)", isPresented: $showDeleteAlert, actions: {
-            Button(role: .destructive) {
-                if let _selectionId = selectionId {
-                    let patientModel = modelContext.model(for: _selectionId)
-                    modelContext.delete(patientModel)
+        NavigationStack {
+            List(patients, selection: $selectionId) { patient in
+                NavigationLink {
+                    PatientDetailView(patientId: patient.id)
+                } label: {
+                    HStack {
+                        Text(patient.name)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                    .contextMenu {
+                        Button(action: {
+                            selectedPatient = patient
+                            showDeleteAlert.toggle()
+                        }, label: {
+                            Text("Delete")
+                        })
+                    }
                 }
-            } label: {
-                Text("Delete")
+                
             }
-        })
-        .sheet(isPresented: $addPatient, content: {
-            AddPatientView()
-        })
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    addPatient.toggle()
-                }, label: {
-                    Image(systemName: "plus")
-                })
+            .alert("Delete \(selectedPatient?.name ?? "")", isPresented: $showDeleteAlert, actions: {
+                Button(role: .destructive) {
+                    if let _selectedPatient = selectedPatient {
+                        let patientModel = modelContext.model(for: _selectedPatient.persistentModelID)
+                        modelContext.delete(patientModel)
+                    }
+                } label: {
+                    Text("Delete")
+                }
+            })
+            .sheet(isPresented: $addPatient, content: {
+                AddPatientView()
+            })
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: {
+                        addPatient.toggle()
+                    }, label: {
+                        Image(systemName: "plus")
+                    })
+                }
             }
         }
-    }
-    func selectedPatient() -> Patient {
-        return patients.first { element in  return element.id == selectionId} ?? .init(name: "", dateOfBirth: .now)
     }
 }
 

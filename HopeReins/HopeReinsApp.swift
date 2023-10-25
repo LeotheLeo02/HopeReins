@@ -75,11 +75,12 @@ enum HopeReinsSchemaV2: VersionedSchema {
     }
     
     @Model final class Patient {
+        public var id = UUID()
         var name: String
         var dateOfBirth: Date
         
         @Relationship(deleteRule: .cascade)
-        var files: [PatientFile] = []
+        var files = [PatientFile]()
         
         init(name: String, dateOfBirth: Date) {
             self.name = name
@@ -88,9 +89,10 @@ enum HopeReinsSchemaV2: VersionedSchema {
     }
 
     @Model final class PatientFile {
-        var id = UUID()
+        public var id = UUID()
         var data: Data
         var fileType: String
+        var patient: Patient?
         
         init(data: Data, fileType: String) {
             self.data = data

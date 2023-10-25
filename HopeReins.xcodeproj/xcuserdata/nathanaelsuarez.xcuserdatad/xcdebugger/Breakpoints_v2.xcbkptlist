@@ -3,4 +3,54 @@
    uuid = "7358E477-A796-4954-BD96-A48D88B53ADB"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2DDB87DE-19F3-4408-ABFB-62BD046D5559"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../var/folders/5c/zddkcrs95b103l460q7s3fp40000gp/T/swift-generated-sources/@__swiftmacro_9HopeReins17PatientDetailViewV4fileAA0aB8SchemaV2O0C4FileCyF9PredicatefMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1"
+            landmarkName = "file()"
+            landmarkType = "37">
+            <Locations>
+               <Location
+                  uuid = "2DDB87DE-19F3-4408-ABFB-62BD046D5559 - 16017b3b000ceee3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HopeReins.PatientDetailView.file() -&gt; HopeReins.HopeReinsSchemaV2.PatientFile"
+                  moduleName = "HopeReins"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///var/folders/5c/zddkcrs95b103l460q7s3fp40000gp/T/swift-generated-sources/@__swiftmacro_9HopeReins17PatientDetailViewV4fileAA0aB8SchemaV2O0C4FileCyF9PredicatefMf_.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1"
+                  endingLineNumber = "1"
+                  offsetFromSymbolStart = "972">
+               </Location>
+               <Location
+                  uuid = "2DDB87DE-19F3-4408-ABFB-62BD046D5559 - d33f0c745a3e5005"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #3 (Foundation.PredicateExpressions.Variable&lt;HopeReins.HopeReinsSchemaV2.PatientFile&gt;) -&gt; any Foundation.StandardPredicateExpression&lt;Self.Foundation.PredicateExpression.Output == Swift.Bool&gt; in HopeReins.PatientDetailView.file() -&gt; HopeReins.HopeReinsSchemaV2.PatientFile"
+                  moduleName = "HopeReins"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///var/folders/5c/zddkcrs95b103l460q7s3fp40000gp/T/swift-generated-sources/@__swiftmacro_9HopeReins17PatientDetailViewV4fileAA0aB8SchemaV2O0C4FileCyF9PredicatefMf_.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "4"
+                  endingLineNumber = "4"
+                  offsetFromSymbolStart = "288">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

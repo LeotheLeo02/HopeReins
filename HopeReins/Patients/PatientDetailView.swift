@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 enum FileType: String {
     case releaseStatement = "ReleaseStatement"
@@ -13,26 +14,65 @@ enum FileType: String {
 }
 
 struct PatientDetailView: View {
-    @State private var selectedFileURL: URL?
-    var patient: Patient
+    let patientId: UUID
+    @Environment(\.modelContext) var modelContext
+    @State var showDeleteAlert: Bool = false
+    @State var selectedFile: PatientFile?
+    @Query(sort: \PatientFile.fileType) private var files: [PatientFile]
+    
+    init(patientId: UUID) {
+        self.patientId = patientId
+        let predicate = #Predicate<PatientFile> { patientFile in
+            patientFile.patient?.id == patientId
+        }
+        _files = Query(filter: predicate, sort: \PatientFile.fileType)
+    }
     
     var body: some View {
-        ScrollView {
-            ForEach(patient.files) { file in
-                if let type = FileType(rawValue: file.fileType) {
-                    switch type {
-                    case .releaseStatement:
-                        filePreview(data: file.data)
-                    case .coverLetter:
-                        filePreview(data: file.data)
+        List(files) { file in
+            HStack {
+                Button(action: {
+                    if let url = saveToTemporaryFile(data: file.data) {
+                        NSWorkspace.shared.open(url)
                     }
-                } else {
-                    Text("Unexpected file type")
+                }, label: {
+                    HStack {
+                        if let type = FileType(rawValue: file.fileType) {
+                            filePreview(data: file.data)
+                            switch type {
+                            case .releaseStatement:
+                                Text("Release Statement")
+                            case .coverLetter:
+                                Text("Cover Letter")
+                            }
+                        } else {
+                            Text("Unexpected file type")
+                        }
+                        Spacer()
+                    }
+                })
+            }
+            .contextMenu {
+                Button  {
+                    selectedFile = file
+                    showDeleteAlert.toggle()
+                } label: {
+                    Text("Delete")
                 }
+
             }
         }
+        .alert("Delete \(selectedFile?.fileType ?? "")", isPresented: $showDeleteAlert, actions: {
+            Button(role: .destructive) {
+                if let _selectedFile = selectedFile {
+                    modelContext.delete(_selectedFile)
+                }
+            } label: {
+                Text("Delete")
+            }
+        })
     }
-
+    
     func saveToTemporaryFile(data: Data) -> URL? {
         let temporaryDirectory = FileManager.default.temporaryDirectory
         let fileURL = temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -49,21 +89,10 @@ struct PatientDetailView: View {
 extension PatientDetailView {
     @ViewBuilder func filePreview(data: Data) -> some View {
         if let image = NSImage(data: data) {
-            Button(action: {
-                if let url = saveToTemporaryFile(data: data) {
-                    self.selectedFileURL = url
-                    NSWorkspace.shared.open(url)
-                }
-            }) {
-                HStack {
-                    Image(nsImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 200, height: 200)
-                    Text(patient.name)
-                    Spacer()
-                }
-                .padding()
+            HStack {
+                Image(nsImage: image)
+                    .resizable()
+                    .frame(width: 25, height: 25, alignment: .center)
             }
         }
     }

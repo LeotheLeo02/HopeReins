@@ -22,6 +22,7 @@ struct ReleaseStatementView: View {
                             let releaseStatement = PatientFile(data: data, fileType: "ReleaseStatement")
                             modelContext.insert(releaseStatement)
                             patient.files.append(releaseStatement)
+                            releaseStatement.patient = patient
                         }
                         .buttonStyle(.borderedProminent)
                     }

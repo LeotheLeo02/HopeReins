@@ -16,7 +16,7 @@ struct HomeView: View {
         NavigationStack {
             List(patients) { patient in
                 NavigationLink {
-                    PatientDetailView(patient: patient)
+                    PatientDetailView(patientId: patient.id)
                 } label: {
                     Text(patient.name)
                 }
