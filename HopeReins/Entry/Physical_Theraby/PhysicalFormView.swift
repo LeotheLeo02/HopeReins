@@ -21,6 +21,8 @@ struct PhysicalFormView: View {
             Text("Medical Form")
         case .missedVisit:
             Text("Missed Visit")
+        case .referral:
+            Text("Referral")
         }
     }
 }

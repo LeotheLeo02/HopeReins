@@ -8,32 +8,56 @@
 import SwiftUI
 
 struct ReleaseStatementView: View {
+    @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State private var selectedFileData: Data? = nil
-    @State var selectedPatient: Patient? = nil
+    var ridingFormType: RidingFormType?
+    var phyiscalFormType: PhysicalTherabyFormType?
+    var patient: Patient
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                FileUploadView(selectedFileData: $selectedFileData, selectedPatient: $selectedPatient)
-                HStack {
-                    Spacer()
-                    if let data = selectedFileData, let patient = selectedPatient {
-                        Button("Save") {
-                            let releaseStatement = PatientFile(data: data, fileType: "ReleaseStatement")
-                            modelContext.insert(releaseStatement)
-                            patient.files.append(releaseStatement)
-                            releaseStatement.patient = patient
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
+        VStack(spacing: 20) {
+            FileUploadView(selectedFileData: $selectedFileData)
+        }
+        .padding()
+        .navigationTitle("Upload File")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    dismiss()
                 }
             }
-            .padding()
-            .navigationTitle("Release Statement")
+            ToolbarItem(placement: .confirmationAction) {
+                if let data = selectedFileData {
+                    Button("Save") {
+                        addFile(data: data)
+                        dismiss()
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
         }
     }
-}
-
-#Preview {
-    RidingFormView(rideFormType: .releaseStatement)
+    
+    func addFile(data: Data) {
+        var fileType: String = ""
+        if let type = ridingFormType {
+            if type == .releaseStatement {
+                fileType = "Release Statement"
+            } else if type == .coverLetter {
+                fileType = "Cover Letter"
+            } else if type == .updateCoverLetter {
+                fileType = "Update Cover Letter"
+            }
+        } else {
+            if let type = phyiscalFormType {
+                if type == .referral {
+                    fileType = "Physicians Referral"
+                }
+            }
+        }
+        let fileToAdd = PatientFile(data: data, fileType: fileType)
+        modelContext.insert(fileToAdd)
+        patient.files.append(fileToAdd)
+        fileToAdd.patient = patient
+    }
 }

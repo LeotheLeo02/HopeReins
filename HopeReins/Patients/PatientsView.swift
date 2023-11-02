@@ -14,40 +14,64 @@ struct PatientsView: View {
     var patients: [Patient]
     @State var addPatient: Bool = false
     @State var selectionId: Patient.ID? = nil
-    @State var selectedPatient: Patient?
-    @State var showDeleteAlert: Bool = false
+    @State var selectedSpecificForm: String?
+    @State private var searchQuery = ""
+    @State var addFile: Bool = false
+    var filteredPatients: [Patient] {
+        if searchQuery.isEmpty {
+            return patients
+        } else {
+            return patients.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+        }
+    }
+
     var body: some View {
         NavigationStack {
-            List(patients, selection: $selectionId) { patient in
+            List(filteredPatients, selection: $selectionId) { patient in
                 NavigationLink {
-                    PatientDetailView(patientId: patient.id)
+                    PatientDetailView(patient: patient)
                 } label: {
                     HStack {
+                        Image(systemName: "person.fill")
                         Text(patient.name)
                         Spacer()
                         Image(systemName: "chevron.right")
                     }
                     .contextMenu {
-                        Button(action: {
-                            selectedPatient = patient
-                            showDeleteAlert.toggle()
-                        }, label: {
-                            Text("Delete")
-                        })
+                        Menu {
+                            ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
+                                Button {
+                                        selectedSpecificForm = rideForm.rawValue
+                                        addFile.toggle()
+                                } label: {
+                                    Text(rideForm.rawValue)
+                                }
+                            }
+                        } label: {
+                            Label("Adaptive Riding Form", systemImage: "plus")
+                        }
+                        Menu {
+                            ForEach(PhysicalTherabyFormType.allCases, id:\.rawValue) { physicalForm in
+                                Button {
+                                        selectedSpecificForm = physicalForm.rawValue
+                                        addFile.toggle()
+                                } label: {
+                                    Text(physicalForm.rawValue)
+                                }
+                            }
+                        } label: {
+                            Label("Physical Theraby Form", systemImage: "plus")
+                        }
+
                     }
                 }
+                .sheet(isPresented: $addFile, content: {
+                        FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient)
+                            .frame(minWidth: 500, minHeight: 300)
+                })
                 
             }
-            .alert("Delete \(selectedPatient?.name ?? "")", isPresented: $showDeleteAlert, actions: {
-                Button(role: .destructive) {
-                    if let _selectedPatient = selectedPatient {
-                        let patientModel = modelContext.model(for: _selectedPatient.persistentModelID)
-                        modelContext.delete(patientModel)
-                    }
-                } label: {
-                    Text("Delete")
-                }
-            })
+            .searchable(text: $searchQuery, prompt: "Search Patients")
             .sheet(isPresented: $addPatient, content: {
                 AddPatientView()
             })

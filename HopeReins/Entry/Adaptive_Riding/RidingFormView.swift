@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct RidingFormView: View {
+    var patient: Patient
     var rideFormType: RidingFormType
     var body: some View {
         Form {
             VStack {
                 switch rideFormType {
                 case .releaseStatement:
-                    ReleaseStatementView()
+                    ReleaseStatementView(patient: patient)
                 case .coverLetter:
-                    CoverLetterView()
+                    CoverLetterView(patient: patient)
                 case .updateCoverLetter:
                     Text("Update Cover Letter")
                 case .ridingLessonPlan:
@@ -26,8 +27,4 @@ struct RidingFormView: View {
             .padding()
         }
     }
-}
-
-#Preview {
-    RidingFormView(rideFormType: .ridingLessonPlan)
 }

@@ -6,16 +6,31 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @SceneStorage("selection") private var selectedTab: String?
+    @Environment(\.modelContext) var modelContext
+    @State private var isUserLoggedIn: Bool = false
+    @Query(sort: \User.username) var users: [User]
+    
+    init() {
+        let predicate = #Predicate<User> { user in
+            user.isLoggedIn == true
+        }
+        _users = Query(filter: predicate, sort: \User.username)
+    }
     var body: some View {
-        NavigationSplitView(sidebar: {
-            Sidebar(selectedTab: $selectedTab)
-                .frame(minWidth: 250)
-        }, detail: {
-            DetailView(selectedTab: $selectedTab)
-        })
+        if !users.isEmpty {
+            NavigationSplitView(sidebar: {
+                Sidebar(selectedTab: $selectedTab, user: users.first!)
+                    .frame(minWidth: 250)
+            }, detail: {
+                DetailView(user: users.first!, selectedTab: $selectedTab)
+            })
+        } else {
+            LoginView()
+        }
     }
 }
 
@@ -23,16 +38,39 @@ struct ContentView: View {
     ContentView()
 }
 
+struct LoginView: View {
+    @State private var username: String = ""
+    @State private var password: String = ""
+
+    @Environment(\.modelContext) var modelContext
+
+    var body: some View {
+        VStack {
+            TextField("Username", text: $username)
+            SecureField("Password", text: $password)
+            Button("Log In") {
+                logIn()
+            }
+        }
+        .padding()
+    }
+
+    func logIn() {
+        let newUser = User(username: username, password: password)
+        modelContext.insert(newUser)
+    }
+}
+
+
 struct DetailView: View {
+    var user: User
     @Binding var selectedTab: String?
     var body: some View {
         switch selectedTab {
         case "Profile":
-             ProfileView()
+            ProfileView(user: user)
         case "Home":
             HomeView()
-        case "New Entry":
-            EntryView()
         case "All Patients":
             PatientsView()
         case "Scheduler":

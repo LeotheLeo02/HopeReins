@@ -27,7 +27,6 @@ struct EntryView: View {
                     case .adaptiveRiding:
                         ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
                             NavigationLink {
-                                RidingFormView(rideFormType: rideForm)
                             } label: {
                                 HStack {
                                     Spacer()
@@ -43,7 +42,6 @@ struct EntryView: View {
                     case .physicalTherapy:
                         ForEach(PhysicalTherabyFormType.allCases, id: \.rawValue) { phyiscalForm in
                             NavigationLink {
-                                PhysicalFormView(physicalFormType: phyiscalForm)
                             } label: {
                                 HStack {
                                     Spacer()

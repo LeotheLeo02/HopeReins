@@ -15,6 +15,7 @@ enum SettingsType {
 struct ProfileView: View {
     @State var settingsType: SettingsType = .profile
     @Environment(\.modelContext) private var modelContext
+    var user: User
     var body: some View {
         ScrollView {
             VStack {
@@ -34,15 +35,14 @@ struct ProfileView: View {
                     CopyPathsView()
                 case .profile:
                     VStack {
-                        Text("Nate Suarez")
+                        Text(user.username)
+                        Button("Log out") {
+                            user.isLoggedIn = false
+                        }
                     }
                 }
             }
             .padding()
         }
     }
-}
-
-#Preview {
-    ProfileView()
 }

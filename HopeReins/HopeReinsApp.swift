@@ -10,13 +10,15 @@ import SwiftData
 
 typealias Patient = HopeReinsSchemaV2.Patient
 typealias PatientFile = HopeReinsSchemaV2.PatientFile
+typealias User = HopeReinsSchemaV2.User
 
 @main
 struct HopeReinsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema ([
             Patient.self,
-            PatientFile.self
+            PatientFile.self,
+            User.self
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()
@@ -71,7 +73,7 @@ enum HopeReinsSchemaV2: VersionedSchema {
     static var versionIdentifier: Schema.Version = .init(1, 0, 1)
     
     static var models: [any PersistentModel.Type] {
-        [Patient.self]
+        [Patient.self, User.self]
     }
     
     @Model final class Patient {
@@ -97,6 +99,17 @@ enum HopeReinsSchemaV2: VersionedSchema {
         init(data: Data, fileType: String) {
             self.data = data
             self.fileType = fileType
+        }
+    }
+    
+    @Model final class User {
+        var username: String
+        var password: String
+        var isLoggedIn: Bool = true
+        
+        init(username: String, password: String) {
+            self.username = username
+            self.password = password
         }
     }
 }

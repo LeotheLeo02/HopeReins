@@ -6,8 +6,3 @@
 //
 
 import Foundation
-
-enum FormType: String, CaseIterable {
-    case adaptiveRiding = "Adaptive Riding"
-    case physicalTherapy = "Physcial Therapy"
-}

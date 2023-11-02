@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 
 struct Sidebar: View {
     @Binding var selectedTab: String?
     @State var presentProfileView: Bool = false
-    
+    var user: User
     var body: some View {
         VStack {
             List(selection: $selectedTab) {
@@ -20,7 +21,7 @@ struct Sidebar: View {
                         .resizable()
                         .frame(width: 50, height: 50, alignment: .center)
                     VStack(alignment: .leading) {
-                        Text("Nate Suarez")
+                        Text(user.username)
                             .bold()
                         Text("Account")
                     }
@@ -34,9 +35,4 @@ struct Sidebar: View {
             }
         }
     }
-}
-
-
-#Preview {
-    Sidebar(selectedTab: .constant("Profile"), presentProfileView: false)
 }

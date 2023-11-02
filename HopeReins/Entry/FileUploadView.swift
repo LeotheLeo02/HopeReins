@@ -8,24 +8,21 @@
 import SwiftUI
 
 struct FileUploadView: View {
+    // TODO: Add drag and drop interactivity
     @Environment(\.modelContext) var modelContext
     @State private var selectedFileName: String? = nil
     @Binding var selectedFileData: Data?
-    @Binding var selectedPatient: Patient?
-    @State var selectPatient: Bool = false
     private var selectedImage: Image? {
         if let data = selectedFileData, let nsImage = NSImage(data: data) {
             return Image(nsImage: nsImage)
         }
         return nil
     }
-    init(selectedFileData: Binding<Data?>, selectedPatient: Binding<Patient?>) {
+    init(selectedFileData: Binding<Data?>) {
         self._selectedFileData = selectedFileData
-        self._selectedPatient = selectedPatient
     }
 
     var body: some View {
-        ScrollView {
             VStack(spacing: 20) {
                 Button {
                     let panel = NSOpenPanel()
@@ -42,7 +39,7 @@ struct FileUploadView: View {
                         }
                     }
                 } label: {
-                    Label("\((selectedFileName != nil) ? "Change" : "Import") Release Statement File", systemImage: "square.and.arrow.down.fill")
+                    Label("\((selectedFileName != nil) ? "Change" : "Import") File", systemImage: "square.and.arrow.down.fill")
                 }
                 if let image = selectedImage {
                     image
@@ -51,17 +48,8 @@ struct FileUploadView: View {
                         .frame(width: 200, height: 200)
                         .padding()
                 }
-                Button {
-                    selectPatient.toggle()
-                } label: {
-                    Label("\("Selected Patient: \( selectedPatient == nil ? "None Selected" : selectedPatient!.name)")", systemImage: "person.fill")
-                }
-                .sheet(isPresented: $selectPatient) {
-                    PatientSelectionView(selection: $selectedPatient)
-                }
             }
             .padding()
             .navigationTitle("Release Statement")
-        }
     }
 }

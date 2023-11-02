@@ -14,14 +14,7 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            List(patients) { patient in
-                NavigationLink {
-                    PatientDetailView(patientId: patient.id)
-                } label: {
-                    Text(patient.name)
-                }
-            }
-
+           Text("Home")
         }
     }
 }

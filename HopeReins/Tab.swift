@@ -9,7 +9,6 @@ import Foundation
 
 enum Tab: String, CaseIterable {
     case Home
-    case NewEntry = "New Entry"
     case AllPatients = "All Patients"
     case Scheduler
     case Media
@@ -18,8 +17,6 @@ enum Tab: String, CaseIterable {
         switch self {
         case .Home:
             return "house"
-        case .NewEntry:
-            return "plus"
         case .AllPatients:
             return "person.2"
         case .Scheduler:

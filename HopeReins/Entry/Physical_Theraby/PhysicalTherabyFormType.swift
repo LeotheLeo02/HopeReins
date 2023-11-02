@@ -13,4 +13,5 @@ enum PhysicalTherabyFormType: String, CaseIterable {
     case reEvaluation = "Re-Evaluation"
     case medicalForm = "Medical Form"
     case missedVisit = "Missed Visit"
+    case referral = "Physicians Referral"
 }
