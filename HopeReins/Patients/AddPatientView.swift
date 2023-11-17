@@ -14,9 +14,14 @@ struct AddPatientView: View {
     @State var dateOfBirth: Date = .now
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
+                customSectionHeader(title: "Name Of Patient")
                 TextField("Name...", text: $name)
-                DatePicker("Date of Birth", selection: $dateOfBirth)
+                    .padding(.vertical, 5)
+                customSectionHeader(title: "Date Of Birth")
+                DatePicker("Date of Birth", selection: $dateOfBirth, displayedComponents: .date)
+                    .labelsHidden()
+                    .padding(.vertical, 5)
                 HStack {
                     Button(action: {
                         dismiss()
@@ -35,6 +40,15 @@ struct AddPatientView: View {
                 }
             }
             .padding()
+            .frame(minWidth: 400, minHeight: 100)
         }
+    }
+    
+    @ViewBuilder
+    func customSectionHeader(title: String) -> some View {
+        Text(title)
+            .font(.caption.bold())
+            .foregroundStyle(.gray)
+        Divider()
     }
 }

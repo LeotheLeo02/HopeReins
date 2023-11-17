@@ -9,11 +9,12 @@ import SwiftUI
 
 struct SharedFormView: View {
     var patient: Patient
+    var user: User
     var ridingFormType: RidingFormType?
     var physicalTherabyFormType: PhysicalTherabyFormType?
     var body: some View {
         VStack {
-            ReleaseStatementView(ridingFormType: ridingFormType, phyiscalFormType: physicalTherabyFormType, patient: patient)
+            ReleaseStatementView(ridingFormType: ridingFormType, phyiscalFormType: physicalTherabyFormType, patient: patient, user: user)
         }
     }
 }

@@ -12,18 +12,18 @@ struct FileUploadView: View {
     @Environment(\.modelContext) var modelContext
     @State private var selectedFileName: String? = nil
     @Binding var selectedFileData: Data?
+    @Binding var fileName: String
     private var selectedImage: Image? {
         if let data = selectedFileData, let nsImage = NSImage(data: data) {
             return Image(nsImage: nsImage)
         }
         return nil
     }
-    init(selectedFileData: Binding<Data?>) {
-        self._selectedFileData = selectedFileData
-    }
 
     var body: some View {
-            VStack(spacing: 20) {
+        ScrollView {
+            VStack(spacing: 10) {
+                TextField("File Name...", text: $fileName, axis: .vertical)
                 Button {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = false
@@ -39,17 +39,26 @@ struct FileUploadView: View {
                         }
                     }
                 } label: {
-                    Label("\((selectedFileName != nil) ? "Change" : "Import") File", systemImage: "square.and.arrow.down.fill")
+                    Label("\((selectedFileData != nil) ? "Change" : "Import") File", systemImage: "square.and.arrow.down.fill")
                 }
                 if let image = selectedImage {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 200)
-                        .padding()
+                    Button {
+                        if let _selectedFileData = selectedFileData, let url = saveToTemporaryFile(data: _selectedFileData) {
+                            NSWorkspace.shared.open(url)
+                        }
+                    } label: {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .frame(width: 250, height: 250)
+                            .shadow(radius: 5)
+                    }
+                    .buttonStyle(.borderless)
                 }
             }
             .padding()
+        }
             .navigationTitle("Release Statement")
     }
 }

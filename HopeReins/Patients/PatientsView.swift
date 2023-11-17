@@ -12,6 +12,7 @@ struct PatientsView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Patient.dateOfBirth, order: .forward)
     var patients: [Patient]
+    var user: User
     @State var addPatient: Bool = false
     @State var selectionId: Patient.ID? = nil
     @State var selectedSpecificForm: String?
@@ -29,7 +30,7 @@ struct PatientsView: View {
         NavigationStack {
             List(filteredPatients, selection: $selectionId) { patient in
                 NavigationLink {
-                    PatientDetailView(patient: patient)
+                    PatientDetailView(patient: patient, user: user)
                 } label: {
                     HStack {
                         Image(systemName: "person.fill")
@@ -66,7 +67,7 @@ struct PatientsView: View {
                     }
                 }
                 .sheet(isPresented: $addFile, content: {
-                        FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient)
+                    FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user)
                             .frame(minWidth: 500, minHeight: 300)
                 })
                 
@@ -86,8 +87,4 @@ struct PatientsView: View {
             }
         }
     }
-}
-
-#Preview {
-    PatientsView()
 }

@@ -11,12 +11,14 @@ struct ReleaseStatementView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State private var selectedFileData: Data? = nil
+    @State private var fileName: String = ""
     var ridingFormType: RidingFormType?
     var phyiscalFormType: PhysicalTherabyFormType?
     var patient: Patient
+    var user: User
     var body: some View {
         VStack(spacing: 20) {
-            FileUploadView(selectedFileData: $selectedFileData)
+            FileUploadView(selectedFileData: $selectedFileData, fileName: $fileName)
         }
         .padding()
         .navigationTitle("Upload File")
@@ -55,7 +57,7 @@ struct ReleaseStatementView: View {
                 }
             }
         }
-        let fileToAdd = PatientFile(data: data, fileType: fileType)
+        let fileToAdd = PatientFile(data: data, fileType: fileType, name: fileName, author: user.username, dateAdded: .now)
         modelContext.insert(fileToAdd)
         patient.files.append(fileToAdd)
         fileToAdd.patient = patient

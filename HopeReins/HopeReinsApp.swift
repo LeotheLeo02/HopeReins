@@ -94,11 +94,18 @@ enum HopeReinsSchemaV2: VersionedSchema {
         public var id = UUID()
         var data: Data
         var fileType: String
+        var name: String
+        var author: String
+        var dateAdded: Date
         var patient: Patient?
         
-        init(data: Data, fileType: String) {
+        init(id: UUID = UUID(), data: Data, fileType: String, name: String, author: String, dateAdded: Date) {
+            self.id = id
             self.data = data
             self.fileType = fileType
+            self.name = name
+            self.author = author
+            self.dateAdded = dateAdded
         }
     }
     

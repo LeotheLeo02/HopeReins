@@ -72,7 +72,7 @@ struct DetailView: View {
         case "Home":
             HomeView()
         case "All Patients":
-            PatientsView()
+            PatientsView(user: user)
         case "Scheduler":
             Text("Scheduler")
         case "Media":
