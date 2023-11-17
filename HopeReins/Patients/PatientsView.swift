@@ -30,7 +30,7 @@ struct PatientsView: View {
         NavigationStack {
             List(filteredPatients, selection: $selectionId) { patient in
                 NavigationLink {
-                    PatientDetailView(patient: patient, user: user)
+                    PatientFilesListView(patient: patient, user: user)
                 } label: {
                     HStack {
                         Image(systemName: "person.fill")

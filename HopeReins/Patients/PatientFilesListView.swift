@@ -23,7 +23,7 @@ enum FormType: Hashable {
 }
 
 
-struct PatientDetailView: View {
+struct PatientFilesListView: View {
     let patient: Patient
     let patientId: UUID
     var user: User
@@ -84,13 +84,21 @@ struct PatientDetailView: View {
             case .physicalTherapy(_):
                 if !physicalTherapyFiles.isEmpty {
                     ForEach(physicalTherapyFiles, id: \.self) { file in
-                        uploadedListItem(file: file)
+                        NavigationLink {
+                            FormEditView(file: file, user: user)
+                        } label: {
+                            uploadedListItem(file: file)
+                        }
                     }
                 }
             case .riding(_):
                 if !ridingFiles.isEmpty {
                     ForEach(ridingFiles, id: \.self) { file in
-                        uploadedListItem(file: file)
+                        NavigationLink {
+                            FormEditView(file: file, user: user)
+                        } label: {
+                            uploadedListItem(file: file)
+                        }
                     }
                 }
             }
@@ -156,21 +164,22 @@ struct PatientDetailView: View {
     }
 }
 
-extension PatientDetailView {
+extension PatientFilesListView {
     @ViewBuilder func uploadedListItem(file: PatientFile) -> some View {
-        Button {
-            if let url = saveToTemporaryFile(data: file.data) {
-                NSWorkspace.shared.open(url)
-            }
-        } label: {
-            HStack {
-                FilePreview(data: file.data, size: 25)
-                Text(file.name)
-                Spacer()
-                Text("Created By: \(file.author) \(file.dateAdded.formatted())")
-                    .font(.caption.italic())
-            }
+        HStack {
+            FilePreview(data: file.data, size: 25)
+            Text(file.name)
+            Spacer()
+            Text("Created By: \(file.author) \(file.dateAdded.formatted())")
+                .font(.caption.italic())
+            Image(systemName: "chevron.right")
         }
+        .font(.title3)
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundStyle(.gray.opacity(0.15))
+        )
         .contextMenu {
             Button {
                 selectedFile = file
@@ -178,7 +187,7 @@ extension PatientDetailView {
             } label: {
                 Label("Edit", systemImage: "pencil")
             }
-
+            
             Button  {
                 selectedFile = file
                 showDeleteAlert.toggle()

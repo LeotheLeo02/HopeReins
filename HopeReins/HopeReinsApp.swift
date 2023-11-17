@@ -11,6 +11,7 @@ import SwiftData
 typealias Patient = HopeReinsSchemaV2.Patient
 typealias PatientFile = HopeReinsSchemaV2.PatientFile
 typealias User = HopeReinsSchemaV2.User
+typealias FileChange = HopeReinsSchemaV2.FileChange
 
 @main
 struct HopeReinsApp: App {
@@ -18,7 +19,8 @@ struct HopeReinsApp: App {
         let schema = Schema ([
             Patient.self,
             PatientFile.self,
-            User.self
+            User.self,
+            FileChange.self
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()
@@ -98,6 +100,8 @@ enum HopeReinsSchemaV2: VersionedSchema {
         var author: String
         var dateAdded: Date
         var patient: Patient?
+        @Relationship(deleteRule: .cascade)
+        var changes = [FileChange]()
         
         init(id: UUID = UUID(), data: Data, fileType: String, name: String, author: String, dateAdded: Date) {
             self.id = id
@@ -109,6 +113,21 @@ enum HopeReinsSchemaV2: VersionedSchema {
         }
     }
     
+    @Model final class FileChange {
+        var fileId: UUID
+        var reason: String
+        var date: Date
+        var author: String
+        var title: String
+    
+        init(fileId: UUID, reason: String, date: Date, author: String, title: String) {
+            self.fileId = fileId
+            self.reason = reason
+            self.date = date
+            self.author = author
+            self.title = title
+        }
+    }
     @Model final class User {
         var username: String
         var password: String
