@@ -47,30 +47,33 @@ struct FormEditView: View {
     }
     var body: some View {
         ScrollView {
-            VStack {
-                FileUploadView(selectedFileData: $fileData, fileName: $fileName)
-                TextField("Reason for Change...", text: $reasonForChange)
-                Text(changeDescription)
-                HStack {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Cancel")
-                    }
-                    Spacer()
-                    Button("Done") {
-                        do {
-                            let newFileChange = FileChange(fileId: file.id, reason: reasonForChange, date: .now, author: user.username, title: changeDescription)
-                            file.changes.append(newFileChange)
-                            file.data = fileData ?? .init()
-                            file.name = fileName
-                            try modelContext.save()
-                        } catch {
-                            print(error.localizedDescription)
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading) {
+                    FileUploadView(selectedFileData: $fileData, fileName: $fileName)
+                    if !changeDescription.isEmpty {
+                        TextField("Reason for Change...", text: $reasonForChange)
+                        Text(changeDescription)
+                            .bold()
+                        HStack {
+                            Spacer()
+                            Button("Done") {
+                                do {
+                                    let newFileChange = FileChange(fileId: file.id, reason: reasonForChange, date: .now, author: user.username, title: changeDescription)
+                                    file.changes.append(newFileChange)
+                                    file.data = fileData ?? .init()
+                                    file.name = fileName
+                                    try modelContext.save()
+                                } catch {
+                                    print(error.localizedDescription)
+                                }
+                                dismiss()
+                            }
                         }
-                        dismiss()
+                        .buttonStyle(.borderedProminent)
                     }
                 }
+                .padding(.vertical)
+                CustomSectionHeader(title: "Past Changes")
                 ForEach(fileChanges) { fileChange in
                     HStack {
                         Text(fileChange.reason)

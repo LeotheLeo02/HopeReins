@@ -15,10 +15,10 @@ struct AddPatientView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                customSectionHeader(title: "Name Of Patient")
+                CustomSectionHeader(title: "Name Of Patient")
                 TextField("Name...", text: $name)
                     .padding(.vertical, 5)
-                customSectionHeader(title: "Date Of Birth")
+                CustomSectionHeader(title: "Date Of Birth")
                 DatePicker("Date of Birth", selection: $dateOfBirth, displayedComponents: .date)
                     .labelsHidden()
                     .padding(.vertical, 5)
@@ -43,9 +43,12 @@ struct AddPatientView: View {
             .frame(minWidth: 400, minHeight: 100)
         }
     }
-    
-    @ViewBuilder
-    func customSectionHeader(title: String) -> some View {
+}
+
+
+struct CustomSectionHeader: View {
+    var title: String
+    var body: some View {
         Text(title)
             .font(.caption.bold())
             .foregroundStyle(.gray)

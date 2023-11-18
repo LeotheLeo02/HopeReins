@@ -19,46 +19,45 @@ struct FileUploadView: View {
         }
         return nil
     }
-
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 10) {
+                CustomSectionHeader(title: "File Name")
                 TextField("File Name...", text: $fileName, axis: .vertical)
-                Button {
-                    let panel = NSOpenPanel()
-                    panel.allowsMultipleSelection = false
-                    panel.canChooseDirectories = false
-                    panel.canChooseFiles = true
-                    
-                    if panel.runModal() == .OK, let url = panel.url {
-                        selectedFileName = url.lastPathComponent
-                        do {
-                            selectedFileData = try Data(contentsOf: url)
-                        } catch {
-                            print("Error reading the file: \(error)")
+                HStack {
+                    if selectedFileData != nil {
+                        Button {
+                            if let _selectedFileData = selectedFileData, let url = saveToTemporaryFile(data: _selectedFileData) {
+                                NSWorkspace.shared.open(url)
+                            }
+                        } label: {
+                            Label("Open", systemImage: "doc.fill")
                         }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.trailing, 7)
                     }
-                } label: {
-                    Label("\((selectedFileData != nil) ? "Change" : "Import") File", systemImage: "square.and.arrow.down.fill")
-                }
-                if let image = selectedImage {
                     Button {
-                        if let _selectedFileData = selectedFileData, let url = saveToTemporaryFile(data: _selectedFileData) {
-                            NSWorkspace.shared.open(url)
+                        let panel = NSOpenPanel()
+                        panel.allowsMultipleSelection = false
+                        panel.canChooseDirectories = false
+                        panel.canChooseFiles = true
+                        
+                        if panel.runModal() == .OK, let url = panel.url {
+                            selectedFileName = url.lastPathComponent
+                            do {
+                                selectedFileData = try Data(contentsOf: url)
+                            } catch {
+                                print("Error reading the file: \(error)")
+                            }
                         }
                     } label: {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .frame(width: 250, height: 250)
-                            .shadow(radius: 5)
+                        Label("\(selectedFileData != nil ? "Change" : "Import") File", systemImage: "\(selectedFileData != nil ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
                     }
-                    .buttonStyle(.borderless)
                 }
+                
             }
-            .padding()
         }
-            .navigationTitle("Release Statement")
+        .navigationTitle("Release Statement")
     }
 }
