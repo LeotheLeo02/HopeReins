@@ -28,9 +28,7 @@ struct PatientFilesListView: View {
     let patientId: UUID
     var user: User
     @Environment(\.modelContext) var modelContext
-    @State var showDeleteAlert: Bool = false
     @State var selectedFile: PatientFile?
-    @State var showEdit: Bool = false
     @State var selectedFormType: FormType = .riding(.coverLetter)
     @State var addFile: Bool = false
     @State var selectedSpecificForm: String?
@@ -69,57 +67,30 @@ struct PatientFilesListView: View {
     }
     
     var body: some View {
-        List {
-            Picker(selection: $selectedFormType) {
-                Text("Adaptive Riding")
-                    .tag(FormType.riding(.coverLetter))
-                Text("Phyisical Theraby")
-                    .tag(FormType.physicalTherapy(.dailyNote))
-            } label: {
-                Text("Form Type")
-            }
-            .labelsHidden()
-            .pickerStyle(.segmented)
-            switch selectedFormType {
-            case .physicalTherapy(_):
-                if !physicalTherapyFiles.isEmpty {
-                    ForEach(physicalTherapyFiles, id: \.self) { file in
-                        NavigationLink {
-                            FormEditView(file: file, user: user)
-                        } label: {
-                            uploadedListItem(file: file)
-                        }
-                    }
+        ScrollView {
+            VStack {
+                Picker(selection: $selectedFormType) {
+                    Text("Adaptive Riding")
+                        .tag(FormType.riding(.coverLetter))
+                    Text("Phyisical Theraby")
+                        .tag(FormType.physicalTherapy(.referral))
+                } label: {
+                    Text("Form Type")
                 }
-            case .riding(_):
-                if !ridingFiles.isEmpty {
-                    ForEach(ridingFiles, id: \.self) { file in
-                        NavigationLink {
-                            FormEditView(file: file, user: user)
-                        } label: {
-                            uploadedListItem(file: file)
-                        }
-                    }
+                .labelsHidden()
+                .pickerStyle(.segmented)
+                switch selectedFormType {
+                case .physicalTherapy(_):
+                    PhysicalTherapyFileListView(files: physicalTherapyFiles, user: user)
+                case .riding(_):
+                    RidingFileListView(files: ridingFiles, user: user)
                 }
             }
+            .padding()
         }
         .sheet(isPresented: $addFile, content: {
             FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user)
                 .frame(minWidth: 500, minHeight: 300)
-        })
-        .sheet(isPresented: $showEdit, content: {
-            if let _selectedFile = selectedFile {
-                FormEditView(file: _selectedFile, user: user)
-            }
-        })
-        .alert("Delete \(selectedFile?.name ?? "")", isPresented: $showDeleteAlert, actions: {
-            Button(role: .destructive) {
-                if let _selectedFile = selectedFile {
-                    modelContext.delete(_selectedFile)
-                }
-            } label: {
-                Text("Delete")
-            }
         })
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -161,68 +132,5 @@ struct PatientFilesListView: View {
                 }
             }
         }
-    }
-}
-
-extension PatientFilesListView {
-    @ViewBuilder func uploadedListItem(file: PatientFile) -> some View {
-        HStack {
-            FilePreview(data: file.data, size: 25)
-            Text(file.name)
-            Spacer()
-            Text("Created By: \(file.author) \(file.dateAdded.formatted())")
-                .font(.caption.italic())
-            Image(systemName: "chevron.right")
-        }
-        .font(.title3)
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .foregroundStyle(.gray.opacity(0.15))
-        )
-        .contextMenu {
-            Button {
-                selectedFile = file
-                showEdit.toggle()
-            } label: {
-                Label("Edit", systemImage: "pencil")
-            }
-            
-            Button  {
-                selectedFile = file
-                showDeleteAlert.toggle()
-            } label: {
-                Text("Delete")
-            }
-            
-        }
-    }
-}
-
-struct FilePreview: View {
-    var data: Data
-    var size: CGFloat
-    var body: some View {
-        if let image = NSImage(data: data) {
-            HStack {
-                Image(nsImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: size, height: size, alignment: .center)
-            }
-        }
-    }
-}
-
-
-func saveToTemporaryFile(data: Data) -> URL? {
-    let temporaryDirectory = FileManager.default.temporaryDirectory
-    let fileURL = temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    do {
-        try data.write(to: fileURL)
-        return fileURL
-    } catch {
-        print("Error saving to temporary file: \(error)")
-        return nil
     }
 }

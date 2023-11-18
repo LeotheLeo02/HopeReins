@@ -44,16 +44,16 @@ struct ReleaseStatementView: View {
         var fileType: String = ""
         if let type = ridingFormType {
             if type == .releaseStatement {
-                fileType = "Release Statement"
+                fileType = type.rawValue
             } else if type == .coverLetter {
-                fileType = "Cover Letter"
+                fileType = type.rawValue
             } else if type == .updateCoverLetter {
-                fileType = "Update Cover Letter"
+                fileType = type.rawValue
             }
         } else {
             if let type = phyiscalFormType {
                 if type == .referral {
-                    fileType = "Physicians Referral"
+                    fileType = type.rawValue
                 }
             }
         }

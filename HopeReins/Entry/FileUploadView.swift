@@ -58,6 +58,5 @@ struct FileUploadView: View {
                 
             }
         }
-        .navigationTitle("Release Statement")
     }
 }

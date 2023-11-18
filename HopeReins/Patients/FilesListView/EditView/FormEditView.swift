@@ -51,12 +51,12 @@ struct FormEditView: View {
                 VStack(alignment: .leading) {
                     FileUploadView(selectedFileData: $fileData, fileName: $fileName)
                     if !changeDescription.isEmpty {
-                        TextField("Reason for Change...", text: $reasonForChange)
+                        TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
                         Text(changeDescription)
                             .bold()
                         HStack {
                             Spacer()
-                            Button("Done") {
+                            Button("Save Changes") {
                                 do {
                                     let newFileChange = FileChange(fileId: file.id, reason: reasonForChange, date: .now, author: user.username, title: changeDescription)
                                     file.changes.append(newFileChange)
@@ -66,23 +66,31 @@ struct FormEditView: View {
                                 } catch {
                                     print(error.localizedDescription)
                                 }
-                                dismiss()
                             }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         }
-                        .buttonStyle(.borderedProminent)
                     }
                 }
                 .padding(.vertical)
                 CustomSectionHeader(title: "Past Changes")
                 ForEach(fileChanges) { fileChange in
                     HStack {
-                        Text(fileChange.reason)
+                        VStack(alignment: .listRowSeparatorLeading) {
+                            Text(fileChange.title)
+                                .font(.title3.bold())
+                            Text(fileChange.reason)
+                                .italic()
+                                .fontWeight(.light)
+                        }
                         Spacer()
-                        Text(fileChange.date.formatted())
+                        Text("Modified by \(fileChange.author) \(fileChange.date.formatted())")
+                            .font(.caption.italic())
                     }
                 }
             }
             .padding()
+            .navigationTitle(file.name)
         }
         .frame(minWidth: 500, minHeight: 500)
         .onAppear {
