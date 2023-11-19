@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+
 struct PatientsView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Patient.dateOfBirth, order: .forward) var patients: [Patient]
@@ -16,15 +17,7 @@ struct PatientsView: View {
             GridItem(.adaptive(minimum: 200))
     ]
     @State var addPatient: Bool = false
-    @State private var searchQuery = ""
-    var filteredPatients: [Patient] {
-        if searchQuery.isEmpty {
-            return patients
-        } else {
-            return patients.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
-        }
-    }
-
+    @State var searchQuery = ""
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -51,7 +44,7 @@ struct PatientsView: View {
                     }
                 })
                 .padding()
-                .searchable(text: $searchQuery, prompt: "Search Patients")
+                .searchable(text: $searchQuery, prompt: "Patient Name, MRN Number")
                 .sheet(isPresented: $addPatient, content: {
                     AddPatientView()
                 })

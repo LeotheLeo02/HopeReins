@@ -81,13 +81,15 @@ enum HopeReinsSchemaV2: VersionedSchema {
     @Model final class Patient {
         public var id = UUID()
         var name: String
+        var mrn: Int
         var dateOfBirth: Date
         
         @Relationship(deleteRule: .cascade)
         var files = [PatientFile]()
         
-        init(name: String, dateOfBirth: Date) {
+        init(name: String, mrn: Int, dateOfBirth: Date) {
             self.name = name
+            self.mrn = mrn
             self.dateOfBirth = dateOfBirth
         }
     }
