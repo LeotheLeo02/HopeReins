@@ -19,6 +19,7 @@
 		BE1711002ACB374B00CC27BB /* RidingFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */; };
 		BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */; };
 		BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */; };
+		BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */; };
 		BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */; };
 		BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */; };
 		BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */; };
@@ -49,6 +50,7 @@
 		BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFormType.swift; sourceTree = "<group>"; };
 		BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFormType.swift; sourceTree = "<group>"; };
 		BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlanView.swift; sourceTree = "<group>"; };
+		BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientFilesSearch.swift; sourceTree = "<group>"; };
 		BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsView.swift; sourceTree = "<group>"; };
 		BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSelectionView.swift; sourceTree = "<group>"; };
 		BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
@@ -195,11 +197,12 @@
 		BECF5D772B092BFA0008459C /* FilesListView */ = {
 			isa = PBXGroup;
 			children = (
-				BECF5D7C2B092C6A0008459C /* Utils.swift */,
-				BEE4EEE82B07F1ED00F77601 /* EditView */,
+				BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */,
 				BE06844B2AE0CEF1004CABE7 /* PatientFilesListView.swift */,
 				BECF5D782B092C100008459C /* PhysicalTherabyFileListView.swift */,
 				BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */,
+				BEE4EEE82B07F1ED00F77601 /* EditView */,
+				BECF5D7C2B092C6A0008459C /* Utils.swift */,
 			);
 			path = FilesListView;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */,
+				BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */,
 				BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */,
 				BECF5D792B092C100008459C /* PhysicalTherabyFileListView.swift in Sources */,
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
