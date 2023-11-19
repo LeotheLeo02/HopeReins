@@ -10,7 +10,6 @@ import SwiftUI
 struct PhysicalTherapyFileListView: View {
     var files: [PatientFile]
     var user: User
-
     var body: some View {
         ForEach(PhysicalTherabyFormType.allCases, id: \.self) { formType in
             DisclosureGroup(
@@ -27,6 +26,7 @@ struct PhysicalTherapyFileListView: View {
                 }
             )
         }
+
     }
     
     private func fileCountFor(_ formType: PhysicalTherabyFormType) -> Int {

@@ -10,14 +10,13 @@ import SwiftData
 
 struct PatientsView: View {
     @Environment(\.modelContext) var modelContext
-    @Query(sort: \Patient.dateOfBirth, order: .forward)
-    var patients: [Patient]
+    @Query(sort: \Patient.dateOfBirth, order: .forward) var patients: [Patient]
     var user: User
+    let columns: [GridItem] = [
+            GridItem(.adaptive(minimum: 200))
+    ]
     @State var addPatient: Bool = false
-    @State var selectionId: Patient.ID? = nil
-    @State var selectedSpecificForm: String?
     @State private var searchQuery = ""
-    @State var addFile: Bool = false
     var filteredPatients: [Patient] {
         if searchQuery.isEmpty {
             return patients
@@ -28,54 +27,35 @@ struct PatientsView: View {
 
     var body: some View {
         NavigationStack {
-            List(filteredPatients, selection: $selectionId) { patient in
-                NavigationLink {
-                    PatientFilesListView(patient: patient, user: user)
-                } label: {
-                    HStack {
-                        Image(systemName: "person.fill")
-                        Text(patient.name)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                    }
-                    .contextMenu {
-                        Menu {
-                            ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
-                                Button {
-                                        selectedSpecificForm = rideForm.rawValue
-                                        addFile.toggle()
-                                } label: {
-                                    Text(rideForm.rawValue)
-                                }
-                            }
+            ScrollView {
+                LazyVGrid(columns: columns, content: {
+                    ForEach(filteredPatients) { patient in
+                        NavigationLink {
+                            PatientFilesListView(patient: patient, user: user)
                         } label: {
-                            Label("Adaptive Riding Form", systemImage: "plus")
-                        }
-                        Menu {
-                            ForEach(PhysicalTherabyFormType.allCases, id:\.rawValue) { physicalForm in
-                                Button {
-                                        selectedSpecificForm = physicalForm.rawValue
-                                        addFile.toggle()
-                                } label: {
-                                    Text(physicalForm.rawValue)
+                            HStack {
+                                Spacer()
+                                VStack {
+                                    Image(systemName: "person.fill")
+                                        .resizable()
+                                        .frame(width: 100, height: 100)
+                                        .foregroundStyle(Color(.primary))
+                                    Text(patient.name)
                                 }
+                                .font(.largeTitle)
+                                .foregroundStyle(.primary)
+                                .padding()
+                                Spacer()
                             }
-                        } label: {
-                            Label("Physical Theraby Form", systemImage: "plus")
                         }
-
                     }
-                }
-                .sheet(isPresented: $addFile, content: {
-                    FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user)
-                            .frame(minWidth: 500, minHeight: 300)
                 })
-                
+                .padding()
+                .searchable(text: $searchQuery, prompt: "Search Patients")
+                .sheet(isPresented: $addPatient, content: {
+                    AddPatientView()
+                })
             }
-            .searchable(text: $searchQuery, prompt: "Search Patients")
-            .sheet(isPresented: $addPatient, content: {
-                AddPatientView()
-            })
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
