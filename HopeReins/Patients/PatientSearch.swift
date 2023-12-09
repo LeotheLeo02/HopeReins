@@ -26,7 +26,7 @@ extension PatientsView {
                 }
 
                 if let mrn = criteria.mrn {
-                    matches = matches && patient.mrn == mrn
+                    matches = matches && patient.mrn.description.contains("\(mrn)")
                 }
 
                 return matches

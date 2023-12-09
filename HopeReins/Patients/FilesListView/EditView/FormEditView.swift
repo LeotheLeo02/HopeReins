@@ -11,18 +11,23 @@ import SwiftData
 struct FormEditView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
-    var file: PatientFile
+    var file: MedicalRecordFile
+    var uploadFile: UploadFile?
     let fileId: UUID
     var user: User
+    var isUploadedFile : Bool {
+        return uploadFile != nil
+    }
     @Query(sort: \FileChange.date) var fileChanges: [FileChange]
     @State var reasonForChange: String = ""
     @State var uploadNewFile: Bool = false
-    @State var fileData: Data? = .init()
+    @State var fileData: Data? = nil
     @State var fileName: String = ""
-    init(file: PatientFile, user: User) {
+    init(file: MedicalRecordFile, uploadedFile: UploadFile? = nil,  user: User) {
         self.file = file
         self.fileId = file.id
         self.user = user
+        self.uploadFile = uploadedFile
         let predicate = #Predicate<FileChange> { fileChange in
             fileChange.fileId == fileId
         }
@@ -32,11 +37,11 @@ struct FormEditView: View {
     private var changeDescription: String {
         var description = ""
 
-        if file.name != fileName {
+        if file.fileName != fileName {
             description += "Changed File Name"
         }
 
-        if  file.data != fileData {
+        if  uploadFile?.data != fileData {
             if !description.isEmpty {
                 description += " and "
             }
@@ -49,28 +54,10 @@ struct FormEditView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
-                    FileUploadView(selectedFileData: $fileData, fileName: $fileName)
-                    if !changeDescription.isEmpty {
-                        TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
-                        Text(changeDescription)
-                            .bold()
-                        HStack {
-                            Spacer()
-                            Button("Save Changes") {
-                                do {
-                                    let newFileChange = FileChange(fileId: file.id, reason: reasonForChange, date: .now, author: user.username, title: changeDescription)
-                                    file.changes.append(newFileChange)
-                                    file.data = fileData ?? .init()
-                                    file.name = fileName
-                                    try modelContext.save()
-                                } catch {
-                                    print(error.localizedDescription)
-                                }
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        }
-                    }
+                    CustomSectionHeader(title: "File Name")
+                    TextField("File Name...", text: $fileName, axis: .vertical)
+                    InputtedFileType(fileData: $fileData, user: user, fileTypeString: file.fileType, fileId: file.id, medicalFile: file)
+                    fileChangeAddress()
                 }
                 .padding(.vertical)
                 CustomSectionHeader(title: "Past Changes")
@@ -90,12 +77,66 @@ struct FormEditView: View {
                 }
             }
             .padding()
-            .navigationTitle(file.name)
+            .navigationTitle(file.fileName)
         }
         .frame(minWidth: 500, minHeight: 500)
         .onAppear {
-            fileData = file.data
-            fileName = file.name
+            fileData = uploadFile?.data
+            fileName = file.fileName
         }
+    }
+    @ViewBuilder func fileChangeAddress() -> some View {
+        if !changeDescription.isEmpty {
+            TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+            Text(changeDescription)
+                .bold()
+            HStack {
+                Spacer()
+                Button("Save Changes") {
+                    do {
+                        let newFileChange = FileChange(fileId: file.id, reason: reasonForChange, date: .now, author: user.username, title: changeDescription)
+                        file.fileChanges.append(newFileChange)
+                        if isUploadedFile {
+                            uploadFile?.data = fileData ?? .init()
+                        }
+                        file.fileName = fileName
+                        try modelContext.save()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+        }
+    }
+}
+
+struct InputtedFileType: View {
+    @Environment(\.modelContext) var modelContext
+    @Binding var fileData: Data?
+    var user: User
+    var fileTypeString: String
+    var fileId: UUID
+    var medicalFile: MedicalRecordFile
+    var body: some View {
+        VStack {
+            if let fileTypeString = RidingFormType(rawValue: fileTypeString) {
+                switch fileTypeString {
+                case .releaseStatement, .coverLetter, .updateCoverLetter:
+                    FileUploadButton(selectedFileData: $fileData)
+                case .ridingLessonPlan:
+                    if let lessonPlan =  try? fetchRidingLessonPlan() {
+                        RidingLessonPlanView(mockLessonPlan: MockRidingLesson(lessonPlan: lessonPlan, patient: medicalFile.patient, username: user.username))
+                    }
+                }
+            }
+        }
+    }
+    func fetchRidingLessonPlan() throws -> RidingLessonPlan? {
+        let lessonPlans = FetchDescriptor<RidingLessonPlan>(predicate: #Predicate { file in
+            file.medicalRecordFile.id == fileId
+        })
+        return try modelContext.fetch(lessonPlans).first
     }
 }

@@ -33,23 +33,23 @@ struct PatientFilesListView: View {
     var user: User
     @State var searchText = ""
     @Environment(\.modelContext) var modelContext
-    @State var selectedFile: PatientFile?
+    @State var selectedFile: MedicalRecordFile?
     @State var selectedFormType: FormType = .riding(.coverLetter)
     @State var addFile: Bool = false
     @State var selectedSpecificForm: String?
-    @Query(sort: \PatientFile.fileType) var files: [PatientFile]
+    @Query(sort: \MedicalRecordFile.fileType) var files: [MedicalRecordFile]
     
     init (patient: Patient, user: User) {
         self.patient = patient
         self.patientId = patient.id
         self.user = user
-        let predicate = #Predicate<PatientFile> { patientFile in
-            patientFile.patient?.id == patientId
+        let predicate = #Predicate<MedicalRecordFile> { patientFile in
+            patientFile.patient.id == patientId
         }
-        _files = Query(filter: predicate, sort: \PatientFile.fileType)
+        _files = Query(filter: predicate, sort: \MedicalRecordFile.fileType)
     }
     
-    private var physicalTherapyFiles: [PatientFile] {
+    private var physicalTherapyFiles: [MedicalRecordFile] {
         files.filter {
             if let formType = FormType.from(string: $0.fileType) {
                 if case .physicalTherapy(_) = formType {
@@ -60,7 +60,7 @@ struct PatientFilesListView: View {
         }
     }
     
-    private var ridingFiles: [PatientFile] {
+    private var ridingFiles: [MedicalRecordFile] {
         files.filter {
             if let formType = FormType.from(string: $0.fileType) {
                 if case .riding(_) = formType {
@@ -153,12 +153,13 @@ struct PatientFilesListView: View {
 }
 
 struct FilteredFilesList: View {
+    @Environment(\.modelContext) var modelContext
     var user: User
-    var filteredFiles: [PatientFile]
+    var filteredFiles: [MedicalRecordFile]
     var body: some View {
         ForEach(filteredFiles, id: \.self) { file in
             NavigationLink {
-                FormEditView(file: file, user: user)
+                    FormEditView(file: file, uploadedFile: try? uploadedFile(modelContext: modelContext, fileType: file.fileType, fileId: file.id), user: user)
             } label: {
                 UploadedListItem(file: file)
             }

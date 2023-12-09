@@ -9,18 +9,23 @@ import SwiftUI
 import SwiftData
 
 typealias Patient = HopeReinsSchemaV2.Patient
-typealias PatientFile = HopeReinsSchemaV2.PatientFile
+typealias MedicalRecordFile = HopeReinsSchemaV2.MedicalRecordFile
+typealias UploadFile = HopeReinsSchemaV2.UploadFile
 typealias User = HopeReinsSchemaV2.User
 typealias FileChange = HopeReinsSchemaV2.FileChange
+typealias RidingLessonPlan = HopeReinsSchemaV2.RidingLessonPlan
+typealias DigitalSignature = HopeReinsSchemaV2.DigitalSignature
 
 @main
 struct HopeReinsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema ([
             Patient.self,
-            PatientFile.self,
+            MedicalRecordFile.self,
             User.self,
-            FileChange.self
+            FileChange.self,
+            RidingLessonPlan.self,
+            UploadFile.self
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()
@@ -78,14 +83,14 @@ enum HopeReinsSchemaV2: VersionedSchema {
         [Patient.self, User.self]
     }
     
-    @Model final class Patient {
+    @Model class Patient {
         public var id = UUID()
         var name: String
         var mrn: Int
         var dateOfBirth: Date
         
         @Relationship(deleteRule: .cascade)
-        var files = [PatientFile]()
+        var files = [MedicalRecordFile]()
         
         init(name: String, mrn: Int, dateOfBirth: Date) {
             self.name = name
@@ -94,28 +99,29 @@ enum HopeReinsSchemaV2: VersionedSchema {
         }
     }
 
-    @Model final class PatientFile {
-        public var id = UUID()
-        var data: Data
-        var fileType: String
-        var name: String
-        var author: String
-        var dateAdded: Date
-        var patient: Patient?
-        @Relationship(deleteRule: .cascade)
-        var changes = [FileChange]()
-        
-        init(id: UUID = UUID(), data: Data, fileType: String, name: String, author: String, dateAdded: Date) {
-            self.id = id
-            self.data = data
-            self.fileType = fileType
-            self.name = name
-            self.author = author
-            self.dateAdded = dateAdded
-        }
-    }
+//    @Model class PatientFile {
+//        public var id = UUID()
+//        var data: Data
+//        var fileType: String
+//        var name: String
+//        var author: String
+//        var dateAdded: Date
+//        var patient: Patient?
+//        @Relationship(deleteRule: .cascade)
+//        var changes = [FileChange]()
+//        
+//        init(id: UUID = UUID(), data: Data, fileType: String, name: String, author: String, dateAdded: Date) {
+//            self.id = id
+//            self.data = data
+//            self.fileType = fileType
+//            self.name = name
+//            self.author = author
+//            self.dateAdded = dateAdded
+//        }
+//    }
+//    
     
-    @Model final class FileChange {
+    @Model class FileChange {
         var fileId: UUID
         var reason: String
         var date: Date
@@ -130,6 +136,70 @@ enum HopeReinsSchemaV2: VersionedSchema {
             self.title = title
         }
     }
+    
+    @Model final class MedicalRecordFile {
+        public var id = UUID()
+        @Relationship(deleteRule: .cascade)
+        var fileChanges: [FileChange] = [FileChange]()
+        var patient: Patient
+        var fileName: String
+        var fileType: String
+        var digitalSignature: DigitalSignature
+        
+        init(id: UUID = UUID(), patient: Patient, fileName: String, fileType: String, digitalSignature: DigitalSignature) {
+            self.id = id
+            self.patient = patient
+            self.fileName = fileName
+            self.fileType = fileType
+            self.digitalSignature = digitalSignature
+        }
+    }
+    
+    @Model class DigitalSignature {
+        var author: String
+        var dateAdded: Date
+        
+        init(author: String, dateAdded: Date) {
+            self.author = author
+            self.dateAdded = dateAdded
+        }
+    }
+    @Model final class UploadFile {
+     @Relationship(deleteRule: .cascade)
+      var medicalRecordFile: MedicalRecordFile
+      var data: Data
+      public var id = UUID()
+        
+        init(medicalRecordFile: MedicalRecordFile, data: Data) {
+            self.medicalRecordFile = medicalRecordFile
+            self.data = data
+        }
+    }
+    
+    @Model final class RidingLessonPlan {
+        @Relationship(deleteRule: .cascade)
+        var medicalRecordFile: MedicalRecordFile
+        var instructorName: String
+        var date: Date
+        var objective: String
+        var preparation: String
+        var content: String
+        var summary: String
+        var goals: String
+        
+        init(medicalRecordFile: MedicalRecordFile, instructorName: String, date: Date, objective: String, preparation: String, content: String, summary: String, goals: String) {
+            self.medicalRecordFile = medicalRecordFile
+            self.instructorName = instructorName
+            self.date = date
+            self.objective = objective
+            self.preparation = preparation
+            self.content = content
+            self.summary = summary
+            self.goals = goals
+        }
+    }
+    
+    
     @Model final class User {
         var username: String
         var password: String

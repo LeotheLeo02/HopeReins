@@ -24,6 +24,7 @@
 		BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */; };
 		BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */; };
 		BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */; };
+		BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6FC4EB2B25267500670F7D /* SideBar.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
 		BEA939432ACB644800AA9D7C /* ReleaseStatementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA939422ACB644800AA9D7C /* ReleaseStatementView.swift */; };
@@ -31,7 +32,6 @@
 		BECF5D792B092C100008459C /* PhysicalTherabyFileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D782B092C100008459C /* PhysicalTherabyFileListView.swift */; };
 		BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */; };
 		BECF5D7D2B092C6A0008459C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D7C2B092C6A0008459C /* Utils.swift */; };
-		BED042EB2ABC7B5000958DB9 /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED042EA2ABC7B5000958DB9 /* SideBar.swift */; };
 		BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED042EC2ABC7B9700958DB9 /* Tab.swift */; };
 		BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFCBB992B06A5E6007DB23C /* FormEditView.swift */; };
 /* End PBXBuildFile section */
@@ -56,6 +56,7 @@
 		BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsView.swift; sourceTree = "<group>"; };
 		BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSelectionView.swift; sourceTree = "<group>"; };
 		BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
+		BE6FC4EB2B25267500670F7D /* SideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SideBar.swift; path = ../SideBar.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BEA939422ACB644800AA9D7C /* ReleaseStatementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseStatementView.swift; sourceTree = "<group>"; };
@@ -63,7 +64,6 @@
 		BECF5D782B092C100008459C /* PhysicalTherabyFileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFileListView.swift; sourceTree = "<group>"; };
 		BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFileListView.swift; sourceTree = "<group>"; };
 		BECF5D7C2B092C6A0008459C /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		BED042EA2ABC7B5000958DB9 /* SideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBar.swift; sourceTree = "<group>"; };
 		BED042EC2ABC7B9700958DB9 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		BEFCBB992B06A5E6007DB23C /* FormEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormEditView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,7 +127,6 @@
 			children = (
 				BE676A4F2AD63EE800E8ADD7 /* Utils */,
 				BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */,
-				BED042EA2ABC7B5000958DB9 /* SideBar.swift */,
 				BED042EC2ABC7B9700958DB9 /* Tab.swift */,
 				BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */,
 				BEB29A272AD1AF3D0023B4CB /* HomeView.swift */,
@@ -182,6 +181,7 @@
 		BE676A4F2AD63EE800E8ADD7 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				BE6FC4EB2B25267500670F7D /* SideBar.swift */,
 				BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */,
 			);
 			path = Utils;
@@ -308,10 +308,10 @@
 				BECF5D7D2B092C6A0008459C /* Utils.swift in Sources */,
 				BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */,
 				BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */,
+				BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */,
 				BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */,
 				BE0F28A92AECA522006285C5 /* FormAddView.swift in Sources */,
 				BE0F28AB2AECA556006285C5 /* SharedFormView.swift in Sources */,
-				BED042EB2ABC7B5000958DB9 /* SideBar.swift in Sources */,
 				BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

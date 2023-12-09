@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RidingFileListView: View {
-    var files: [PatientFile]
+    @Environment(\.modelContext) var modelContext
+    var files: [MedicalRecordFile]
     var user: User
     var body: some View {
         ForEach(RidingFormType.allCases, id: \.self) { formType in
@@ -36,15 +38,11 @@ struct RidingFileListView: View {
         }.count
     }
     @ViewBuilder func filesForRidingForm(_ formType: RidingFormType) -> some View {
-        let filteredFiles = files.filter { file in
-            if let fileType = FormType.from(string: file.fileType), case .riding(let type) = fileType {
-                return type == formType
-            }
-            return false
-        }
-        ForEach(filteredFiles, id: \.self) { file in
+        ForEach(files.filter {file in
+            return file.fileType == formType.rawValue
+        }) { file in
             NavigationLink {
-                FormEditView(file: file, user: user)
+                FormEditView(file: file, uploadedFile: try? uploadedFile(modelContext: modelContext, fileType: file.fileType, fileId: file.id), user: user)
             } label: {
                 UploadedListItem(file: file)
             }

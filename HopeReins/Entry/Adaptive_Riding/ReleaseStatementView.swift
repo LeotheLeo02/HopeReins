@@ -57,9 +57,11 @@ struct ReleaseStatementView: View {
                 }
             }
         }
-        let fileToAdd = PatientFile(data: data, fileType: fileType, name: fileName, author: user.username, dateAdded: .now)
-        modelContext.insert(fileToAdd)
-        patient.files.append(fileToAdd)
-        fileToAdd.patient = patient
+        let digitalSignature = DigitalSignature(author: user.username, dateAdded: .now)
+        modelContext.insert(digitalSignature)
+        let medicalRecordFile = MedicalRecordFile(patient: patient, fileName: fileName, fileType: fileType, digitalSignature: digitalSignature)
+        modelContext.insert(medicalRecordFile)
+        let dataFile = UploadFile(medicalRecordFile: medicalRecordFile, data: data)
+        modelContext.insert(dataFile)
     }
 }

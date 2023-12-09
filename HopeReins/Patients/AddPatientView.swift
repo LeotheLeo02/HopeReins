@@ -62,7 +62,7 @@ struct CustomSectionHeader: View {
     var title: String
     var body: some View {
         Text(title)
-            .font(.caption.bold())
+            .font(.subheadline.bold())
             .foregroundStyle(.gray)
         Divider()
     }

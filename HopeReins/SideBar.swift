@@ -1,10 +1,9 @@
 //
-//  SideBarView.swift
+//  SideBar.swift
 //  HopeReins
 //
-//  Created by Nathanael Suarez on 9/21/23.
+//  Created by Nathanael Suarez on 12/9/23.
 //
-
 import SwiftUI
 import SwiftData
 
