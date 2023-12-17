@@ -48,7 +48,7 @@ extension RidingFormType: FormSpecialGroup {
         case .releaseStatement, .coverLetter, .updateCoverLetter :
             return AnyView(SharedFormView(patient: patient, user: user, ridingFormType: self))
         case .ridingLessonPlan:
-            return AnyView(RidingLessonPlanView(mockLessonPlan: MockRidingLesson(instructor: user.username, patient: patient, username: user.username)))
+            return AnyView(RidingLessonPlanView(mockLessonPlan: MockRidingLesson(instructor: user.username, patient: patient, username: user.username), isAddingPlan: true))
         default:
             return AnyView(EmptyView())
         }
@@ -88,26 +88,29 @@ class MockRidingLesson: ObservableObject {
         self.goals = lessonPlan.goals
     }
     
+    func createLessonPlan(instructor: String, date: Date, objective: String, preparation: String, content: String, summary: String, goals: String) -> RidingLessonPlan {
+        let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
+        let fileName = "Riding Lesson Plan_\(date.formatted(.iso8601))"
+        let medicalRecordFile = MedicalRecordFile(patient: patient, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: digitalSignature)
+        return RidingLessonPlan(medicalRecordFile: medicalRecordFile, instructorName: instructor, date: date, objective: objective, preparation: preparation, content: content, summary: summary, goals: goals)
+    }
+
     func saveOrAdd(modelContext: ModelContext) {
-      try? modelContext.transaction {
-        if let lesson = ridingLesson {
-          lesson.date = date
-          lesson.instructorName = instructor
-          lesson.objective = objective
-          lesson.preparation = preparation
-          lesson.content = content
-          lesson.summary = summary
-          lesson.goals = goals
-        } else {
-          let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
-          modelContext.insert(digitalSignature)
-          let medicalRecordFile = MedicalRecordFile(patient: patient, fileName: "Riding Lesson Plan", fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: digitalSignature)
-          modelContext.insert(medicalRecordFile)
-          let lessonFile = RidingLessonPlan(medicalRecordFile: medicalRecordFile, instructorName: instructor, date: date, objective: objective, preparation: preparation, content: content, summary: summary, goals: goals)
-          modelContext.insert(lessonFile)
-          ridingLesson = lessonFile
+        try? modelContext.transaction {
+            if let existingLesson = ridingLesson {
+                existingLesson.date = date
+                existingLesson.instructorName = instructor
+                existingLesson.objective = objective
+                existingLesson.preparation = preparation
+                existingLesson.content = content
+                existingLesson.summary = summary
+                existingLesson.goals = goals
+            } else {
+                let newLesson = createLessonPlan(instructor: instructor, date: date, objective: objective, preparation: preparation, content: content, summary: summary, goals: goals)
+                modelContext.insert(newLesson)
+                ridingLesson = newLesson
+            }
+            try? modelContext.save()
         }
-        try? modelContext.save()
-      }
     }
 }

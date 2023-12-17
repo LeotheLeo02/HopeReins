@@ -12,14 +12,49 @@ struct RidingLessonPlanView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @ObservedObject var mockLessonPlan: MockRidingLesson
-    
+    @State var reasonForChange: String = ""
     @Query(sort: \User.username, order: .forward)
     var instructors: [User]
+    var isAddingPlan: Bool
+    var lessonPlan: RidingLessonPlan?
+    var changeDescription: String {
+        var description: String = ""
+        
+        if lessonPlan?.content != mockLessonPlan.content {
+            description += "Changed Content"
+        }
+        if lessonPlan?.date != mockLessonPlan.date {
+            description += "Changed Date"
+        }
+        if lessonPlan?.goals != mockLessonPlan.goals {
+            description += "Changed Goals"
+        }
+        if lessonPlan?.instructorName != mockLessonPlan.instructor {
+            description += "Changed Instructor"
+        }
+        
+        if lessonPlan?.objective != mockLessonPlan.objective {
+            description += "Changed Objective"
+        }
+        
+        if lessonPlan?.preparation != mockLessonPlan.preparation {
+            description += "Changed Preparation"
+        }
+        
+        if lessonPlan?.summary != mockLessonPlan.summary {
+            description += "Changed Summary"
+        }
+        
+        return description
+    }
+    var username: String?
 
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
+                
+                CustomSectionHeader(title: "Instructor")
                 Picker(selection: $mockLessonPlan.instructor) {
                     ForEach(instructors) { user in
                         Text(user.username)
@@ -55,25 +90,74 @@ struct RidingLessonPlanView: View {
                 FormEntryTextField(title: "Summary and evaluation of the lesson", text: $mockLessonPlan.summary)
                 
                 FormEntryTextField(title: "Goals for the next lesson", text: $mockLessonPlan.goals)
-            }
-            .padding()
-            
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Text("Cancel")
-                    })
+                
+                if !isAddingPlan {
+                    if !changeDescription.isEmpty {
+                        TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+                        Text(changeDescription)
+                            .bold()
+                        HStack {
+                            Spacer()
+                            Button("Save Changes") {
+                                do {
+                                    let copyOfPlan = RidingLessonPlan(lessonPlan: lessonPlan!)
+                                    modelContext.insert(copyOfPlan)
+                                    let newFileChange = PastChangeRidingLessonPlan(ridingLessonPlan: copyOfPlan, changeDescription: changeDescription, reason: reasonForChange, author: username!, date: Date.now)
+                                    lessonPlan!.pastChanges.append(newFileChange)
+                                    try modelContext.save()
+                                    mockLessonPlan.saveOrAdd(modelContext: modelContext)
+                                } catch {
+                                    print(error.localizedDescription)
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        }
+                    }
+                    CustomSectionHeader(title: "Past Changes")
+                    if let lessonPlan = lessonPlan {
+                        ForEach(lessonPlan.pastChanges, id: \.date) { change in
+                            HStack {
+                                VStack {
+                                    Text(change.changeDescription)
+                                    Text(change.date.description)
+                                    Text(change.ridingLessonPlan.objective)
+                                }
+                                Spacer()
+                                Button("Revert Objective") {
+                                    do {
+                                        lessonPlan.objective = change.ridingLessonPlan.objective
+                                        modelContext.delete(change)
+                                        try modelContext.save()
+                                    } catch {
+                                        print(error.localizedDescription)
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        mockLessonPlan.saveOrAdd(modelContext: modelContext)
-                        dismiss()
-                    }, label: {
-                        Text("Save")
-                    })
-                    .buttonStyle(.borderedProminent)
+                
+            }
+            .toolbar {
+                if isAddingPlan {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(action: {
+                            dismiss()
+                        }, label: {
+                            Text("Cancel")
+                        })
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: {
+                            mockLessonPlan.saveOrAdd(modelContext: modelContext)
+                            dismiss()
+                        }, label: {
+                            Text("Save")
+                        })
+                        .buttonStyle(.borderedProminent)
+                    }
                 }
             }
         }

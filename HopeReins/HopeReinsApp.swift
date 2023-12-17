@@ -14,7 +14,9 @@ typealias UploadFile = HopeReinsSchemaV2.UploadFile
 typealias User = HopeReinsSchemaV2.User
 typealias FileChange = HopeReinsSchemaV2.FileChange
 typealias RidingLessonPlan = HopeReinsSchemaV2.RidingLessonPlan
+typealias PastChangeRidingLessonPlan = HopeReinsSchemaV2.PastChangeRidingLessonPlan
 typealias DigitalSignature = HopeReinsSchemaV2.DigitalSignature
+
 
 @main
 struct HopeReinsApp: App {
@@ -98,28 +100,6 @@ enum HopeReinsSchemaV2: VersionedSchema {
             self.dateOfBirth = dateOfBirth
         }
     }
-
-//    @Model class PatientFile {
-//        public var id = UUID()
-//        var data: Data
-//        var fileType: String
-//        var name: String
-//        var author: String
-//        var dateAdded: Date
-//        var patient: Patient?
-//        @Relationship(deleteRule: .cascade)
-//        var changes = [FileChange]()
-//        
-//        init(id: UUID = UUID(), data: Data, fileType: String, name: String, author: String, dateAdded: Date) {
-//            self.id = id
-//            self.data = data
-//            self.fileType = fileType
-//            self.name = name
-//            self.author = author
-//            self.dateAdded = dateAdded
-//        }
-//    }
-//    
     
     @Model class FileChange {
         var fileId: UUID
@@ -139,8 +119,6 @@ enum HopeReinsSchemaV2: VersionedSchema {
     
     @Model final class MedicalRecordFile {
         public var id = UUID()
-        @Relationship(deleteRule: .cascade)
-        var fileChanges: [FileChange] = [FileChange]()
         var patient: Patient
         var fileName: String
         var fileType: String
@@ -179,6 +157,8 @@ enum HopeReinsSchemaV2: VersionedSchema {
     @Model final class RidingLessonPlan {
         @Relationship(deleteRule: .cascade)
         var medicalRecordFile: MedicalRecordFile
+        @Relationship(deleteRule: .cascade)
+        var pastChanges: [PastChangeRidingLessonPlan] = [PastChangeRidingLessonPlan]()
         var instructorName: String
         var date: Date
         var objective: String
@@ -197,8 +177,35 @@ enum HopeReinsSchemaV2: VersionedSchema {
             self.summary = summary
             self.goals = goals
         }
+        
+        init(lessonPlan: RidingLessonPlan) {
+            self.date = lessonPlan.date
+            self.objective = lessonPlan.objective
+            self.preparation = lessonPlan.preparation
+            self.content = lessonPlan.content
+            self.summary = lessonPlan.summary
+            self.goals = lessonPlan.goals
+            self.medicalRecordFile = lessonPlan.medicalRecordFile
+            self.pastChanges = lessonPlan.pastChanges
+            self.instructorName = lessonPlan.instructorName
+        }
     }
     
+    @Model final class PastChangeRidingLessonPlan {
+        var ridingLessonPlan: RidingLessonPlan
+        var changeDescription: String
+        var reason: String
+        var author: String
+        var date: Date
+        
+        init(ridingLessonPlan: RidingLessonPlan, changeDescription: String, reason: String, author: String, date: Date) {
+            self.ridingLessonPlan = ridingLessonPlan
+            self.changeDescription = changeDescription
+            self.reason = reason
+            self.author = author
+            self.date = date
+        }
+    }
     
     @Model final class User {
         var username: String
