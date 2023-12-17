@@ -19,30 +19,30 @@ struct RidingLessonPlanView: View {
     var lessonPlan: RidingLessonPlan?
     var changeDescription: String {
         var description: String = ""
-        
+        // TODO: Add more detailed automatic descriptions of changes
         if lessonPlan?.content != mockLessonPlan.content {
-            description += "Changed Content"
+            description += "Changed Content "
         }
         if lessonPlan?.date != mockLessonPlan.date {
-            description += "Changed Date"
+            description += "Changed Date "
         }
         if lessonPlan?.goals != mockLessonPlan.goals {
-            description += "Changed Goals"
+            description += "Changed Goals "
         }
         if lessonPlan?.instructorName != mockLessonPlan.instructor {
-            description += "Changed Instructor"
+            description += "Changed Instructor "
         }
         
         if lessonPlan?.objective != mockLessonPlan.objective {
-            description += "Changed Objective"
+            description += "Changed Objective "
         }
         
         if lessonPlan?.preparation != mockLessonPlan.preparation {
-            description += "Changed Preparation"
+            description += "Changed Preparation "
         }
         
         if lessonPlan?.summary != mockLessonPlan.summary {
-            description += "Changed Summary"
+            description += "Changed Summary "
         }
         
         return description
@@ -115,27 +115,27 @@ struct RidingLessonPlanView: View {
                         }
                     }
                     CustomSectionHeader(title: "Past Changes")
-                    if let lessonPlan = lessonPlan {
-                        ForEach(lessonPlan.pastChanges, id: \.date) { change in
-                            HStack {
-                                VStack {
-                                    Text(change.changeDescription)
-                                    Text(change.date.description)
-                                    Text(change.ridingLessonPlan.objective)
-                                }
-                                Spacer()
-                                Button("Revert Objective") {
-                                    do {
-                                        lessonPlan.objective = change.ridingLessonPlan.objective
-                                        modelContext.delete(change)
-                                        try modelContext.save()
-                                    } catch {
-                                        print(error.localizedDescription)
-                                    }
+                    ForEach(lessonPlan!.pastChanges) { change in
+                        HStack {
+                            VStack {
+                                Text(change.changeDescription)
+                                Text(change.date.description)
+                            }
+                            Spacer()
+                            Button("Revert To") {
+                                do {
+                                    mockLessonPlan.revertLessonPlan(modelContext: modelContext, lessonPlan: change.ridingLessonPlan)
+                                    lessonPlan?.pastChanges.removeAll(where: { element in
+                                        return element.reason == change.reason
+                                    })
+                                    modelContext.delete(change)
+                                    try modelContext.save()
+                                } catch {
+                                    print(error.localizedDescription)
                                 }
                             }
-                            
                         }
+                        
                     }
                 }
                 

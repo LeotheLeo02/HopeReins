@@ -88,6 +88,30 @@ class MockRidingLesson: ObservableObject {
         self.goals = lessonPlan.goals
     }
     
+    func revertLessonPlan(modelContext: ModelContext, lessonPlan: RidingLessonPlan) {
+        try? modelContext.transaction {
+            if let existingLesson = ridingLesson {
+                existingLesson.objective = lessonPlan.objective
+                existingLesson.content = lessonPlan.content
+                existingLesson.date = lessonPlan.date
+                existingLesson.goals = lessonPlan.goals
+                existingLesson.instructorName = lessonPlan.instructorName
+                existingLesson.preparation = lessonPlan.preparation
+                existingLesson.summary = lessonPlan.summary
+            }
+            try? modelContext.save()
+        }
+        self.ridingLesson = lessonPlan
+        self.date = lessonPlan.date
+        self.instructor = lessonPlan.instructorName
+        self.patient = patient
+        self.username = username
+        self.objective = lessonPlan.objective
+        self.preparation = lessonPlan.preparation
+        self.content = lessonPlan.content
+        self.summary = lessonPlan.summary
+        self.goals = lessonPlan.goals
+    }
     func createLessonPlan(instructor: String, date: Date, objective: String, preparation: String, content: String, summary: String, goals: String) -> RidingLessonPlan {
         let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
         let fileName = "Riding Lesson Plan_\(date.formatted(.iso8601))"
