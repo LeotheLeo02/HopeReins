@@ -14,6 +14,7 @@ typealias UploadFile = HopeReinsSchemaV2.UploadFile
 typealias User = HopeReinsSchemaV2.User
 typealias FileChange = HopeReinsSchemaV2.FileChange
 typealias RidingLessonPlan = HopeReinsSchemaV2.RidingLessonPlan
+typealias RidingLessonProperties = HopeReinsSchemaV2.RidingLessonProperties
 typealias PastChangeRidingLessonPlan = HopeReinsSchemaV2.PastChangeRidingLessonPlan
 typealias DigitalSignature = HopeReinsSchemaV2.DigitalSignature
 
@@ -159,6 +160,17 @@ enum HopeReinsSchemaV2: VersionedSchema {
         var medicalRecordFile: MedicalRecordFile
         @Relationship(deleteRule: .cascade)
         var pastChanges: [PastChangeRidingLessonPlan] = [PastChangeRidingLessonPlan]()
+        @Relationship(deleteRule: .cascade)
+        var properties: RidingLessonProperties
+        
+        init(medicalRecordFile: MedicalRecordFile, properties: RidingLessonProperties) {
+            self.medicalRecordFile = medicalRecordFile
+            self.properties = properties
+        }
+        
+    }
+    
+    @Model final class RidingLessonProperties {
         var instructorName: String
         var date: Date
         var objective: String
@@ -167,39 +179,36 @@ enum HopeReinsSchemaV2: VersionedSchema {
         var summary: String
         var goals: String
         
-        init(medicalRecordFile: MedicalRecordFile, instructorName: String, date: Date, objective: String, preparation: String, content: String, summary: String, goals: String) {
-            self.medicalRecordFile = medicalRecordFile
-            self.instructorName = instructorName
-            self.date = date
-            self.objective = objective
-            self.preparation = preparation
-            self.content = content
-            self.summary = summary
-            self.goals = goals
+        init () {
+            self.instructorName = ""
+            self.date = .now
+            self.objective = ""
+            self.preparation = ""
+            self.content = ""
+            self.summary = ""
+            self.goals = ""
         }
         
-        init(lessonPlan: RidingLessonPlan) {
-            self.date = lessonPlan.date
-            self.objective = lessonPlan.objective
-            self.preparation = lessonPlan.preparation
-            self.content = lessonPlan.content
-            self.summary = lessonPlan.summary
-            self.goals = lessonPlan.goals
-            self.medicalRecordFile = lessonPlan.medicalRecordFile
-            self.pastChanges = lessonPlan.pastChanges
-            self.instructorName = lessonPlan.instructorName
+        init(initialProperties: InitialProperties) {
+            self.instructorName = initialProperties.instructorName
+            self.date = initialProperties.date
+            self.objective = initialProperties.objective
+            self.preparation = initialProperties.preparation
+            self.content = initialProperties.content
+            self.summary = initialProperties.summary
+            self.goals = initialProperties.goals
         }
     }
     
     @Model final class PastChangeRidingLessonPlan {
-        var ridingLessonPlan: RidingLessonPlan
+        var properties: RidingLessonProperties
         var changeDescription: String
         var reason: String
         var author: String
         var date: Date
         
-        init(ridingLessonPlan: RidingLessonPlan, changeDescription: String, reason: String, author: String, date: Date) {
-            self.ridingLessonPlan = ridingLessonPlan
+        init(properties: RidingLessonProperties, changeDescription: String, reason: String, author: String, date: Date) {
+            self.properties = properties
             self.changeDescription = changeDescription
             self.reason = reason
             self.author = author

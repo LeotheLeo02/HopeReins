@@ -86,7 +86,7 @@ struct InputtedFileType: View {
                     FileUploadButton(selectedFileData: $fileData)
                 case .ridingLessonPlan:
                     if let lessonPlan = try? fetchRidingLessonPlan() {
-                        RidingLessonPlanView(mockLessonPlan: MockRidingLesson(lessonPlan: lessonPlan, patient: medicalFile.patient, username: user.username), isAddingPlan: false, lessonPlan: lessonPlan, username: user.username)
+                        RidingLessonPlanView(properties: lessonPlan.properties, isAddingPlan: false, lessonPlan: lessonPlan, username: user.username)
                     }
                 }
             }
