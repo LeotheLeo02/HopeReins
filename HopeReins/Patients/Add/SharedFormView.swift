@@ -17,6 +17,7 @@ struct SharedFormView: View {
         VStack {
             FileUploadView(properties: uploadFileProperties, ridingFormType: ridingFormType, phyiscalFormType: physicalTherabyFormType, patient: patient, user: user)
         }
+        .padding()
     }
 }
 

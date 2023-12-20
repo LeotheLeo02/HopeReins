@@ -57,13 +57,15 @@ extension HopeReinsSchemaV2 {
     
     @Model final class PastChangeRidingLessonPlan {
         var properties: RidingLessonProperties
+        var fileName: String
         var changeDescription: String
         var reason: String
         var author: String
         var date: Date
         
-        init(properties: RidingLessonProperties, changeDescription: String, reason: String, author: String, date: Date) {
+        init(properties: RidingLessonProperties, fileName: String, changeDescription: String, reason: String, author: String, date: Date) {
             self.properties = properties
+            self.fileName = fileName
             self.changeDescription = changeDescription
             self.reason = reason
             self.author = author

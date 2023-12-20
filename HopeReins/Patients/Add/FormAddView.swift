@@ -48,7 +48,7 @@ extension RidingFormType: FormSpecialGroup {
         case .releaseStatement, .coverLetter, .updateCoverLetter :
             return AnyView(SharedFormView(patient: patient, user: user, ridingFormType: self))
         case .ridingLessonPlan:
-            return AnyView(RidingLessonPlanView(properties: RidingLessonProperties(), isAddingPlan: true, username: user.username, patient: patient))
+            return AnyView(RidingLessonPlanView(username: user.username, patient: patient).padding())
         default:
             return AnyView(EmptyView())
         }

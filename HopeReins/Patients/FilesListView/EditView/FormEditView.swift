@@ -21,7 +21,6 @@ struct FormEditView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
-                    CustomSectionHeader(title: "File Name")
                     InputtedFileType(user: user, fileTypeString: file.fileType, medicalFile: file)
                 }
                 .padding(.vertical)
@@ -48,7 +47,7 @@ struct InputtedFileType: View {
                     }
                 case .ridingLessonPlan:
                     if let lessonPlan = try? fetchRidingLessonPlan(fileId: medicalFile.id) {
-                        RidingLessonPlanView(properties: lessonPlan.properties, isAddingPlan: false, lessonPlan: lessonPlan, username: user.username)
+                        RidingLessonPlanView(lessonPlan: lessonPlan, username: user.username)
                     }
                 }
             }
