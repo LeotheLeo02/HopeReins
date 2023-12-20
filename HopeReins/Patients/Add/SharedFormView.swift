@@ -12,9 +12,10 @@ struct SharedFormView: View {
     var user: User
     var ridingFormType: RidingFormType?
     var physicalTherabyFormType: PhysicalTherabyFormType?
+    @State var uploadFileProperties: UploadFileProperties = UploadFileProperties()
     var body: some View {
         VStack {
-            ReleaseStatementView(ridingFormType: ridingFormType, phyiscalFormType: physicalTherabyFormType, patient: patient, user: user)
+            FileUploadView(properties: uploadFileProperties, ridingFormType: ridingFormType, phyiscalFormType: physicalTherabyFormType, patient: patient, user: user)
         }
     }
 }

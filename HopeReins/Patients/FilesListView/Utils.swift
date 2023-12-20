@@ -30,7 +30,7 @@ struct UploadedListItem: View {
     var body: some View {
         HStack {
             if let uploadedFile = try? uploadedFile(modelContext: modelContext, fileType: file.fileType, fileId: file.id) {
-                FilePreview(data: uploadedFile.data, size: 25)
+                FilePreview(data: uploadedFile.properties.data, size: 25)
             }
             Text(file.fileName)
             Spacer()

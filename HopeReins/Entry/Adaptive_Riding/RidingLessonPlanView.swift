@@ -177,7 +177,7 @@ struct RidingLessonPlanView: View {
         try? modelContext.save()
     }
     func revertLessonPlan(otherProperties: RidingLessonProperties) {
-        lessonPlan?.properties = otherProperties
+        lessonPlan!.properties = otherProperties
         properties = lessonPlan!.properties
         try? modelContext.save()
     }

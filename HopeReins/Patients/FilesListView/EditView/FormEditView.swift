@@ -12,51 +12,17 @@ struct FormEditView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     var file: MedicalRecordFile
-    var uploadFile: UploadFile?
-    let fileId: UUID
     var user: User
-    var isUploadedFile : Bool {
-        return uploadFile != nil
-    }
-    @Query(sort: \FileChange.date) var fileChanges: [FileChange]
-    @State var reasonForChange: String = ""
-    @State var uploadNewFile: Bool = false
-    @State var fileData: Data? = nil
-    @State var fileName: String = ""
-    init(file: MedicalRecordFile, uploadedFile: UploadFile? = nil,  user: User) {
-        self.file = file
-        self.fileId = file.id
+    init(file: MedicalRecordFile,  user: User) {
         self.user = user
-        self.uploadFile = uploadedFile
-        let predicate = #Predicate<FileChange> { fileChange in
-            fileChange.fileId == fileId
-        }
-        _fileChanges = Query(filter: predicate, sort: \FileChange.date)
-    }
-
-    private var changeDescription: String {
-        var description = ""
-
-        if file.fileName != fileName {
-            description += "Changed File Name"
-        }
-
-        if  uploadFile?.data != fileData {
-            if !description.isEmpty {
-                description += " and "
-            }
-            description += "Changed File"
-        }
-
-        return description
+        self.file = file
     }
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
                     CustomSectionHeader(title: "File Name")
-                    TextField("File Name...", text: $fileName, axis: .vertical)
-                    InputtedFileType(fileData: $fileData, user: user, fileTypeString: file.fileType, fileId: file.id, medicalFile: file)
+                    InputtedFileType(user: user, fileTypeString: file.fileType, medicalFile: file)
                 }
                 .padding(.vertical)
             }
@@ -64,28 +30,24 @@ struct FormEditView: View {
             .navigationTitle(file.fileName)
         }
         .frame(minWidth: 500, minHeight: 500)
-        .onAppear {
-            fileData = uploadFile?.data
-            fileName = file.fileName
-        }
     }
 }
 
 struct InputtedFileType: View {
     @Environment(\.modelContext) var modelContext
-    @Binding var fileData: Data?
     var user: User
     var fileTypeString: String
-    var fileId: UUID
     var medicalFile: MedicalRecordFile
     var body: some View {
         VStack {
             if let fileTypeString = RidingFormType(rawValue: fileTypeString) {
                 switch fileTypeString {
                 case .releaseStatement, .coverLetter, .updateCoverLetter:
-                    FileUploadButton(selectedFileData: $fileData)
+                    if let uploadFile = try? fetchUploadFile(fileId: medicalFile.id) {
+                        FileUploadView(properties: uploadFile.properties, uploadFile: uploadFile)
+                    }
                 case .ridingLessonPlan:
-                    if let lessonPlan = try? fetchRidingLessonPlan() {
+                    if let lessonPlan = try? fetchRidingLessonPlan(fileId: medicalFile.id) {
                         RidingLessonPlanView(properties: lessonPlan.properties, isAddingPlan: false, lessonPlan: lessonPlan, username: user.username)
                     }
                 }
@@ -93,10 +55,17 @@ struct InputtedFileType: View {
             
         }
     }
-    func fetchRidingLessonPlan() throws -> RidingLessonPlan? {
+    func fetchRidingLessonPlan(fileId: UUID) throws -> RidingLessonPlan? {
         let lessonPlans = FetchDescriptor<RidingLessonPlan>(predicate: #Predicate { file in
             file.medicalRecordFile.id == fileId
         })
         return try modelContext.fetch(lessonPlans).first
+    }
+    func fetchUploadFile(fileId: UUID) throws -> UploadFile? {
+        let uploadFiles = FetchDescriptor<UploadFile>(predicate: #Predicate { file in
+            file.medicalRecordFile.id == fileId
+        })
+        
+        return try modelContext.fetch(uploadFiles).first
     }
 }

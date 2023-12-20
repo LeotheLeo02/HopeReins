@@ -54,3 +54,4 @@ extension RidingFormType: FormSpecialGroup {
         }
     }
 }
+

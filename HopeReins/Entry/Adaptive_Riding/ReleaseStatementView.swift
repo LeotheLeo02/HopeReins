@@ -10,7 +10,7 @@ import SwiftUI
 struct ReleaseStatementView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
-    @State private var selectedFileData: Data? = nil
+    @State var uploadFileProperties: UploadFileProperties = UploadFileProperties()
     @State private var fileName: String = ""
     var ridingFormType: RidingFormType?
     var phyiscalFormType: PhysicalTherabyFormType?
@@ -18,29 +18,14 @@ struct ReleaseStatementView: View {
     var user: User
     var body: some View {
         VStack(spacing: 20) {
-            FileUploadView(selectedFileData: $selectedFileData, fileName: $fileName)
+            FileUploadView(properties: uploadFileProperties, ridingFormType: ridingFormType, phyiscalFormType: phyiscalFormType, patient: patient, user: user)
         }
         .padding()
         .navigationTitle("Upload File")
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    dismiss()
-                }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                if let data = selectedFileData {
-                    Button("Save") {
-                        addFile(data: data)
-                        dismiss()
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-            }
-        }
+
     }
     
-    func addFile(data: Data) {
+    func addFile() {
         var fileType: String = ""
         if let type = ridingFormType {
             if type == .releaseStatement {
@@ -61,7 +46,8 @@ struct ReleaseStatementView: View {
         modelContext.insert(digitalSignature)
         let medicalRecordFile = MedicalRecordFile(patient: patient, fileName: fileName, fileType: fileType, digitalSignature: digitalSignature)
         modelContext.insert(medicalRecordFile)
-        let dataFile = UploadFile(medicalRecordFile: medicalRecordFile, data: data)
+        let dataFile = UploadFile(medicalRecordFile: medicalRecordFile, properties: uploadFileProperties)
         modelContext.insert(dataFile)
+        try? modelContext.save()
     }
 }

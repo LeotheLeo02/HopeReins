@@ -42,7 +42,7 @@ struct RidingFileListView: View {
             return file.fileType == formType.rawValue
         }) { file in
             NavigationLink {
-                FormEditView(file: file, uploadedFile: try? uploadedFile(modelContext: modelContext, fileType: file.fileType, fileId: file.id), user: user)
+                FormEditView(file: file, user: user)
             } label: {
                 UploadedListItem(file: file)
             }
