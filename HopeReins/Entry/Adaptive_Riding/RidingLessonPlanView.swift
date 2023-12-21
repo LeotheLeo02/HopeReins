@@ -12,42 +12,41 @@ struct RidingLessonPlanView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State var fileName: String = ""
-    @State var initialProperties: InitialProperties = InitialProperties()
+    @State var modifiedProperties: RidingLessonProperties = RidingLessonProperties()
     @State var reasonForChange: String = ""
     @Query(sort: \User.username, order: .forward)
     var instructors: [User]
-    var changeDescription: String = ""
     var lessonPlan: RidingLessonPlan?
     var username: String
     var patient: Patient?
     var description: String {
         var description = ""
-        if lessonPlan?.medicalRecordFile.fileName != initialProperties.fileName {
+        if lessonPlan?.medicalRecordFile.fileName != fileName {
             description += "Changed File Name "
         }
         
-        if lessonPlan?.properties.content != initialProperties.content {
+        if lessonPlan?.properties.content != modifiedProperties.content {
             description += "Changed Content "
         }
-        if lessonPlan?.properties.date != initialProperties.date {
+        if lessonPlan?.properties.date != modifiedProperties.date {
             description += "Changed Date "
         }
-        if lessonPlan?.properties.goals != initialProperties.goals {
+        if lessonPlan?.properties.goals != modifiedProperties.goals {
             description += "Changed Goals "
         }
-        if lessonPlan?.properties.instructorName != initialProperties.instructorName {
+        if lessonPlan?.properties.instructorName != modifiedProperties.instructorName {
             description += "Changed Instructor "
         }
 
-        if lessonPlan?.properties.objective != initialProperties.objective {
+        if lessonPlan?.properties.objective != modifiedProperties.objective {
             description += "Changed Objective "
         }
 
-        if lessonPlan?.properties.preparation != initialProperties.preparation {
+        if lessonPlan?.properties.preparation != modifiedProperties.preparation {
             description += "Changed Preparation "
         }
 
-        if lessonPlan?.properties.summary != initialProperties.summary {
+        if lessonPlan?.properties.summary != modifiedProperties.summary {
             description += "Changed Summary "
         }
 
@@ -58,26 +57,21 @@ struct RidingLessonPlanView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 CustomSectionHeader(title: "File Name")
-                if let lessonPlan = lessonPlan {
-                    TextField("File Name...", text: $initialProperties.fileName, axis: .vertical)
-                } else {
-                    TextField("File Name...", text: $fileName, axis: .vertical)
-                }
-                
+                TextField("File Name...", text: $fileName, axis: .vertical)
                 CustomSectionHeader(title: "Instructor")
-                Picker(selection: $initialProperties.instructorName) {
+                Picker(selection: $modifiedProperties.instructorName) {
                     ForEach(instructors) { user in
                         Text(user.username)
                             .tag(user.username)
                     }
                 } label: {
-                    Text("Instructor: \(initialProperties.instructorName)")
+                    Text("Instructor: \(modifiedProperties.instructorName)")
                 }
                 .labelsHidden()
                 
                 Divider()
                 Section {
-                    DatePicker(selection: $initialProperties.date) {
+                    DatePicker(selection: $modifiedProperties.date) {
                         Text("Date of Lesson:")
                     }
                     .labelsHidden()
@@ -86,15 +80,15 @@ struct RidingLessonPlanView: View {
                     CustomSectionHeader(title: "Date Of Lesson")
                 }
                 
-                FormEntryTextField(title: "Objective of the Lesson:", text: $initialProperties.objective)
+                FormEntryTextField(title: "Objective of the Lesson:", text: $modifiedProperties.objective)
                 
-                FormEntryTextField(title: "Teacher preparation/Equipment needs:", text: $initialProperties.preparation)
+                FormEntryTextField(title: "Teacher preparation/Equipment needs:", text: $modifiedProperties.preparation)
                 
-                FormEntryTextField(title: "Lesson content/Procedure:", text: $initialProperties.content)
+                FormEntryTextField(title: "Lesson content/Procedure:", text: $modifiedProperties.content)
                 
-                FormEntryTextField(title: "Summary and evaluation of the lesson", text: $initialProperties.summary)
+                FormEntryTextField(title: "Summary and evaluation of the lesson", text: $modifiedProperties.summary)
                 
-                FormEntryTextField(title: "Goals for the next lesson", text: $initialProperties.goals)
+                FormEntryTextField(title: "Goals for the next lesson", text: $modifiedProperties.goals)
                 
                 if lessonPlan != nil {
                     if !description.isEmpty {
@@ -107,10 +101,10 @@ struct RidingLessonPlanView: View {
                                 do {
                                     let newFileChange = PastChangeRidingLessonPlan(properties: lessonPlan!.properties, fileName: lessonPlan!.medicalRecordFile.fileName, changeDescription: description, reason: reasonForChange, author: username, date: .now)
                                     lessonPlan!.pastChanges.append(newFileChange)
-                                    lessonPlan!.medicalRecordFile.fileName = initialProperties.fileName
-                                    lessonPlan!.properties = RidingLessonProperties(initialProperties: initialProperties)
+                                    lessonPlan!.medicalRecordFile.fileName = fileName
+                                    lessonPlan!.properties = modifiedProperties
                                     try modelContext.save()
-                                    initialProperties = InitialProperties(fileName: lessonPlan!.medicalRecordFile.fileName, properties: lessonPlan!.properties)
+                                    modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan!.properties)
                                 } catch {
                                     print(error.localizedDescription)
                                 }
@@ -170,14 +164,17 @@ struct RidingLessonPlanView: View {
             }
         }
         .onAppear {
-            initialProperties = InitialProperties(fileName: lessonPlan?.medicalRecordFile.fileName ?? "", properties: lessonPlan?.properties ?? .init())
+            if let lessonPlan = lessonPlan {
+                fileName = lessonPlan.medicalRecordFile.fileName
+                modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan.properties)
+            }
         }
     }
     func addFile() {
         let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
         let fileName = fileName
         let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: digitalSignature)
-        let properties = RidingLessonProperties(initialProperties: initialProperties)
+        let properties = RidingLessonProperties(otherLessonProperties: modifiedProperties)
         modelContext.insert(properties)
         try? modelContext.save()
         let ridingLesson = RidingLessonPlan(medicalRecordFile: medicalRecordFile, properties: properties)
@@ -185,9 +182,12 @@ struct RidingLessonPlanView: View {
         try? modelContext.save()
     }
     func revertLessonPlan(otherProperties: RidingLessonProperties, otherFileName: String) {
+        let oldProperties = lessonPlan!.properties
         lessonPlan!.properties = otherProperties
+        modelContext.delete(oldProperties)
         lessonPlan!.medicalRecordFile.fileName = otherFileName
-        initialProperties = InitialProperties(fileName: otherFileName, properties: otherProperties)
+        fileName = otherFileName
+        modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan!.properties)
         try? modelContext.save()
     }
 }
@@ -199,29 +199,5 @@ struct FormEntryTextField: View {
         CustomSectionHeader(title: title)
         TextField("", text: $text, axis: .vertical)
             .padding(.bottom)
-    }
-}
-
-struct InitialProperties {
-    var fileName: String = ""
-    var instructorName: String = ""
-    var date: Date = .now
-    var objective: String = ""
-    var preparation: String = ""
-    var content: String = ""
-    var summary: String = ""
-    var goals: String = ""
-    
-    init() { }
-
-    init(fileName: String, properties: RidingLessonProperties) {
-        self.fileName = fileName
-        self.instructorName = properties.instructorName
-        self.date = properties.date
-        self.objective = properties.objective
-        self.preparation = properties.preparation
-        self.content = properties.content
-        self.summary = properties.summary
-        self.goals = properties.goals
     }
 }

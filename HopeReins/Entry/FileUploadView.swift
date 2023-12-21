@@ -11,8 +11,21 @@ struct FileUploadView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State var fileName: String = ""
-    @State var properties: UploadFileProperties
+    @State var modifiedProperties: UploadFileProperties = UploadFileProperties()
+    @State var reasonForChange: String = ""
     var uploadFile: UploadFile?
+    var changeDescription: String {
+        var description = ""
+        if uploadFile?.medicalRecordFile.fileName != fileName {
+            description += "Changed File Name "
+        }
+        
+        if uploadFile?.properties.data != modifiedProperties.data {
+            description += "Changed Data "
+        }
+        
+        return description
+    }
     
     var ridingFormType: RidingFormType?
     var phyiscalFormType: PhysicalTherabyFormType?
@@ -23,12 +36,54 @@ struct FileUploadView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 CustomSectionHeader(title: "File Name")
-                if let uploadFile = uploadFile {
-                    OptionalFileNameField(file: uploadFile.medicalRecordFile)
-                } else {
-                    TextField("File Name...", text: $fileName, axis: .vertical)
+                TextField("File Name...", text: $fileName, axis: .vertical)
+                FileUploadButton(properties: $modifiedProperties)
+                if uploadFile != nil {
+                    if !changeDescription.isEmpty {
+                        TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+                        Text(changeDescription)
+                            .bold()
+                        Button("Save Changes") {
+                            do {
+                                let newFileChange = FileChange(properties: uploadFile!.properties, fileName: uploadFile!.medicalRecordFile.fileName, changeDescription: changeDescription, reason: reasonForChange, author: user!.username, date: .now)
+                                uploadFile!.pastChanges.append(newFileChange)
+                                uploadFile!.medicalRecordFile.fileName = fileName
+                                uploadFile!.properties = modifiedProperties
+                                try modelContext.save()
+                                modifiedProperties = UploadFileProperties(otherProperties: uploadFile!.properties)
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+                    CustomSectionHeader(title: "Past Changes")
+                    if let uploadFile = uploadFile {
+                        ForEach(uploadFile.pastChanges) { change in
+                            HStack {
+                                VStack {
+                                    Text(change.fileName)
+                                    Text(change.date.description)
+                                }
+                                Spacer()
+                                Button("Revert To") {
+                                    do {
+                                        revertLessonPlan(otherProperties: change.properties, otherFileName: change.fileName)
+                                        uploadFile.pastChanges.removeAll(where: { element in
+                                            return element.date == change.date
+                                        })
+                                        modelContext.delete(change)
+                                        try modelContext.save()
+                                    } catch {
+                                        print(error.localizedDescription)
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
                 }
-                FileUploadButton(properties: properties)
             }
             .toolbar {
                 if uploadFile == nil {
@@ -38,15 +93,19 @@ struct FileUploadView: View {
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        if properties.data != .init() {
                             Button("Save") {
                                 addFile()
                                 dismiss()
                             }
                             .buttonStyle(.borderedProminent)
-                        }
                     }
                 }
+            }
+        }
+        .onAppear {
+            if let uploadFile = uploadFile {
+                fileName = uploadFile.medicalRecordFile.fileName
+                modifiedProperties = UploadFileProperties(otherProperties: uploadFile.properties)
             }
         }
     }
@@ -71,22 +130,26 @@ struct FileUploadView: View {
         modelContext.insert(digitalSignature)
         let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: fileType, digitalSignature: digitalSignature)
         modelContext.insert(medicalRecordFile)
+        let properties = UploadFileProperties(otherProperties: modifiedProperties)
+        modelContext.insert(properties)
         let dataFile = UploadFile(medicalRecordFile: medicalRecordFile, properties: properties)
         modelContext.insert(dataFile)
         try? modelContext.save()
     }
-}
-
-struct OptionalFileNameField: View {
-    @State var file: MedicalRecordFile
-    var body: some View {
-        TextField("File Name...", text: $file.fileName, axis: .vertical)
+    func revertLessonPlan(otherProperties: UploadFileProperties, otherFileName: String) {
+        let oldProperties = uploadFile!.properties
+        uploadFile!.properties = otherProperties
+        modelContext.delete(oldProperties)
+        uploadFile!.medicalRecordFile.fileName = otherFileName
+        fileName = otherFileName
+        modifiedProperties = UploadFileProperties(otherProperties: uploadFile!.properties)
+        try? modelContext.save()
     }
 }
 
 struct FileUploadButton: View {
     @Environment(\.modelContext) var modelContext
-    @State var properties: UploadFileProperties
+    @Binding var properties: UploadFileProperties
     var body: some View {
         HStack {
             if properties.data != .init() {
@@ -118,5 +181,18 @@ struct FileUploadButton: View {
                 Label("\(properties.data != .init() ? "Change" : "Import") File", systemImage: "\(properties.data != .init()  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
             }
         }
+    }
+}
+
+struct InitialUploadFileProperties {
+    var fileName: String =  ""
+    var data: Data = .init()
+    
+    init () { }
+    
+    
+    init(fileName: String, properties: UploadFileProperties) {
+        self.fileName = fileName
+        self.data = properties.data
     }
 }

@@ -35,6 +35,11 @@ extension HopeReinsSchemaV2 {
             self.data = data
         }
         
+        init (otherProperties: UploadFileProperties) {
+            self.data = otherProperties.data
+            self.id = otherProperties.id
+        }
+        
         init() {
             self.id = UUID()
             self.data = .init()
@@ -43,17 +48,20 @@ extension HopeReinsSchemaV2 {
     
     @Model class FileChange {
         var properties: UploadFileProperties
+        var fileName: String
+        var changeDescription: String
         var reason: String
-        var date: Date
         var author: String
-        var title: String
+        var date: Date
     
-        init(properties: UploadFileProperties, reason: String, date: Date, author: String, title: String) {
+        
+        init(properties: UploadFileProperties, fileName: String, changeDescription: String, reason: String, author: String, date: Date) {
             self.properties = properties
+            self.fileName = fileName
+            self.changeDescription = changeDescription
             self.reason = reason
-            self.date = date
             self.author = author
-            self.title = title
+            self.date = date
         }
     }
 }

@@ -34,24 +34,24 @@ extension HopeReinsSchemaV2 {
         var summary: String
         var goals: String
         
-        init () {
-            self.instructorName = ""
-            self.date = .now
-            self.objective = ""
-            self.preparation = ""
-            self.content = ""
-            self.summary = ""
-            self.goals = ""
+        init (otherLessonProperties: RidingLessonProperties) {
+            self.instructorName = otherLessonProperties.instructorName
+            self.date = otherLessonProperties.date
+            self.objective = otherLessonProperties.objective
+            self.preparation = otherLessonProperties.preparation
+            self.content = otherLessonProperties.content
+            self.summary = otherLessonProperties.summary
+            self.goals = otherLessonProperties.goals
         }
         
-        init(initialProperties: InitialProperties) {
-            self.instructorName = initialProperties.instructorName
-            self.date = initialProperties.date
-            self.objective = initialProperties.objective
-            self.preparation = initialProperties.preparation
-            self.content = initialProperties.content
-            self.summary = initialProperties.summary
-            self.goals = initialProperties.goals
+        init () {
+            instructorName = ""
+            date = .now
+            objective = ""
+            preparation = ""
+            content = ""
+            summary = ""
+            goals = ""
         }
     }
     
