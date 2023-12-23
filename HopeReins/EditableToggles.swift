@@ -99,10 +99,10 @@ struct MultiSelectOther: View {
 
 
 struct FakeView: View {
-    @State var boolString: String = "Lebron James: He is the best\\Bob Parker: He was amazing"
+    @State var boolString: String = "Lebron James:\\Bob Parker: He was amazing"
     var body: some View {
         VStack {
-            MultiSelectWithTitle(boolString: $boolString, labels: ["Lebron James", "Bob Parker"], title: "Tone")
+            MultiSelectWithTitle(boolString: $boolString, labels: ["Lebron James", "Bob Parker"], title: "Current Equipment")
         }
         .padding()
     }
@@ -129,7 +129,8 @@ struct MultiSelectWithTitle: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
+            CustomSectionHeader(title: title)
             ForEach(toggleElements.indices, id: \.self) { index in
                 DescriptionView(boolString: $boolString, toggleElement: $toggleElements[index], index: index, coordinator: Coordinator(self))
             }
@@ -181,24 +182,32 @@ struct ToggleWithTitle: Identifiable, Equatable{
     var originalString: String
 }
 
+
+
 struct DescriptionView: View {
     @Binding var boolString: String
     @Binding var toggleElement: ToggleWithTitle
     var index: Int
     var coordinator: MultiSelectWithTitle.Coordinator
-    
+
     var body: some View {
         HStack {
             Button(action: {
-                
+                if isTrueToggle() {
+                    toggleElement.description = ""
+                    coordinator.updateString(index: index, newValue: "")
+                    print(boolString)
+                } else {
+                    toggleElement.description = "Say something..."
+                }
             }, label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)
-                        .foregroundStyle(isTrueToggle(input: toggleElement.title) ? .blue : .gray)
-                        .opacity(isTrueToggle(input: toggleElement.title) ? 1.0 : 0.8)
+                        .foregroundStyle(isTrueToggle() ? .blue : .gray)
+                        .opacity(isTrueToggle() ? 1.0 : 0.8)
                         .frame(width: 20, height: 20)
                         .overlay {
-                            if isTrueToggle(input: toggleElement.title) {
+                            if isTrueToggle() {
                                 Image(systemName: "checkmark")
                                     .foregroundStyle(.white)
                             }
@@ -207,13 +216,16 @@ struct DescriptionView: View {
             })
             .buttonStyle(.plain)
             Text(toggleElement.title)
+            TextField("Description", text: $toggleElement.description)
+                .onChange(of: toggleElement.description) { newValue in
+                    coordinator.updateString(index: index, newValue: newValue)
+                    print(boolString)
+                }
         }
-        TextField("Description", text: $toggleElement.description)
-            .onChange(of: toggleElement.description) { newValue in
-                coordinator.updateString(index: index, newValue: newValue)
-            }
     }
-    func isTrueToggle(input: String) -> Bool {
-        return boolString.contains(input)
+
+    func isTrueToggle() -> Bool {
+        return !toggleElement.description.isEmpty
     }
 }
+
