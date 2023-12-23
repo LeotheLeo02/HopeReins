@@ -73,3 +73,41 @@ extension HopeReinsSchemaV2 {
         }
     }
 }
+
+import SwiftUI
+struct EditablePropertyView<T: Equatable>: View {
+    @Binding var value: T
+    let propertyName: String
+    
+    var body: some View {
+        if case let boolValue as Bool = value { } else {
+            CustomSectionHeader(title: propertyName)
+        }
+        switch value {
+        case is String:
+            TextField(propertyName, text: $value as! Binding<String>)
+        case is Date:
+            DatePicker(propertyName, selection: $value as! Binding<Date>)
+        case is Bool:
+            Toggle(isOn: $value as! Binding<Bool>, label: {
+                Text(propertyName)
+            })
+        default:
+            Text("Unsupported property type")
+        }
+    }
+}
+
+struct RidingLessonView: View {
+    @Binding var instructorName: String
+    @Binding var date: Date
+    // ... bindings for other properties
+
+    var body: some View {
+        Form {
+            EditablePropertyView(value: $instructorName, propertyName: "Instructor Name")
+            EditablePropertyView(value: $date, propertyName: "Date")
+            // ... other properties
+        }
+    }
+}

@@ -10,7 +10,6 @@
 		BE06844C2AE0CEF1004CABE7 /* PatientFilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE06844B2AE0CEF1004CABE7 /* PatientFilesListView.swift */; };
 		BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE06844D2AE0D01F004CABE7 /* FileUploadView.swift */; };
 		BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0F07882ABE53C2004B71D5 /* ProfileView.swift */; };
-		BE0F28A92AECA522006285C5 /* FormAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0F28A82AECA522006285C5 /* FormAddView.swift */; };
 		BE0F28AB2AECA556006285C5 /* SharedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0F28AA2AECA556006285C5 /* SharedFormView.swift */; };
 		BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */; };
 		BE16E2092AAEB20B004052B8 /* CopyPathsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE16E2082AAEB20B004052B8 /* CopyPathsView.swift */; };
@@ -37,6 +36,8 @@
 		BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */; };
 		BECF5D7D2B092C6A0008459C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D7C2B092C6A0008459C /* Utils.swift */; };
 		BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED042EC2ABC7B9700958DB9 /* Tab.swift */; };
+		BEDFE4C62B364CC4002D75FE /* EditableToggles.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFE4C52B364CC4002D75FE /* EditableToggles.swift */; };
+		BEDFE4C82B364D8A002D75FE /* FormAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFE4C72B364D8A002D75FE /* FormAddView.swift */; };
 		BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFCBB992B06A5E6007DB23C /* FormEditView.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +45,6 @@
 		BE06844B2AE0CEF1004CABE7 /* PatientFilesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientFilesListView.swift; sourceTree = "<group>"; };
 		BE06844D2AE0D01F004CABE7 /* FileUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadView.swift; sourceTree = "<group>"; };
 		BE0F07882ABE53C2004B71D5 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		BE0F28A82AECA522006285C5 /* FormAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormAddView.swift; sourceTree = "<group>"; };
 		BE0F28AA2AECA556006285C5 /* SharedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedFormView.swift; sourceTree = "<group>"; };
 		BE16E2032AAEB20B004052B8 /* HopeReins.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HopeReins.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HopeReinsApp.swift; sourceTree = "<group>"; };
@@ -73,6 +73,8 @@
 		BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFileListView.swift; sourceTree = "<group>"; };
 		BECF5D7C2B092C6A0008459C /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		BED042EC2ABC7B9700958DB9 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
+		BEDFE4C52B364CC4002D75FE /* EditableToggles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableToggles.swift; sourceTree = "<group>"; };
+		BEDFE4C72B364D8A002D75FE /* FormAddView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormAddView.swift; sourceTree = "<group>"; };
 		BEFCBB992B06A5E6007DB23C /* FormEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormEditView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -108,7 +110,7 @@
 		BE0F28A72AECA517006285C5 /* Add */ = {
 			isa = PBXGroup;
 			children = (
-				BE0F28A82AECA522006285C5 /* FormAddView.swift */,
+				BEDFE4C72B364D8A002D75FE /* FormAddView.swift */,
 				BE0F28AA2AECA556006285C5 /* SharedFormView.swift */,
 			);
 			path = Add;
@@ -134,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */,
+				BEDFE4C52B364CC4002D75FE /* EditableToggles.swift */,
 				BE72EDBC2B335759006D227C /* Models */,
 				BE676A4F2AD63EE800E8ADD7 /* Utils */,
 				BED042EC2ABC7B9700958DB9 /* Tab.swift */,
@@ -324,11 +327,13 @@
 				BECF5D792B092C100008459C /* PhysicalTherabyFileListView.swift in Sources */,
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
+				BEDFE4C82B364D8A002D75FE /* FormAddView.swift in Sources */,
 				BEB662BA2B335B000090BD87 /* User.swift in Sources */,
 				BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */,
 				BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */,
 				BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */,
 				BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */,
+				BEDFE4C62B364CC4002D75FE /* EditableToggles.swift in Sources */,
 				BE3D070E2B0A700B00953754 /* PatientSearch.swift in Sources */,
 				BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */,
 				BE06844C2AE0CEF1004CABE7 /* PatientFilesListView.swift in Sources */,
@@ -342,7 +347,6 @@
 				BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
 				BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */,
-				BE0F28A92AECA522006285C5 /* FormAddView.swift in Sources */,
 				BE0F28AB2AECA556006285C5 /* SharedFormView.swift in Sources */,
 				BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */,
 			);
