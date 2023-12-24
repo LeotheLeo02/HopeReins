@@ -101,7 +101,6 @@ struct EditablePropertyView<T: Equatable>: View {
 struct RidingLessonView: View {
     @Binding var instructorName: String
     @Binding var date: Date
-    // ... bindings for other properties
 
     var body: some View {
         Form {

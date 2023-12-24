@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct FakeView: View {
-    @State var boolString: String = "NT: Lebron James"
+    @State var boolString: String = ""
     var body: some View {
         VStack {
-            SingleSelectLastDescription(combinedString: $boolString, title: "Static", labels: ["Normal", "Good", "Fair", "Poor", "NT"])
+            MultiSelectWithTitle(boolString: $boolString, labels: ["Balance Training", "Gait Training", "Minimal"], title: "Treatment Received")
         }
         .padding()
     }
 }
 
-#Preview {
-    FakeView()
-}
+

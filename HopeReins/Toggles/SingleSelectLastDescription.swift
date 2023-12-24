@@ -13,7 +13,6 @@ struct SingleSelectLastDescription: View {
     @State var boolString: String = ""
     var title: String
     var labels: [String]
-    
     init(combinedString: Binding<String>, title: String, labels: [String]) {
         self._combinedString = combinedString
         self.title = title
