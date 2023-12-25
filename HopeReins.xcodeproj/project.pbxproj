@@ -18,6 +18,8 @@
 		BE1711002ACB374B00CC27BB /* RidingFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */; };
 		BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */; };
 		BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */; };
+		BE31D0FA2B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31D0F92B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift */; };
+		BE31D0FC2B3A172400DDE782 /* ReEvalFillInInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31D0FB2B3A172400DDE782 /* ReEvalFillInInput.swift */; };
 		BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */; };
 		BE3D070E2B0A700B00953754 /* PatientSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D070D2B0A700B00953754 /* PatientSearch.swift */; };
 		BE46B1472B3889A0004C279D /* MultiSelectOthers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE46B1462B3889A0004C279D /* MultiSelectOthers.swift */; };
@@ -58,6 +60,8 @@
 		BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFormType.swift; sourceTree = "<group>"; };
 		BE1711012ACB376E00CC27BB /* PhysicalTherabyFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFormType.swift; sourceTree = "<group>"; };
 		BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlanView.swift; sourceTree = "<group>"; };
+		BE31D0F92B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedPhysicalTherabyFillIn.swift; sourceTree = "<group>"; };
+		BE31D0FB2B3A172400DDE782 /* ReEvalFillInInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReEvalFillInInput.swift; sourceTree = "<group>"; };
 		BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientFilesSearch.swift; sourceTree = "<group>"; };
 		BE3D070D2B0A700B00953754 /* PatientSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSearch.swift; sourceTree = "<group>"; };
 		BE46B1462B3889A0004C279D /* MultiSelectOthers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectOthers.swift; sourceTree = "<group>"; };
@@ -190,6 +194,8 @@
 				BE46B1462B3889A0004C279D /* MultiSelectOthers.swift */,
 				BE46B1482B3889D4004C279D /* MultiSelectWithTitle.swift */,
 				BE46B14C2B38AA66004C279D /* SingleSelectLastDescription.swift */,
+				BE31D0F92B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift */,
+				BE31D0FB2B3A172400DDE782 /* ReEvalFillInInput.swift */,
 			);
 			path = Toggles;
 			sourceTree = "<group>";
@@ -354,12 +360,14 @@
 				BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */,
 				BEDFE4C62B364CC4002D75FE /* EditableToggles.swift in Sources */,
 				BE3D070E2B0A700B00953754 /* PatientSearch.swift in Sources */,
+				BE31D0FA2B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift in Sources */,
 				BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */,
 				BE06844C2AE0CEF1004CABE7 /* PatientFilesListView.swift in Sources */,
 				BE16E2092AAEB20B004052B8 /* CopyPathsView.swift in Sources */,
 				BEB29A282AD1AF3D0023B4CB /* HomeView.swift in Sources */,
 				BE1711002ACB374B00CC27BB /* RidingFormType.swift in Sources */,
 				BECF5D7D2B092C6A0008459C /* Utils.swift in Sources */,
+				BE31D0FC2B3A172400DDE782 /* ReEvalFillInInput.swift in Sources */,
 				BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */,
 				BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */,
 				BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */,

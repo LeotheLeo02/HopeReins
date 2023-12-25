@@ -11,10 +11,12 @@ struct SingleSelectLastDescription: View {
     @Binding var combinedString: String
     @State var otherString: String = ""
     @State var boolString: String = ""
+    var lastDescription: Bool
     var title: String
     var labels: [String]
-    init(combinedString: Binding<String>, title: String, labels: [String]) {
+    init(combinedString: Binding<String>, lastDescription: Bool, title: String, labels: [String]) {
         self._combinedString = combinedString
+        self.lastDescription = lastDescription
         self.title = title
         self.labels = labels
     }
@@ -36,7 +38,7 @@ struct SingleSelectLastDescription: View {
         .onAppear {
             getStrings()
         }
-        if labels.last! == boolString {
+        if labels.last! == boolString && lastDescription {
             TextField("Description...", text: $otherString)
                 .onChange(of: otherString) { oldValue, newValue in
                     if !otherString.isEmpty {
@@ -60,4 +62,26 @@ struct SingleSelectLastDescription: View {
         }
     }
 
+}
+
+
+struct DateSelection: View {
+    var title: String
+    var hourAndMinute: Bool
+    @Binding var date: Date
+    var body: some View {
+        VStack(alignment: .leading) {
+            CustomSectionHeader(title: title)
+            if hourAndMinute {
+                DatePicker("", selection: $date)
+            } else {
+                DatePicker("", selection: $date, displayedComponents: .date)
+            }
+        }
+        .padding()
+    }
+}
+
+#Preview {
+    FakeView()
 }

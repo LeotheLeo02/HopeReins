@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct FakeView: View {
-    @State var boolString: String = ""
+    @State var boolString: String = "30mins /wk x forever"
     var body: some View {
         VStack {
-            MultiSelectWithTitle(boolString: $boolString, labels: ["Balance Training", "Gait Training", "Minimal"], title: "Treatment Received")
+            RecommendedPhysicalTherabyFillIn(combinedString: $boolString)
         }
         .padding()
     }
