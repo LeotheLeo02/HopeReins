@@ -45,28 +45,22 @@ struct MultiSelectWithTitle: View {
     }
     func getToggleWithTitles() -> [ToggleWithTitle] {
         let elements = boolString.components(separatedBy: "\\")
+        
         var separatedElements: [ToggleWithTitle] = []
-        
-        
-        for element in elements {
-            let components = element.components(separatedBy: ":")
-            if components.count == 2 {
-                let title = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                let description = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
-                separatedElements.append(ToggleWithTitle(title: title, description: description, originalString: element))
-            } else {
-                print("Warning: Element '\(element)' does not have the expected format (title:description).")
-            }
-            
-        }
+
         for label in labels {
-            if !separatedElements.contains(where: { $0.title == label }) {
-                separatedElements.append(ToggleWithTitle(title: label, description: "", originalString: label))
+            if let element = elements.first(where: { $0.hasPrefix("\(label):") }) {
+                let components = element.components(separatedBy: ":")
+                let description = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+                separatedElements.append(ToggleWithTitle(title: label, description: description, originalString: element))
+            } else {
+                separatedElements.append(ToggleWithTitle(title: label, description: "", originalString: "\(label): "))
             }
         }
         
         return separatedElements
     }
+
     
     class Coordinator: NSObject {
         var parent: MultiSelectWithTitle
