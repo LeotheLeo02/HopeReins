@@ -51,8 +51,8 @@ struct LeRomTable: View {
 
         for index in stride(from: 0, to: components.count, by: 5) {
             let label = components[index]
-            let value1 = Double(components[index + 1]) ?? 0
-            let value2 = Double(components[index + 2]) ?? 0
+            let value1 = Int(components[index + 1]) ?? 0
+            let value2 = Int(components[index + 2]) ?? 0
             let value3 = Double(components[index + 3]) ?? 0
             let value4 = Double(components[index + 4]) ?? 0
 
@@ -88,14 +88,15 @@ struct EntryRowView: View {
     @State var rowData: TableCellData
     @Binding var combinedString: String
     @Binding var tableData: [TableCellData]
+    var range: ClosedRange<Int> = 1...5
     var body: some View {
         HStack {
             Text(rowData.label1)
                 .bold()
                 .frame(width: 100, alignment: .leading)
 
-            RestrictedNumberField(number: $rowData.value1)
-            RestrictedNumberField(number: $rowData.value2)
+            RestrictedNumberField(range: range, number: $rowData.value1)
+            RestrictedNumberField(range: range, number: $rowData.value2)
             DegreeField(degree: $rowData.value3)
             DegreeField(degree: $rowData.value4)
                 .onChange(of: rowData.value1) { _ in
@@ -110,24 +111,37 @@ struct EntryRowView: View {
         combinedString = updatedString
     }
 }
+
 struct DegreeField: View {
+    var range: ClosedRange<Double> = 0...360
     @Binding var degree: Double
 
     var body: some View {
         HStack {
-            TextField("Number", value: $degree, format: .number)
-                .textFieldStyle(.roundedBorder)
+            TextField("Degrees", value: Binding(
+                get: { self.degree },
+                set: {
+                    self.degree = min(max($0, range.lowerBound), range.upperBound)
+                }
+            ), format: .number)
+            .textFieldStyle(.roundedBorder)
             Text("°")
         }
     }
 }
 
 struct RestrictedNumberField: View {
-    @Binding var number: Double
+    var range: ClosedRange<Int>
+    @Binding var number: Int
 
     var body: some View {
-        TextField("Number", value: $number, format: .number)
-            .textFieldStyle(.roundedBorder)
+        TextField("Number", value: Binding(
+            get: { self.number },
+            set: {
+                self.number = min(max($0, range.lowerBound), range.upperBound)
+            }
+        ), format: .number)
+        .textFieldStyle(.roundedBorder)
     }
 }
 
@@ -135,12 +149,12 @@ struct RestrictedNumberField: View {
 class TableCellData: Identifiable {
     let id = UUID()
     var label1: String
-    var value1: Double
-    var value2: Double
+    var value1: Int
+    var value2: Int
     var value3: Double
     var value4: Double
     
-    init(label1: String, value1: Double, value2: Double, value3: Double, value4: Double) {
+    init(label1: String, value1: Int, value2: Int, value3: Double, value4: Double) {
         self.label1 = label1
         self.value1 = value1
         self.value2 = value2

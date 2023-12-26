@@ -33,6 +33,7 @@
 		BE72EDBE2B3357AA006D227C /* UploadFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBD2B3357AA006D227C /* UploadFile.swift */; };
 		BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */; };
 		BE73F8B42B3A71760059A9B8 /* DailyNoteFillIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */; };
+		BE7C78942B3A78CB00561886 /* DailyNoteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
 		BEAF23A22B3A479700211039 /* LeRomTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAF23A12B3A479700211039 /* LeRomTable.swift */; };
@@ -77,6 +78,7 @@
 		BE72EDBD2B3357AA006D227C /* UploadFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFile.swift; sourceTree = "<group>"; };
 		BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlan.swift; sourceTree = "<group>"; };
 		BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteFillIn.swift; sourceTree = "<group>"; };
+		BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteTable.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BEAF23A12B3A479700211039 /* LeRomTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeRomTable.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				BEAF23A12B3A479700211039 /* LeRomTable.swift */,
+				BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -369,6 +372,7 @@
 				BE46B1472B3889A0004C279D /* MultiSelectOthers.swift in Sources */,
 				BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */,
 				BE72EDBE2B3357AA006D227C /* UploadFile.swift in Sources */,
+				BE7C78942B3A78CB00561886 /* DailyNoteTable.swift in Sources */,
 				BE72EDBB2B335719006D227C /* Patient.swift in Sources */,
 				BECF5D792B092C100008459C /* PhysicalTherabyFileListView.swift in Sources */,
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,

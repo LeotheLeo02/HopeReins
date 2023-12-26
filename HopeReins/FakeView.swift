@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FakeView: View {
-    @State var combinedString: String = "Knee Flexion//10//20//30//40//Knee Extension//15//25//35//45"
+    @State var combinedString: String = ""
     
     var body: some View {
         LeRomTable(combinedString: $combinedString)
