@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct FakeView: View {
-    @State var boolString: String = "30mins /wk x forever"
+    @State var combinedString: String = "Knee Flexion//10//20//30//40//Knee Extension//15//25//35//45"
+    
     var body: some View {
-        VStack {
-            RecommendedPhysicalTherabyFillIn(combinedString: $boolString)
-        }
-        .padding()
+        LeRomTable(combinedString: $combinedString)
     }
 }
 
