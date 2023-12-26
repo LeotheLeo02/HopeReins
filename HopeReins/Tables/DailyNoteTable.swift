@@ -27,15 +27,16 @@ struct DailyNoteTable: View {
                 Divider()
                 Spacer()
                 Text("CPT")
-                    .frame(width: 100, alignment: .leading)
+                    .frame(width: 50, alignment: .leading)
                 Divider()
                 Spacer()
                 Text("O Procedure")
-                    .frame(width: 100, alignment: .center)
+                    .frame(width: 200, alignment: .leading)
                 Spacer()
             }
             ForEach(tableData) { rowData in
                 EntryRowDailyNoteTable(rowData: rowData, combinedString: $combinedString, tableData: $tableData)
+                    .padding(.vertical, 8)
             }
         }
     }
@@ -45,7 +46,7 @@ struct DailyNoteTable: View {
         var tableData: [DailyNoteTableCell] = initialTableData
 
         for (index, component) in components.enumerated() {
-            let number = Int(component) ?? 0
+            let number = Int(component) ?? 1
             if index < tableData.count {
                 tableData[index].number = number
             }
@@ -55,8 +56,11 @@ struct DailyNoteTable: View {
     }
     
     static var initialTableData: [DailyNoteTableCell] = [
-        DailyNoteTableCell(number: 1, code: "ABC", cpt: 123, procedire: "Procedure 1"),
-        DailyNoteTableCell(number: 1, code: "DEF", cpt: 456, procedire: "Procedure 2"),
+        DailyNoteTableCell(number: 1, code: "PTNEUR15", cpt: "97112", procedire: "PT NEUROMUSCULAR RE_ED 15 MIN"),
+        DailyNoteTableCell(number: 1, code: "THERA15", cpt: "97530", procedire: "PT_THEREPEUTIC ACTCTY 15 MIN "),
+        DailyNoteTableCell(number: 1, code: "PTGAIT15", cpt: "97116", procedire: "PT GAIT TRAINING 15 MIN"),
+        DailyNoteTableCell(number: 1, code: "THEREX", cpt: "97110", procedire: "PT-THEREAPEUTIC EXERCISE 15 MIN"),
+        DailyNoteTableCell(number: 1, code: "MANUAL", cpt: "97140", procedire: "PT-MANUAL THERABY")
     ]
 }
 
@@ -67,19 +71,29 @@ struct EntryRowDailyNoteTable: View {
     var range: ClosedRange<Int> = 1...9
     var body: some View {
         HStack {
-            RestrictedNumberField(range: range, number: $rowData.number)
-                .onChange(of: rowData.number) { _ in
-                    updateCombinedString()
-                }
-                .frame(width: 50)
-            Text(rowData.code)
-            Spacer()
-            Text("\(rowData.cpt)")
-            Spacer()
-            Text(rowData.procedire)
-            Spacer()
-        }
-        .padding(.pi)
+             RestrictedNumberField(range: range, number: $rowData.number)
+                 .onChange(of: rowData.number) { _ in
+                     updateCombinedString()
+                 }
+                 .frame(width: 50)
+
+             Text(rowData.code)
+                 .frame(width: 100)
+
+             Spacer()
+
+             Text(rowData.cpt)
+                 .frame(width: 100)
+
+             Spacer()
+
+             Text(rowData.procedire)
+                 .frame(width: 250, alignment: .leading)
+
+             Spacer()
+         }
+         .font(.title3)
+         .padding(.vertical, 8)
     }
 
     private func updateCombinedString() {
@@ -96,10 +110,10 @@ class DailyNoteTableCell: Identifiable {
     let id = UUID()
     var number: Int
     var code: String
-    var cpt: Int
+    var cpt: String
     var procedire: String
     
-    init(number: Int, code: String, cpt: Int, procedire: String) {
+    init(number: Int, code: String, cpt: String, procedire: String) {
         self.number = number
         self.code = code
         self.cpt = cpt
