@@ -27,6 +27,7 @@ struct PatientSelectionView: View {
     var body: some View {
         VStack(alignment: .leading) {
             TextField("Search...", text: $searchText)
+                .textFieldStyle(.roundedBorder)
             ScrollView {
                 VStack {
                     ForEach(filteredPatients) { patient in

@@ -40,6 +40,7 @@ struct SingleSelectLastDescription: View {
         }
         if labels.last! == boolString && lastDescription {
             TextField("Description...", text: $otherString)
+                .textFieldStyle(.roundedBorder)
                 .onChange(of: otherString) { oldValue, newValue in
                     if !otherString.isEmpty {
                         combinedString = "*\(boolString):\(otherString)*"

@@ -37,10 +37,12 @@ struct FileUploadView: View {
             VStack(alignment: .leading, spacing: 10) {
                 CustomSectionHeader(title: "File Name")
                 TextField("File Name...", text: $fileName, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
                 FileUploadButton(properties: $modifiedProperties)
                 if uploadFile != nil {
                     if !changeDescription.isEmpty {
                         TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
                         Text(changeDescription)
                             .bold()
                         Button("Save Changes") {

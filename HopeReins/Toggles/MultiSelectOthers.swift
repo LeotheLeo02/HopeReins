@@ -72,6 +72,7 @@ struct MultiSelectOthers: View {
                 }
                 HStack {
                     TextField("Other...", text: $otherString, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
                     Spacer()
                     Button(action: {
                         boolString.append("*\(otherString)*")

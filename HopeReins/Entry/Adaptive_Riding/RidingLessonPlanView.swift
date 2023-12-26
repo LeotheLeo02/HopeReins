@@ -58,6 +58,7 @@ struct RidingLessonPlanView: View {
             VStack(alignment: .leading, spacing: 10) {
                 CustomSectionHeader(title: "File Name")
                 TextField("File Name...", text: $fileName, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
                 CustomSectionHeader(title: "Instructor")
                 Picker(selection: $modifiedProperties.instructorName) {
                     ForEach(instructors) { user in
@@ -93,6 +94,7 @@ struct RidingLessonPlanView: View {
                 if lessonPlan != nil {
                     if !description.isEmpty {
                         TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
                         Text(description)
                             .bold()
                         HStack {
@@ -198,6 +200,7 @@ struct FormEntryTextField: View {
     var body: some View {
         CustomSectionHeader(title: title)
         TextField("", text: $text, axis: .vertical)
+            .textFieldStyle(.roundedBorder)
             .padding(.bottom)
     }
 }

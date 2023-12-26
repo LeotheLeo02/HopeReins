@@ -19,10 +19,12 @@ struct AddPatientView: View {
             VStack(alignment: .leading) {
                 CustomSectionHeader(title: "Name Of Patient")
                 TextField("Name...", text: $name)
+                    .textFieldStyle(.roundedBorder)
                     .padding(.vertical, 5)
 
                 CustomSectionHeader(title: "MRN Number")
                 TextField("Enter MRN Number...", text: $mrnString)
+                    .textFieldStyle(.roundedBorder)
                     .onReceive(mrnString.publisher.collect()) {
                         self.mrnString = String($0.prefix(while: { "0123456789".contains($0) }))
                     }

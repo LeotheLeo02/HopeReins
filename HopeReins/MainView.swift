@@ -47,7 +47,9 @@ struct LoginView: View {
     var body: some View {
         VStack {
             TextField("Username", text: $username)
+                .textFieldStyle(.roundedBorder)
             SecureField("Password", text: $password)
+                .textFieldStyle(.roundedBorder)
             Button("Log In") {
                 logIn()
             }

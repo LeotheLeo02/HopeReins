@@ -29,6 +29,7 @@ struct ReEvalFillInInput: View {
             HStack {
                 Text("Total treatments:")
                 TextField("Enter total treatments", value: $totalTreatments, formatter: NumberFormatter())
+                    .textFieldStyle(.roundedBorder)
             }
             HStack {
                 Text("from:")
@@ -41,6 +42,7 @@ struct ReEvalFillInInput: View {
             HStack {
                 Text("Treatments missed:")
                 TextField("Enter missed treatments", value: $missedTreatments, formatter: NumberFormatter())
+                    .textFieldStyle(.roundedBorder)
             }
         }
         .onChange(of: totalTreatments) { newValue in

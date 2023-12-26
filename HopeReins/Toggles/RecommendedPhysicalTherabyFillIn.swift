@@ -21,8 +21,10 @@ struct RecommendedPhysicalTherabyFillIn: View {
             CustomSectionHeader(title: "Recommended Physical Theraby")
             HStack {
                 TextField("Frequency", text: $frequency)
+                    .textFieldStyle(.roundedBorder)
                 Text("/wk x")
                 TextField("Duration", text: $duration)
+                    .textFieldStyle(.roundedBorder)
             }
         }
         .onChange(of: frequency) { newValue in

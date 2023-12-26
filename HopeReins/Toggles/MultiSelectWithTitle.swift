@@ -117,6 +117,7 @@ struct DescriptionView: View {
             .buttonStyle(.plain)
             Text(toggleElement.title)
             TextField("Description", text: $toggleElement.description, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
                 .onChange(of: toggleElement.description) { newValue in
                     coordinator.updateString(index: index, newValue: newValue)
                     print(boolString)

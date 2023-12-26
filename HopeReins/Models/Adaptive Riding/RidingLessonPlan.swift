@@ -86,6 +86,7 @@ struct EditablePropertyView<T: Equatable>: View {
         switch value {
         case is String:
             TextField(propertyName, text: $value as! Binding<String>)
+                .textFieldStyle(.roundedBorder)
         case is Date:
             DatePicker(propertyName, selection: $value as! Binding<Date>)
         case is Bool:
