@@ -10,11 +10,10 @@ import NaturalLanguage
 
 struct LeRomTable: View {
     @Binding var combinedString: String
-    @State private var tableData: [TableCellData]
+    @State var tableData: [TableCellData] = []
 
     init(combinedString: Binding<String>) {
         self._combinedString = combinedString
-        self._tableData = State(initialValue: LeRomTable.combineTableData(combinedString: combinedString.wrappedValue))
     }
 
     var body: some View {
@@ -39,38 +38,55 @@ struct LeRomTable: View {
                     .frame(width: 100, alignment: .center)
             }
 
-            ForEach(tableData) { rowData in
-                EntryRowView(rowData: rowData, combinedString: $combinedString, tableData: $tableData)
+            ForEach(tableData, id: \.id) { rowData in
+                EntryRowView(rowData: rowData, combinedString: $combinedString, tableData: $tableData) {
+                    combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
+                    print(combinedString)
+                }
             }
         }
+        .onAppear {
+            self.tableData = combineTableData(combinedString: combinedString)
+        }
+        
     }
+    private func updateCombinedString() {
+        combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
+        print(combinedString)
+    }
+    private func combineTableData(combinedString: String) -> [TableCellData] {
+        guard !combinedString.isEmpty else {
+            return initialTableData
+        }
 
-    private static func combineTableData(combinedString: String) -> [TableCellData] {
-        let components = combinedString.components(separatedBy: "//")
-        var tableData: [TableCellData] = initialTableData
+        var tableData: [TableCellData] = []
+        let entries = combinedString.components(separatedBy: "//")
 
-        for index in stride(from: 0, to: components.count, by: 5) {
-            let label = components[index]
-            let value1 = Int(components[index + 1]) ?? 0
-            let value2 = Int(components[index + 2]) ?? 0
-            let value3 = Double(components[index + 3]) ?? 0
-            let value4 = Double(components[index + 4]) ?? 0
-
-            if let existingData = tableData.first(where: { $0.label1 == label }) {
-                existingData.value1 = value1
-                existingData.value2 = value2
-                existingData.value3 = value3
-                existingData.value4 = value4
-            } else {
-                let cellData = TableCellData(label1: label, value1: value1, value2: value2, value3: value3, value4: value4)
+        var index = 0
+        while index < entries.count {
+            let isPain = entries[index] == "true"
+            let label = entries[index + 1]
+            
+            if isPain {
+                let cellData = TableCellData(isPain: true, label1: label, value1: 0, value2: 0, value3: 0.0, value4: 0.0)
                 tableData.append(cellData)
+                index += 2
+            } else {
+                let value1 = Int(entries[index + 2]) ?? 0
+                let value2 = Int(entries[index + 3]) ?? 0
+                let value3 = Double(entries[index + 4]) ?? 0.0
+                let value4 = Double(entries[index + 5]) ?? 0.0
+                
+                let cellData = TableCellData(isPain: false, label1: label, value1: value1, value2: value2, value3: value3, value4: value4)
+                tableData.append(cellData)
+                index += 6
             }
         }
 
         return tableData
     }
-    
-    static var initialTableData: [TableCellData] = [
+
+    var initialTableData: [TableCellData] = [
         TableCellData(label1: "Knee Flexion", value1: 0, value2: 0, value3: 0, value4: 0),
         TableCellData(label1: "Knee Extension", value1: 0, value2: 0, value3: 0, value4: 0),
         TableCellData(label1: "Hip Flexion", value1: 0, value2: 0, value3: 0, value4: 0),
@@ -85,83 +101,90 @@ struct LeRomTable: View {
 }
 
 struct EntryRowView: View {
-    @State var rowData: TableCellData
+    @ObservedObject var rowData: TableCellData
     @Binding var combinedString: String
     @Binding var tableData: [TableCellData]
+    let updateParentCombinedString: () -> Void
     var range: ClosedRange<Int> = 1...5
     var body: some View {
         HStack {
+            Button(action: {
+                rowData.isPain.toggle()
+                updateParentCombinedString()
+            }, label: {
+                Text("*")
+                    .font(.largeTitle)
+                    .foregroundColor(rowData.isPain ? .red : .primary)
+            })
+            .buttonStyle(.borderless)
+            
             Text(rowData.label1)
                 .bold()
                 .frame(width: 100, alignment: .leading)
-
+            
             RestrictedNumberField(range: range, number: $rowData.value1)
+                .disabled(rowData.isPain)
             RestrictedNumberField(range: range, number: $rowData.value2)
+                .disabled(rowData.isPain)
             DegreeField(degree: $rowData.value3)
+                .disabled(rowData.isPain)
             DegreeField(degree: $rowData.value4)
-                .onChange(of: rowData.value1) { _ in
-                    updateCombinedString()
+                .disabled(rowData.isPain)
+                .onChange(of: rowData.value1) { oldValue, newValue in
+                    updateParentCombinedString()
+                }
+                .onChange(of: rowData.value2) { oldValue, newValue in
+                    updateParentCombinedString()
+                }
+                .onChange(of: rowData.value3) { oldValue, newValue in
+                    updateParentCombinedString()
+                }
+                .onChange(of: rowData.value4) { oldValue, newValue in
+                    updateParentCombinedString()
                 }
         }
         .padding(.pi)
     }
 
-    private func updateCombinedString() {
-        let updatedString = tableData.map { "\($0.label1)//\($0.value1)//\($0.value2)//\($0.value3)//\($0.value4)" }.joined(separator: "//")
-        combinedString = updatedString
-    }
-}
 
-struct DegreeField: View {
-    var range: ClosedRange<Double> = 0...360
-    @Binding var degree: Double
 
-    var body: some View {
-        HStack {
-            TextField("Degrees", value: Binding(
-                get: { self.degree },
-                set: {
-                    self.degree = min(max($0, range.lowerBound), range.upperBound)
-                }
-            ), format: .number)
-            .textFieldStyle(.roundedBorder)
-            Text("°")
-        }
-    }
-}
-
-struct RestrictedNumberField: View {
-    var range: ClosedRange<Int>
-    @Binding var number: Int
-
-    var body: some View {
-        TextField("Number", value: Binding(
-            get: { self.number },
-            set: {
-                self.number = min(max($0, range.lowerBound), range.upperBound)
-            }
-        ), format: .number)
-        .textFieldStyle(.roundedBorder)
-    }
 }
 
 
-class TableCellData: Identifiable {
+class TableCellData: Identifiable, ObservableObject, Equatable {
+    static func == (lhs: TableCellData, rhs: TableCellData) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     let id = UUID()
     var label1: String
-    var value1: Int
-    var value2: Int
-    var value3: Double
-    var value4: Double
-    
-    init(label1: String, value1: Int, value2: Int, value3: Double, value4: Double) {
+    @Published var isPain: Bool
+    @Published var value1: Int
+    @Published var value2: Int
+    @Published var value3: Double
+    @Published var value4: Double
+
+    init(isPain: Bool = false, label1: String, value1: Int, value2: Int, value3: Double, value4: Double) {
+        self.isPain = isPain
         self.label1 = label1
         self.value1 = value1
         self.value2 = value2
         self.value3 = value3
         self.value4 = value4
     }
+    
+    
+    var combinedStringRepresentation: String {
+        if isPain {
+            // When isPain is true, we only store the label and the pain indicator
+            return "\(isPain)//\(label1)"
+        } else {
+            // When isPain is false, we store all information
+            return "\(isPain)//\(label1)//\(value1)//\(value2)//\(value3)//\(value4)"
+        }
+    }
 }
+
 
 #Preview {
     FakeView()
