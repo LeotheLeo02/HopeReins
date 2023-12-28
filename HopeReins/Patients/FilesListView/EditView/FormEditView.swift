@@ -11,23 +11,15 @@ import SwiftData
 struct FormEditView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
-    var file: MedicalRecordFile
+    @Binding var file: MedicalRecordFile?
     var user: User
-    init(file: MedicalRecordFile,  user: User) {
-        self.user = user
-        self.file = file
-    }
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    InputtedFileType(user: user, fileTypeString: file.fileType, medicalFile: file)
-                }
-                .padding(.vertical)
+        VStack {
+            if let file  = file {
+                InputtedFileType(user: user, fileTypeString: file.fileType, medicalFile: file)
             }
-            .padding()
-            .navigationTitle(file.fileName)
         }
+        .navigationTitle(file?.fileName ?? "")
         .frame(minWidth: 500, minHeight: 500)
     }
 }

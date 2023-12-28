@@ -15,6 +15,7 @@ struct RidingLessonPlanView: View {
     @State var fileName: String = ""
     @State var modifiedProperties: RidingLessonProperties = RidingLessonProperties()
     @State var titleForChange: String = ""
+    @State var showChanges: Bool = false
     @Query(sort: \User.username, order: .forward)
     var instructors: [User]
     var lessonPlan: RidingLessonPlan?
@@ -36,57 +37,7 @@ struct RidingLessonPlanView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                CustomSectionHeader(title: "File Name")
-                TextField("File Name...", text: $fileName, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                CustomSectionHeader(title: "Instructor")
-                Picker(selection: $modifiedProperties.instructorName) {
-                    ForEach(instructors) { user in
-                        Text(user.username)
-                            .tag(user.username)
-                    }
-                } label: {
-                    Text("Instructor: \(modifiedProperties.instructorName)")
-                }
-                .labelsHidden()
-                Divider()
-                
-                DateSelection(title: "Date of Lesson", hourAndMinute: true, date: $modifiedProperties.date)
-                
-                BasicTextField(title: "Objective of the Lesson:", text: $modifiedProperties.objective)
-                
-                BasicTextField(title: "Teacher preparation/Equipment needs:", text: $modifiedProperties.preparation)
-                
-                BasicTextField(title: "Lesson content/Procedure:", text: $modifiedProperties.content)
-                
-                BasicTextField(title: "Summary and evaluation of the lesson", text: $modifiedProperties.summary)
-                
-                BasicTextField(title: "Goals for the next lesson", text: $modifiedProperties.goals)
-                
                 if lessonPlan != nil {
-                    if !description.isEmpty {
-                        TextField("Title of Change...", text: $titleForChange, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                        Text(description)
-                            .bold()
-                        HStack {
-                            Spacer()
-                            Button("Save Changes") {
-                                do {
-                                    let newFileChange = PastChangeRidingLessonPlan(properties: lessonPlan!.properties, fileName: lessonPlan!.medicalRecordFile.fileName, title: titleForChange, changeDescription: description, author: username, date: .now)
-                                    lessonPlan!.pastChanges.append(newFileChange)
-                                    lessonPlan!.medicalRecordFile.fileName = fileName
-                                    lessonPlan!.properties = modifiedProperties
-                                    try modelContext.save()
-                                    modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan!.properties)
-                                } catch {
-                                    print(error.localizedDescription)
-                                }
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .disabled(titleForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        }
-                    }
                     CustomSectionHeader(title: "Past Changes")
                     if let lessonPlan = lessonPlan {
                         ForEach(lessonPlan.pastChanges) { change in
@@ -113,17 +64,45 @@ struct RidingLessonPlanView: View {
                         }
                     }
                 }
-                
+                CustomSectionHeader(title: "File Name")
+                TextField("File Name...", text: $fileName, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                CustomSectionHeader(title: "Instructor")
+                Picker(selection: $modifiedProperties.instructorName) {
+                        ForEach(instructors) { user in
+                            Text(user.username)
+                                .tag(user.username)
+                        }
+                    } label: {
+                        Text("Instructor: \(modifiedProperties.instructorName)")
+                    }
+                    .labelsHidden()
+                    Divider()
+                    
+                    DateSelection(title: "Date of Lesson", hourAndMinute: true, date: $modifiedProperties.date)
+                    
+                    BasicTextField(title: "Objective of the Lesson:", text: $modifiedProperties.objective)
+                    
+                    BasicTextField(title: "Teacher preparation/Equipment needs:", text: $modifiedProperties.preparation)
+                    
+                    BasicTextField(title: "Lesson content/Procedure:", text: $modifiedProperties.content)
+                    
+                    BasicTextField(title: "Summary and evaluation of the lesson:", text: $modifiedProperties.summary)
+                    
+                    BasicTextField(title: "Goals for the next lesson:", text: $modifiedProperties.goals)
+                    
+                }
+                .padding()
             }
             .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        dismiss()
+                    }, label: {
+                        Text("Cancel")
+                    })
+                }
                 if lessonPlan == nil {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            dismiss()
-                        }, label: {
-                            Text("Cancel")
-                        })
-                    }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
                             addFile()
@@ -134,15 +113,27 @@ struct RidingLessonPlanView: View {
                         })
                         .buttonStyle(.borderedProminent)
                     }
+                } else if !description.isEmpty {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            showChanges.toggle()
+                        } label: {
+                            Text("Apply Changes")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                    }
                 }
             }
-        }
-        .onAppear {
-            if let lessonPlan = lessonPlan {
-                fileName = lessonPlan.medicalRecordFile.fileName
-                modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan.properties)
+            .sheet(isPresented: $showChanges, content: {
+                ReviewChangesLessonPlan(modifiedProperties: $modifiedProperties, lessonPlan: lessonPlan, description: description, username: username, fileName: fileName)
+            })
+            .onAppear {
+                if let lessonPlan = lessonPlan {
+                    fileName = lessonPlan.medicalRecordFile.fileName
+                    modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan.properties)
+                }
             }
-        }
     }
     func addFile() {
         let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
@@ -163,5 +154,49 @@ struct RidingLessonPlanView: View {
         fileName = otherFileName
         modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan!.properties)
         try? modelContext.save()
+    }
+}
+
+struct ReviewChangesLessonPlan: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
+    @State var titleForChange: String = ""
+    @Binding var modifiedProperties: RidingLessonProperties
+    var lessonPlan: RidingLessonPlan?
+    var description: String
+    var username: String
+    var fileName: String
+    var body: some View {
+        VStack {
+            TextField("Title of Change...", text: $titleForChange, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+            Text(description)
+                .bold()
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
+                }
+
+                Spacer()
+                Button("Save Changes") {
+                    do {
+                        let newFileChange = PastChangeRidingLessonPlan(properties: lessonPlan!.properties, fileName: lessonPlan!.medicalRecordFile.fileName, title: titleForChange, changeDescription: description, author: username, date: .now)
+                        lessonPlan!.pastChanges.append(newFileChange)
+                        lessonPlan!.medicalRecordFile.fileName = fileName
+                        lessonPlan!.properties = modifiedProperties
+                        try modelContext.save()
+                        modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan!.properties)
+                        dismiss()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(titleForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+        }
+        .padding()
     }
 }

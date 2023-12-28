@@ -87,20 +87,21 @@ struct FileUploadView: View {
                     }
                 }
             }
-            .toolbar {
-                if uploadFile == nil {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
+            .padding()
+        }
+        .toolbar {
+            if uploadFile == nil {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") {
+                            addFile()
                             dismiss()
                         }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                            Button("Save") {
-                                addFile()
-                                dismiss()
-                            }
-                            .buttonStyle(.borderedProminent)
-                    }
+                        .buttonStyle(.borderedProminent)
                 }
             }
         }

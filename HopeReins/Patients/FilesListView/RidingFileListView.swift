@@ -10,6 +10,8 @@ import SwiftData
 
 struct RidingFileListView: View {
     @Environment(\.modelContext) var modelContext
+    @State var showEditSheet: Bool = false
+    @State var selectedFile: MedicalRecordFile? = nil
     var files: [MedicalRecordFile]
     var user: User
     var body: some View {
@@ -28,6 +30,9 @@ struct RidingFileListView: View {
                 }
             )
         }
+        .sheet(isPresented: $showEditSheet, content: {
+            FormEditView(file: $selectedFile, user: user)
+        })
     }
     private func fileCountFor(_ formType: RidingFormType) -> Int {
         files.filter { file in
@@ -41,8 +46,9 @@ struct RidingFileListView: View {
         ForEach(files.filter {file in
             return file.fileType == formType.rawValue
         }) { file in
-            NavigationLink {
-                FormEditView(file: file, user: user)
+            Button {
+                selectedFile = file
+                showEditSheet.toggle()
             } label: {
                 UploadedListItem(file: file)
             }
