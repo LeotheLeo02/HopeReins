@@ -66,22 +66,7 @@ struct SingleSelectLastDescription: View {
 }
 
 
-struct DateSelection: View {
-    var title: String
-    var hourAndMinute: Bool
-    @Binding var date: Date
-    var body: some View {
-        VStack(alignment: .leading) {
-            CustomSectionHeader(title: title)
-            if hourAndMinute {
-                DatePicker("", selection: $date)
-            } else {
-                DatePicker("", selection: $date, displayedComponents: .date)
-            }
-        }
-        .padding()
-    }
-}
+
 
 #Preview {
     FakeView()

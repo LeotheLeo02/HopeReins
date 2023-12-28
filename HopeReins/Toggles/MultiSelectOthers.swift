@@ -19,8 +19,8 @@ struct MultiSelectOthers: View {
     let columns = [
         GridItem(.adaptive(minimum: 200)),
         GridItem(.adaptive(minimum: 200)),
-         GridItem(.adaptive(minimum: 200)),
-         GridItem(.adaptive(minimum: 200)),
+        GridItem(.adaptive(minimum: 200)),
+        GridItem(.adaptive(minimum: 200)),
     ]
     var body: some View {
         ScrollView {

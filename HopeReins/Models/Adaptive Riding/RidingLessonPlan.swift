@@ -22,10 +22,9 @@ extension HopeReinsSchemaV2 {
             self.medicalRecordFile = medicalRecordFile
             self.properties = properties
         }
-        
     }
     
-    @Model final class RidingLessonProperties {
+    @Model final class RidingLessonProperties: Reflectable {
         var instructorName: String
         var date: Date
         var objective: String
@@ -53,61 +52,36 @@ extension HopeReinsSchemaV2 {
             summary = ""
             goals = ""
         }
+        
+        func toDictionary() -> [String : Any] {
+            return [
+                "Instructor Name": instructorName,
+                "Date": date,
+                "Objective": objective,
+                "Preparation": preparation,
+                "Content": content,
+                "Summary": summary,
+                "Goals": goals
+            ]
+        }
+
     }
     
     @Model final class PastChangeRidingLessonPlan {
         var properties: RidingLessonProperties
         var fileName: String
+        var title: String
         var changeDescription: String
-        var reason: String
         var author: String
         var date: Date
         
-        init(properties: RidingLessonProperties, fileName: String, changeDescription: String, reason: String, author: String, date: Date) {
+        init(properties: RidingLessonProperties, fileName: String, title: String, changeDescription: String, author: String, date: Date) {
             self.properties = properties
             self.fileName = fileName
+            self.title = title
             self.changeDescription = changeDescription
-            self.reason = reason
             self.author = author
             self.date = date
-        }
-    }
-}
-
-import SwiftUI
-struct EditablePropertyView<T: Equatable>: View {
-    @Binding var value: T
-    let propertyName: String
-    
-    var body: some View {
-        if case let boolValue as Bool = value { } else {
-            CustomSectionHeader(title: propertyName)
-        }
-        switch value {
-        case is String:
-            TextField(propertyName, text: $value as! Binding<String>)
-                .textFieldStyle(.roundedBorder)
-        case is Date:
-            DatePicker(propertyName, selection: $value as! Binding<Date>)
-        case is Bool:
-            Toggle(isOn: $value as! Binding<Bool>, label: {
-                Text(propertyName)
-            })
-        default:
-            Text("Unsupported property type")
-        }
-    }
-}
-
-struct RidingLessonView: View {
-    @Binding var instructorName: String
-    @Binding var date: Date
-
-    var body: some View {
-        Form {
-            EditablePropertyView(value: $instructorName, propertyName: "Instructor Name")
-            EditablePropertyView(value: $date, propertyName: "Date")
-            // ... other properties
         }
     }
 }

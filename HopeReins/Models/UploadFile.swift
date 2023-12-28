@@ -25,7 +25,7 @@ extension HopeReinsSchemaV2 {
         }
     }
     
-    @Model final class UploadFileProperties {
+    @Model final class UploadFileProperties: Reflectable {
         public var id = UUID()
         var data: Data
         
@@ -44,22 +44,28 @@ extension HopeReinsSchemaV2 {
             self.id = UUID()
             self.data = .init()
         }
+        
+        func toDictionary() -> [String : Any] {
+            return [
+                "data": data,
+            ]
+        }
     }
     
     @Model class FileChange {
         var properties: UploadFileProperties
         var fileName: String
         var changeDescription: String
-        var reason: String
+        var title: String
         var author: String
         var date: Date
     
         
-        init(properties: UploadFileProperties, fileName: String, changeDescription: String, reason: String, author: String, date: Date) {
+        init(properties: UploadFileProperties, fileName: String, changeDescription: String, title: String, author: String, date: Date) {
             self.properties = properties
             self.fileName = fileName
             self.changeDescription = changeDescription
-            self.reason = reason
+            self.title = title
             self.author = author
             self.date = date
         }

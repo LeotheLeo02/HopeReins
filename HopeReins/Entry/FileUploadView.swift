@@ -12,20 +12,20 @@ struct FileUploadView: View {
     @Environment(\.modelContext) var modelContext
     @State var fileName: String = ""
     @State var modifiedProperties: UploadFileProperties = UploadFileProperties()
-    @State var reasonForChange: String = ""
+    @State var titleForChange: String = ""
     var uploadFile: UploadFile?
-    var changeDescription: String {
-        var description = ""
-        if uploadFile?.medicalRecordFile.fileName != fileName {
-            description += "Changed File Name "
-        }
+    private var changeDescription: String {
+        guard let oldLessonProperties = uploadFile?.properties else { return "" }
         
-        if uploadFile?.properties.data != modifiedProperties.data {
-            description += "Changed Data "
-        }
+        let oldFileName = uploadFile?.medicalRecordFile.fileName ?? "nil"
+        let newFileName = fileName
         
-        return description
+        let fileNameChange = (oldFileName != newFileName) ?
+            "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\", " : ""
+        
+        return fileNameChange + UploadFileProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
     }
+
     
     var ridingFormType: RidingFormType?
     var phyiscalFormType: PhysicalTherabyFormType?
@@ -41,13 +41,13 @@ struct FileUploadView: View {
                 FileUploadButton(properties: $modifiedProperties)
                 if uploadFile != nil {
                     if !changeDescription.isEmpty {
-                        TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+                        TextField("Reason for Change...", text: $titleForChange, axis: .vertical)
                             .textFieldStyle(.roundedBorder)
                         Text(changeDescription)
                             .bold()
                         Button("Save Changes") {
                             do {
-                                let newFileChange = FileChange(properties: uploadFile!.properties, fileName: uploadFile!.medicalRecordFile.fileName, changeDescription: changeDescription, reason: reasonForChange, author: user!.username, date: .now)
+                                let newFileChange = FileChange(properties: uploadFile!.properties, fileName: uploadFile!.medicalRecordFile.fileName, changeDescription: changeDescription, title: titleForChange, author: user!.username, date: .now)
                                 uploadFile!.pastChanges.append(newFileChange)
                                 uploadFile!.medicalRecordFile.fileName = fileName
                                 uploadFile!.properties = modifiedProperties
@@ -58,7 +58,7 @@ struct FileUploadView: View {
                             }
                         }
                         .buttonStyle(.borderedProminent)
-                        .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .disabled(titleForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
                     CustomSectionHeader(title: "Past Changes")
                     if let uploadFile = uploadFile {

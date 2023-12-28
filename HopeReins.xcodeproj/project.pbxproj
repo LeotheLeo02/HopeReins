@@ -34,6 +34,9 @@
 		BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */; };
 		BE73F8B42B3A71760059A9B8 /* DailyNoteFillIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */; };
 		BE7C78942B3A78CB00561886 /* DailyNoteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */; };
+		BE93578F2B3C9F120058198E /* BasicTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE93578E2B3C9F120058198E /* BasicTextField.swift */; };
+		BE9357912B3CA5010058198E /* DateSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357902B3CA5010058198E /* DateSelection.swift */; };
+		BE9357932B3CC2ED0058198E /* Reflectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357922B3CC2EC0058198E /* Reflectable.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
 		BEAF23A22B3A479700211039 /* LeRomTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAF23A12B3A479700211039 /* LeRomTable.swift */; };
@@ -81,6 +84,9 @@
 		BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlan.swift; sourceTree = "<group>"; };
 		BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteFillIn.swift; sourceTree = "<group>"; };
 		BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteTable.swift; sourceTree = "<group>"; };
+		BE93578E2B3C9F120058198E /* BasicTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTextField.swift; sourceTree = "<group>"; };
+		BE9357902B3CA5010058198E /* DateSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelection.swift; sourceTree = "<group>"; };
+		BE9357922B3CC2EC0058198E /* Reflectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reflectable.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BEAF23A12B3A479700211039 /* LeRomTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeRomTable.swift; sourceTree = "<group>"; };
@@ -155,6 +161,7 @@
 		BE16E2052AAEB20B004052B8 /* HopeReins */ = {
 			isa = PBXGroup;
 			children = (
+				BEED21CC2B3C9EA20072DE52 /* BasicFields */,
 				BEA5595D2B3A714700507A73 /* FillIns */,
 				BEAF23A02B3A46C600211039 /* Tables */,
 				BE46B1452B388993004C279D /* Toggles */,
@@ -234,6 +241,7 @@
 		BE72EDBC2B335759006D227C /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				BE9357922B3CC2EC0058198E /* Reflectable.swift */,
 				BEB662B92B335B000090BD87 /* User.swift */,
 				BEB662B72B335A750090BD87 /* MedicalRecordFile.swift */,
 				BE72EDBA2B335719006D227C /* Patient.swift */,
@@ -311,6 +319,15 @@
 			path = Fields;
 			sourceTree = "<group>";
 		};
+		BEED21CC2B3C9EA20072DE52 /* BasicFields */ = {
+			isa = PBXGroup;
+			children = (
+				BE93578E2B3C9F120058198E /* BasicTextField.swift */,
+				BE9357902B3CA5010058198E /* DateSelection.swift */,
+			);
+			path = BasicFields;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -383,6 +400,7 @@
 			files = (
 				BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */,
 				BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */,
+				BE93578F2B3C9F120058198E /* BasicTextField.swift in Sources */,
 				BE46B1472B3889A0004C279D /* MultiSelectOthers.swift in Sources */,
 				BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */,
 				BEED21CB2B3C9CDB0072DE52 /* RestrictedNumberField.swift in Sources */,
@@ -418,7 +436,9 @@
 				BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
 				BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */,
+				BE9357912B3CA5010058198E /* DateSelection.swift in Sources */,
 				BE0F28AB2AECA556006285C5 /* SharedFormView.swift in Sources */,
+				BE9357932B3CC2ED0058198E /* Reflectable.swift in Sources */,
 				BE46B1492B3889D4004C279D /* MultiSelectWithTitle.swift in Sources */,
 				BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */,
 			);

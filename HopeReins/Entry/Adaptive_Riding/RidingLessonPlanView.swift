@@ -8,51 +8,31 @@
 import SwiftUI
 import SwiftData
 
+
 struct RidingLessonPlanView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State var fileName: String = ""
     @State var modifiedProperties: RidingLessonProperties = RidingLessonProperties()
-    @State var reasonForChange: String = ""
+    @State var titleForChange: String = ""
     @Query(sort: \User.username, order: .forward)
     var instructors: [User]
     var lessonPlan: RidingLessonPlan?
     var username: String
     var patient: Patient?
-    var description: String {
-        var description = ""
-        if lessonPlan?.medicalRecordFile.fileName != fileName {
-            description += "Changed File Name "
-        }
+    private var description: String {
+        guard let oldLessonProperties = lessonPlan?.properties else { return "" }
         
-        if lessonPlan?.properties.content != modifiedProperties.content {
-            description += "Changed Content "
-        }
-        if lessonPlan?.properties.date != modifiedProperties.date {
-            description += "Changed Date "
-        }
-        if lessonPlan?.properties.goals != modifiedProperties.goals {
-            description += "Changed Goals "
-        }
-        if lessonPlan?.properties.instructorName != modifiedProperties.instructorName {
-            description += "Changed Instructor "
-        }
-
-        if lessonPlan?.properties.objective != modifiedProperties.objective {
-            description += "Changed Objective "
-        }
-
-        if lessonPlan?.properties.preparation != modifiedProperties.preparation {
-            description += "Changed Preparation "
-        }
-
-        if lessonPlan?.properties.summary != modifiedProperties.summary {
-            description += "Changed Summary "
-        }
-
-        return description
+        let oldFileName = lessonPlan?.medicalRecordFile.fileName ?? "nil"
+        let newFileName = fileName
+        
+        let fileNameChange = (oldFileName != newFileName) ?
+            "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\", " : ""
+        
+        return fileNameChange + RidingLessonProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
     }
-    
+
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
@@ -69,31 +49,23 @@ struct RidingLessonPlanView: View {
                     Text("Instructor: \(modifiedProperties.instructorName)")
                 }
                 .labelsHidden()
-                
                 Divider()
-                Section {
-                    DatePicker(selection: $modifiedProperties.date) {
-                        Text("Date of Lesson:")
-                    }
-                    .labelsHidden()
-                    .padding(.bottom)
-                } header: {
-                    CustomSectionHeader(title: "Date Of Lesson")
-                }
                 
-                FormEntryTextField(title: "Objective of the Lesson:", text: $modifiedProperties.objective)
+                DateSelection(title: "Date of Lesson", hourAndMinute: true, date: $modifiedProperties.date)
                 
-                FormEntryTextField(title: "Teacher preparation/Equipment needs:", text: $modifiedProperties.preparation)
+                BasicTextField(title: "Objective of the Lesson:", text: $modifiedProperties.objective)
                 
-                FormEntryTextField(title: "Lesson content/Procedure:", text: $modifiedProperties.content)
+                BasicTextField(title: "Teacher preparation/Equipment needs:", text: $modifiedProperties.preparation)
                 
-                FormEntryTextField(title: "Summary and evaluation of the lesson", text: $modifiedProperties.summary)
+                BasicTextField(title: "Lesson content/Procedure:", text: $modifiedProperties.content)
                 
-                FormEntryTextField(title: "Goals for the next lesson", text: $modifiedProperties.goals)
+                BasicTextField(title: "Summary and evaluation of the lesson", text: $modifiedProperties.summary)
+                
+                BasicTextField(title: "Goals for the next lesson", text: $modifiedProperties.goals)
                 
                 if lessonPlan != nil {
                     if !description.isEmpty {
-                        TextField("Reason for Change...", text: $reasonForChange, axis: .vertical)
+                        TextField("Title of Change...", text: $titleForChange, axis: .vertical)
                             .textFieldStyle(.roundedBorder)
                         Text(description)
                             .bold()
@@ -101,7 +73,7 @@ struct RidingLessonPlanView: View {
                             Spacer()
                             Button("Save Changes") {
                                 do {
-                                    let newFileChange = PastChangeRidingLessonPlan(properties: lessonPlan!.properties, fileName: lessonPlan!.medicalRecordFile.fileName, changeDescription: description, reason: reasonForChange, author: username, date: .now)
+                                    let newFileChange = PastChangeRidingLessonPlan(properties: lessonPlan!.properties, fileName: lessonPlan!.medicalRecordFile.fileName, title: titleForChange, changeDescription: description, author: username, date: .now)
                                     lessonPlan!.pastChanges.append(newFileChange)
                                     lessonPlan!.medicalRecordFile.fileName = fileName
                                     lessonPlan!.properties = modifiedProperties
@@ -112,7 +84,7 @@ struct RidingLessonPlanView: View {
                                 }
                             }
                             .buttonStyle(.borderedProminent)
-                            .disabled(reasonForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                            .disabled(titleForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         }
                     }
                     CustomSectionHeader(title: "Past Changes")
@@ -191,16 +163,5 @@ struct RidingLessonPlanView: View {
         fileName = otherFileName
         modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan!.properties)
         try? modelContext.save()
-    }
-}
-
-struct FormEntryTextField: View {
-    var title: String
-    @Binding var text: String
-    var body: some View {
-        CustomSectionHeader(title: title)
-        TextField("", text: $text, axis: .vertical)
-            .textFieldStyle(.roundedBorder)
-            .padding(.bottom)
     }
 }

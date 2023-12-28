@@ -45,7 +45,7 @@ struct HopeReinsApp: App {
     }()
     var body: some Scene {
         WindowGroup {
-            FakeView()
+            ContentView()
                 .modelContainer(sharedModelContainer)
         }
     }
