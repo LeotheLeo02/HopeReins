@@ -36,8 +36,7 @@ struct FileUploadView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 CustomSectionHeader(title: "File Name")
-                TextField("File Name...", text: $fileName, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
+                BasicTextField(title: "File Name...", text: $fileName)
                 FileUploadButton(properties: $modifiedProperties)
                 if uploadFile != nil {
                     if !changeDescription.isEmpty {

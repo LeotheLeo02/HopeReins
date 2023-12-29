@@ -36,7 +36,6 @@ struct UploadedListItem: View {
             Spacer()
             Text("Created By: \(file.digitalSignature.author) \(file.digitalSignature.dateAdded.formatted())")
                 .font(.caption.italic())
-            Image(systemName: "chevron.right")
         }
         .font(.title3)
         .padding()

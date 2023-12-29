@@ -42,6 +42,8 @@
 		BEB29A282AD1AF3D0023B4CB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB29A272AD1AF3D0023B4CB /* HomeView.swift */; };
 		BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB662B72B335A750090BD87 /* MedicalRecordFile.swift */; };
 		BEB662BA2B335B000090BD87 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB662B92B335B000090BD87 /* User.swift */; };
+		BEC99DDB2B3E90CB00B502B3 /* ReviewChangesLessonPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC99DDA2B3E90CB00B502B3 /* ReviewChangesLessonPlan.swift */; };
+		BEC99DDD2B3E90F300B502B3 /* RidingChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC99DDC2B3E90F300B502B3 /* RidingChangeView.swift */; };
 		BECF5D792B092C100008459C /* PhysicalTherabyFileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D782B092C100008459C /* PhysicalTherabyFileListView.swift */; };
 		BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */; };
 		BECF5D7D2B092C6A0008459C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF5D7C2B092C6A0008459C /* Utils.swift */; };
@@ -91,6 +93,8 @@
 		BEB29A272AD1AF3D0023B4CB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BEB662B72B335A750090BD87 /* MedicalRecordFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalRecordFile.swift; sourceTree = "<group>"; };
 		BEB662B92B335B000090BD87 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BEC99DDA2B3E90CB00B502B3 /* ReviewChangesLessonPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewChangesLessonPlan.swift; sourceTree = "<group>"; };
+		BEC99DDC2B3E90F300B502B3 /* RidingChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingChangeView.swift; sourceTree = "<group>"; };
 		BECF5D782B092C100008459C /* PhysicalTherabyFileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFileListView.swift; sourceTree = "<group>"; };
 		BECF5D7A2B092C2D0008459C /* RidingFileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFileListView.swift; sourceTree = "<group>"; };
 		BECF5D7C2B092C6A0008459C /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -200,6 +204,8 @@
 			children = (
 				BE1710FF2ACB374B00CC27BB /* RidingFormType.swift */,
 				BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */,
+				BEC99DDA2B3E90CB00B502B3 /* ReviewChangesLessonPlan.swift */,
+				BEC99DDC2B3E90F300B502B3 /* RidingChangeView.swift */,
 			);
 			path = Adaptive_Riding;
 			sourceTree = "<group>";
@@ -414,9 +420,11 @@
 				BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */,
 				BEAF23A22B3A479700211039 /* LeRomTable.swift in Sources */,
 				BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */,
+				BEC99DDB2B3E90CB00B502B3 /* ReviewChangesLessonPlan.swift in Sources */,
 				BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */,
 				BEDFE4C62B364CC4002D75FE /* FakeView.swift in Sources */,
 				BEED21C92B3C9CAB0072DE52 /* DegreeField.swift in Sources */,
+				BEC99DDD2B3E90F300B502B3 /* RidingChangeView.swift in Sources */,
 				BE3D070E2B0A700B00953754 /* PatientSearch.swift in Sources */,
 				BE31D0FA2B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift in Sources */,
 				BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */,
