@@ -46,12 +46,12 @@ struct FileUploadView: View {
                             .bold()
                         Button("Save Changes") {
                             do {
-                                let newFileChange = FileChange(properties: uploadFile!.properties, fileName: uploadFile!.medicalRecordFile.fileName, changeDescription: changeDescription, title: titleForChange, author: user!.username, date: .now)
+                                let newFileChange = FileChange(properties: uploadFile!.properties, fileName: uploadFile!.medicalRecordFile.fileName, title: titleForChange, changeDescription: changeDescription, author: user!.username, date: .now)
                                 uploadFile!.pastChanges.append(newFileChange)
                                 uploadFile!.medicalRecordFile.fileName = fileName
                                 uploadFile!.properties = modifiedProperties
                                 try modelContext.save()
-                                modifiedProperties = UploadFileProperties(otherProperties: uploadFile!.properties)
+                                modifiedProperties = UploadFileProperties(other: uploadFile!.properties)
                             } catch {
                                 print(error.localizedDescription)
                             }
@@ -107,7 +107,7 @@ struct FileUploadView: View {
         .onAppear {
             if let uploadFile = uploadFile {
                 fileName = uploadFile.medicalRecordFile.fileName
-                modifiedProperties = UploadFileProperties(otherProperties: uploadFile.properties)
+                modifiedProperties = UploadFileProperties(other: uploadFile.properties)
             }
         }
     }
@@ -132,7 +132,7 @@ struct FileUploadView: View {
         modelContext.insert(digitalSignature)
         let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: fileType, digitalSignature: digitalSignature)
         modelContext.insert(medicalRecordFile)
-        let properties = UploadFileProperties(otherProperties: modifiedProperties)
+        let properties = UploadFileProperties(other: modifiedProperties)
         modelContext.insert(properties)
         let dataFile = UploadFile(medicalRecordFile: medicalRecordFile, properties: properties)
         modelContext.insert(dataFile)
@@ -144,7 +144,7 @@ struct FileUploadView: View {
         modelContext.delete(oldProperties)
         uploadFile!.medicalRecordFile.fileName = otherFileName
         fileName = otherFileName
-        modifiedProperties = UploadFileProperties(otherProperties: uploadFile!.properties)
+        modifiedProperties = UploadFileProperties(other: uploadFile!.properties)
         try? modelContext.save()
     }
 }
@@ -183,18 +183,5 @@ struct FileUploadButton: View {
                 Label("\(properties.data != .init() ? "Change" : "Import") File", systemImage: "\(properties.data != .init()  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
             }
         }
-    }
-}
-
-struct InitialUploadFileProperties {
-    var fileName: String =  ""
-    var data: Data = .init()
-    
-    init () { }
-    
-    
-    init(fileName: String, properties: UploadFileProperties) {
-        self.fileName = fileName
-        self.data = properties.data
     }
 }

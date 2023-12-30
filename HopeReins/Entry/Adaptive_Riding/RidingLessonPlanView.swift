@@ -42,7 +42,6 @@ struct RidingLessonPlanView: View {
                 if lessonPlan != nil {
                     pastChangesView()
                 }
-                
                 formDetailsView()
                 
             }
@@ -80,26 +79,53 @@ struct RidingLessonPlanView: View {
             }
         }
         .sheet(isPresented: $showChanges, content: {
-            ReviewChangesLessonPlan(modifiedProperties: $modifiedProperties, lessonPlan: lessonPlan, description: description, username: username, fileName: fileName)
+            ReviewChangesView<RidingLessonPlan, PastChangeRidingLessonPlan>(
+                modifiedProperties: $modifiedProperties,
+                record: lessonPlan,
+                description: description,
+                username: username,
+                oldFileName: lessonPlan!.medicalRecordFile.fileName,
+                fileName: fileName
+            )
+
         })
         .onAppear {
             if let lessonPlan = lessonPlan {
                 fileName = lessonPlan.medicalRecordFile.fileName
-                modifiedProperties = RidingLessonProperties(otherLessonProperties: lessonPlan.properties)
+                modifiedProperties = RidingLessonProperties(other: lessonPlan.properties)
             }
         }
     }
     @ViewBuilder
     func pastChangesView() -> some View {
-        DisclosureGroup(isExpanded: $pastChangesExpanded) {
-            ForEach(lessonPlan?.pastChanges ?? [], id: \.self) { change in
-                RidingChangeView(lessonPlan: lessonPlan!, modifiedProperties: $modifiedProperties, fileName: $fileName, change: change)
+        ScrollView {
+            DisclosureGroup(isExpanded: $pastChangesExpanded) {
+                ForEach(lessonPlan?.pastChanges ?? [], id: \.self) { change in
+                    ChangeView<RidingLessonPlan, PastChangeRidingLessonPlan>(
+                        record: lessonPlan,
+                        fileName: $fileName,
+                        modifiedProperties: $modifiedProperties,
+                        onRevert: {
+                            revertToChange(change: change)
+                        }, change: change
+                    )
+                }
+            } label: {
+                CustomSectionHeader(title: "Past Changes")
             }
-        } label: {
-            CustomSectionHeader(title: "Past Changes")
         }
     }
-    
+    func revertToChange(change: PastChangeRidingLessonPlan) {
+        let objectID = change.persistentModelID
+        let objectInContext = modelContext.model(for: objectID)
+        lessonPlan!.pastChanges.removeAll { $0.date == change.date }
+        modelContext.delete(objectInContext)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving context \(error)")
+        }
+    }
     @ViewBuilder
     func formDetailsView() -> some View {
         BasicTextField(title: "File Name", text: $fileName)
@@ -132,7 +158,7 @@ struct RidingLessonPlanView: View {
         let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
         let fileName = fileName
         let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: digitalSignature)
-        let properties = RidingLessonProperties(otherLessonProperties: modifiedProperties)
+        let properties = RidingLessonProperties(other: modifiedProperties)
         modelContext.insert(properties)
         try? modelContext.save()
         let ridingLesson = RidingLessonPlan(medicalRecordFile: medicalRecordFile, properties: properties)
@@ -140,4 +166,5 @@ struct RidingLessonPlanView: View {
         try? modelContext.save()
     }
 }
+
 

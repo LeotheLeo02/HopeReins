@@ -63,9 +63,11 @@ struct AddPatientView: View {
 struct CustomSectionHeader: View {
     var title: String
     var body: some View {
-        Text(title)
-            .font(.subheadline.bold())
-            .foregroundStyle(.gray)
-        Divider()
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.subheadline.bold())
+                .foregroundStyle(.gray)
+            Divider()
+        }
     }
 }

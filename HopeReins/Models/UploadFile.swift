@@ -10,7 +10,20 @@ import SwiftData
 
 extension HopeReinsSchemaV2 {
     
-    @Model final class UploadFile {
+    @Model final class UploadFile: Revertible, ChangeRecordable {
+        func revertToProperties(_ properties: UploadFileProperties, fileName: String, modelContext: ModelContext) {
+            self.properties = properties
+            self.medicalRecordFile.fileName = fileName
+            try? modelContext.save()
+        }
+        
+        typealias PropertiesType = UploadFileProperties
+        
+        func addChangeRecord(_ change: FileChange, modelContext: ModelContext) {
+            pastChanges.append(change)
+            try? modelContext.save()
+        }
+        
         @Relationship(deleteRule: .cascade)
         var medicalRecordFile: MedicalRecordFile
         @Relationship(deleteRule: .cascade)
@@ -25,7 +38,7 @@ extension HopeReinsSchemaV2 {
         }
     }
     
-    @Model final class UploadFileProperties: Reflectable {
+    @Model final class UploadFileProperties: Reflectable, ResettableProperties {
         public var id = UUID()
         var data: Data
         
@@ -35,9 +48,9 @@ extension HopeReinsSchemaV2 {
             self.data = data
         }
         
-        init (otherProperties: UploadFileProperties) {
-            self.data = otherProperties.data
-            self.id = otherProperties.id
+        init (other: UploadFileProperties) {
+            self.data = other.data
+            self.id = other.id
         }
         
         init() {
@@ -52,7 +65,8 @@ extension HopeReinsSchemaV2 {
         }
     }
     
-    @Model class FileChange {
+    @Model final class FileChange: SnapshotChange {
+        typealias PropertiesType = UploadFileProperties
         var properties: UploadFileProperties
         var fileName: String
         var changeDescription: String
@@ -61,7 +75,7 @@ extension HopeReinsSchemaV2 {
         var date: Date
     
         
-        init(properties: UploadFileProperties, fileName: String, changeDescription: String, title: String, author: String, date: Date) {
+        init(properties: UploadFileProperties, fileName: String, title: String, changeDescription: String, author: String, date: Date) {
             self.properties = properties
             self.fileName = fileName
             self.changeDescription = changeDescription
