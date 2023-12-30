@@ -89,10 +89,25 @@ struct RidingLessonPlanView: View {
 
         })
         .onAppear {
-            if let lessonPlan = lessonPlan {
-                fileName = lessonPlan.medicalRecordFile.fileName
-                modifiedProperties = RidingLessonProperties(other: lessonPlan.properties)
-            }
+            intializeProperties()
+        }
+    }
+    
+    func intializeProperties() {
+        guard let lessonPlan = lessonPlan else { return }
+        fileName = lessonPlan.medicalRecordFile.fileName
+        modifiedProperties = RidingLessonProperties(other: lessonPlan.properties)
+    }
+    
+    func revertToChange(change: PastChangeRidingLessonPlan) {
+        let objectID = change.persistentModelID
+        let objectInContext = modelContext.model(for: objectID)
+        lessonPlan!.pastChanges.removeAll { $0.date == change.date }
+        modelContext.delete(objectInContext)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving context \(error)")
         }
     }
     @ViewBuilder
@@ -112,17 +127,6 @@ struct RidingLessonPlanView: View {
             } label: {
                 CustomSectionHeader(title: "Past Changes")
             }
-        }
-    }
-    func revertToChange(change: PastChangeRidingLessonPlan) {
-        let objectID = change.persistentModelID
-        let objectInContext = modelContext.model(for: objectID)
-        lessonPlan!.pastChanges.removeAll { $0.date == change.date }
-        modelContext.delete(objectInContext)
-        do {
-            try modelContext.save()
-        } catch {
-            print("Error saving context \(error)")
         }
     }
     @ViewBuilder
@@ -154,9 +158,7 @@ struct RidingLessonPlanView: View {
     }
     
     func addFile() {
-        let digitalSignature = DigitalSignature(author: username, dateAdded: .now)
-        let fileName = fileName
-        let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: digitalSignature)
+        let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: DigitalSignature(author: username, dateAdded: .now))
         let properties = RidingLessonProperties(other: modifiedProperties)
         modelContext.insert(properties)
         try? modelContext.save()

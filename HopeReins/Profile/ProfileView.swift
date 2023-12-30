@@ -40,6 +40,9 @@ struct ProfileView: View {
                             user.isLoggedIn = false
                         }
                     }
+                    if user.isAdmin {
+                        SetupUsersView()
+                    }
                 }
             }
             .padding()

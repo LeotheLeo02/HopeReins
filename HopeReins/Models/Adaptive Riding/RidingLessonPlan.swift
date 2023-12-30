@@ -12,19 +12,7 @@ import SwiftUI
 extension HopeReinsSchemaV2 {
     
     @Model final class RidingLessonPlan: Revertible, ChangeRecordable {
-        
         typealias PropertiesType = RidingLessonProperties
-        
-        func addChangeRecord(_ change: PastChangeRidingLessonPlan, modelContext: ModelContext) {
-            pastChanges.append(change)
-            try? modelContext.save()
-        }
-        
-        func revertToProperties(_ properties: RidingLessonProperties, fileName: String, modelContext: ModelContext) {
-            self.properties = properties
-            self.medicalRecordFile.fileName = fileName
-            try? modelContext.save()
-        }
         
         @Attribute(.unique) var id: UUID = UUID()
         @Relationship(deleteRule: .cascade)
@@ -37,6 +25,17 @@ extension HopeReinsSchemaV2 {
         init(medicalRecordFile: MedicalRecordFile, properties: RidingLessonProperties) {
             self.medicalRecordFile = medicalRecordFile
             self.properties = properties
+        }
+        
+        func addChangeRecord(_ change: PastChangeRidingLessonPlan, modelContext: ModelContext) {
+            pastChanges.append(change)
+            try? modelContext.save()
+        }
+        
+        func revertToProperties(_ properties: RidingLessonProperties, fileName: String, modelContext: ModelContext) {
+            self.properties = properties
+            self.medicalRecordFile.fileName = fileName
+            try? modelContext.save()
         }
     }
     
@@ -104,35 +103,3 @@ extension HopeReinsSchemaV2 {
     }
 }
 
-
-
-protocol ChangeRecordable {
-    associatedtype ChangeType
-    var pastChanges: [ChangeType] { get set }
-    func addChangeRecord(_ change: ChangeType, modelContext: ModelContext)
-}
-
-
-protocol Revertible {
-    associatedtype PropertiesType: ResettableProperties
-    var properties: PropertiesType { get set }
-    mutating func revertToProperties(_ properties: PropertiesType, fileName: String, modelContext: ModelContext)
-}
-
-protocol SnapshotChange {
-    associatedtype PropertiesType: ResettableProperties
-    var properties: PropertiesType { get }
-    var fileName: String { get }
-    var title: String { get }
-    var changeDescription: String { get }
-    var author: String { get }
-    var date: Date { get }
-
-    init(properties: PropertiesType, fileName: String, title: String, changeDescription: String, author: String, date: Date)
-}
-
-
-protocol ResettableProperties {
-    init()
-    init(other: Self)
-}

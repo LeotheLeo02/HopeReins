@@ -33,13 +33,18 @@
 		BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */; };
 		BE73F8B42B3A71760059A9B8 /* DailyNoteFillIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */; };
 		BE7C78942B3A78CB00561886 /* DailyNoteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */; };
+		BE8E475C2B3FD4560075CEEE /* ChangeRecordable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E475B2B3FD4560075CEEE /* ChangeRecordable.swift */; };
+		BE8E475E2B3FD47E0075CEEE /* Revertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E475D2B3FD47E0075CEEE /* Revertible.swift */; };
+		BE8E47602B3FD49D0075CEEE /* SnapshotChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E475F2B3FD49D0075CEEE /* SnapshotChange.swift */; };
+		BE8E47622B3FD4BA0075CEEE /* ResettableProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47612B3FD4BA0075CEEE /* ResettableProperties.swift */; };
+		BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47632B3FD5230075CEEE /* HomeView.swift */; };
+		BE8E47672B3FD6520075CEEE /* SetupUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47662B3FD6520075CEEE /* SetupUsersView.swift */; };
 		BE93578F2B3C9F120058198E /* BasicTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE93578E2B3C9F120058198E /* BasicTextField.swift */; };
 		BE9357912B3CA5010058198E /* DateSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357902B3CA5010058198E /* DateSelection.swift */; };
 		BE9357932B3CC2ED0058198E /* Reflectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357922B3CC2EC0058198E /* Reflectable.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
 		BEAF23A22B3A479700211039 /* LeRomTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAF23A12B3A479700211039 /* LeRomTable.swift */; };
-		BEB29A282AD1AF3D0023B4CB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB29A272AD1AF3D0023B4CB /* HomeView.swift */; };
 		BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB662B72B335A750090BD87 /* MedicalRecordFile.swift */; };
 		BEB662BA2B335B000090BD87 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB662B92B335B000090BD87 /* User.swift */; };
 		BEC99DDB2B3E90CB00B502B3 /* ReviewChangesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC99DDA2B3E90CB00B502B3 /* ReviewChangesView.swift */; };
@@ -84,13 +89,18 @@
 		BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlan.swift; sourceTree = "<group>"; };
 		BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteFillIn.swift; sourceTree = "<group>"; };
 		BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteTable.swift; sourceTree = "<group>"; };
+		BE8E475B2B3FD4560075CEEE /* ChangeRecordable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeRecordable.swift; sourceTree = "<group>"; };
+		BE8E475D2B3FD47E0075CEEE /* Revertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Revertible.swift; sourceTree = "<group>"; };
+		BE8E475F2B3FD49D0075CEEE /* SnapshotChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotChange.swift; sourceTree = "<group>"; };
+		BE8E47612B3FD4BA0075CEEE /* ResettableProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResettableProperties.swift; sourceTree = "<group>"; };
+		BE8E47632B3FD5230075CEEE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		BE8E47662B3FD6520075CEEE /* SetupUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupUsersView.swift; sourceTree = "<group>"; };
 		BE93578E2B3C9F120058198E /* BasicTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTextField.swift; sourceTree = "<group>"; };
 		BE9357902B3CA5010058198E /* DateSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelection.swift; sourceTree = "<group>"; };
 		BE9357922B3CC2EC0058198E /* Reflectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reflectable.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BEAF23A12B3A479700211039 /* LeRomTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeRomTable.swift; sourceTree = "<group>"; };
-		BEB29A272AD1AF3D0023B4CB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BEB662B72B335A750090BD87 /* MedicalRecordFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalRecordFile.swift; sourceTree = "<group>"; };
 		BEB662B92B335B000090BD87 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BEC99DDA2B3E90CB00B502B3 /* ReviewChangesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewChangesView.swift; sourceTree = "<group>"; };
@@ -162,6 +172,7 @@
 		BE16E2052AAEB20B004052B8 /* HopeReins */ = {
 			isa = PBXGroup;
 			children = (
+				BE8E47652B3FD61F0075CEEE /* SetupUsers */,
 				BEED21CC2B3C9EA20072DE52 /* BasicFields */,
 				BEA5595D2B3A714700507A73 /* FillIns */,
 				BEAF23A02B3A46C600211039 /* Tables */,
@@ -172,7 +183,7 @@
 				BE676A4F2AD63EE800E8ADD7 /* Utils */,
 				BED042EC2ABC7B9700958DB9 /* Tab.swift */,
 				BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */,
-				BEB29A272AD1AF3D0023B4CB /* HomeView.swift */,
+				BE8E47632B3FD5230075CEEE /* HomeView.swift */,
 				BE676A4E2AD63ED700E8ADD7 /* Patients */,
 				BE0F078A2ABE53D0004B71D5 /* Profile */,
 				BE89F25D2ABE5BAB0057CA20 /* Entry */,
@@ -242,7 +253,7 @@
 		BE72EDBC2B335759006D227C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				BE9357922B3CC2EC0058198E /* Reflectable.swift */,
+				BE8E475A2B3FD4440075CEEE /* Protocols */,
 				BEB662B92B335B000090BD87 /* User.swift */,
 				BEB662B72B335A750090BD87 /* MedicalRecordFile.swift */,
 				BE72EDBA2B335719006D227C /* Patient.swift */,
@@ -270,6 +281,26 @@
 				BE1710F82ACB35D400CC27BB /* Physical_Theraby */,
 			);
 			path = Entry;
+			sourceTree = "<group>";
+		};
+		BE8E475A2B3FD4440075CEEE /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BE9357922B3CC2EC0058198E /* Reflectable.swift */,
+				BE8E475B2B3FD4560075CEEE /* ChangeRecordable.swift */,
+				BE8E475D2B3FD47E0075CEEE /* Revertible.swift */,
+				BE8E475F2B3FD49D0075CEEE /* SnapshotChange.swift */,
+				BE8E47612B3FD4BA0075CEEE /* ResettableProperties.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		BE8E47652B3FD61F0075CEEE /* SetupUsers */ = {
+			isa = PBXGroup;
+			children = (
+				BE8E47662B3FD6520075CEEE /* SetupUsersView.swift */,
+			);
+			path = SetupUsers;
 			sourceTree = "<group>";
 		};
 		BEA5595D2B3A714700507A73 /* FillIns */ = {
@@ -412,6 +443,7 @@
 				BE72EDBB2B335719006D227C /* Patient.swift in Sources */,
 				BECF5D792B092C100008459C /* PhysicalTherabyFileListView.swift in Sources */,
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
+				BE8E475C2B3FD4560075CEEE /* ChangeRecordable.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
 				BEDFE4C82B364D8A002D75FE /* FormAddView.swift in Sources */,
 				BEB662BA2B335B000090BD87 /* User.swift in Sources */,
@@ -429,9 +461,10 @@
 				BE31D0FA2B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift in Sources */,
 				BED042ED2ABC7B9700958DB9 /* Tab.swift in Sources */,
 				BE06844C2AE0CEF1004CABE7 /* PatientFilesListView.swift in Sources */,
+				BE8E47622B3FD4BA0075CEEE /* ResettableProperties.swift in Sources */,
 				BE73F8B42B3A71760059A9B8 /* DailyNoteFillIn.swift in Sources */,
 				BE16E2092AAEB20B004052B8 /* CopyPathsView.swift in Sources */,
-				BEB29A282AD1AF3D0023B4CB /* HomeView.swift in Sources */,
+				BE8E47602B3FD49D0075CEEE /* SnapshotChange.swift in Sources */,
 				BE1711002ACB374B00CC27BB /* RidingFormType.swift in Sources */,
 				BECF5D7D2B092C6A0008459C /* Utils.swift in Sources */,
 				BE31D0FC2B3A172400DDE782 /* ReEvalFillInInput.swift in Sources */,
@@ -439,12 +472,15 @@
 				BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */,
 				BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */,
 				BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */,
+				BE8E47672B3FD6520075CEEE /* SetupUsersView.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
 				BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */,
 				BE9357912B3CA5010058198E /* DateSelection.swift in Sources */,
 				BE9357932B3CC2ED0058198E /* Reflectable.swift in Sources */,
 				BE46B1492B3889D4004C279D /* MultiSelectWithTitle.swift in Sources */,
+				BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */,
 				BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */,
+				BE8E475E2B3FD47E0075CEEE /* Revertible.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

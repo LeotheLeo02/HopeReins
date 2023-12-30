@@ -38,31 +38,6 @@ struct ContentView: View {
     ContentView()
 }
 
-struct LoginView: View {
-    @State private var username: String = ""
-    @State private var password: String = ""
-
-    @Environment(\.modelContext) var modelContext
-
-    var body: some View {
-        VStack {
-            TextField("Username", text: $username)
-                .textFieldStyle(.roundedBorder)
-            SecureField("Password", text: $password)
-                .textFieldStyle(.roundedBorder)
-            Button("Log In") {
-                logIn()
-            }
-        }
-        .padding()
-    }
-
-    func logIn() {
-        let newUser = User(username: username, password: password)
-        modelContext.insert(newUser)
-    }
-}
-
 
 struct DetailView: View {
     var user: User

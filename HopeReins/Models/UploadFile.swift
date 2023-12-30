@@ -11,18 +11,7 @@ import SwiftData
 extension HopeReinsSchemaV2 {
     
     @Model final class UploadFile: Revertible, ChangeRecordable {
-        func revertToProperties(_ properties: UploadFileProperties, fileName: String, modelContext: ModelContext) {
-            self.properties = properties
-            self.medicalRecordFile.fileName = fileName
-            try? modelContext.save()
-        }
-        
         typealias PropertiesType = UploadFileProperties
-        
-        func addChangeRecord(_ change: FileChange, modelContext: ModelContext) {
-            pastChanges.append(change)
-            try? modelContext.save()
-        }
         
         @Relationship(deleteRule: .cascade)
         var medicalRecordFile: MedicalRecordFile
@@ -36,6 +25,18 @@ extension HopeReinsSchemaV2 {
             self.medicalRecordFile = medicalRecordFile
             self.properties = properties
         }
+        
+        func addChangeRecord(_ change: FileChange, modelContext: ModelContext) {
+            pastChanges.append(change)
+            try? modelContext.save()
+        }
+        
+        func revertToProperties(_ properties: UploadFileProperties, fileName: String, modelContext: ModelContext) {
+            self.properties = properties
+            self.medicalRecordFile.fileName = fileName
+            try? modelContext.save()
+        }
+        
     }
     
     @Model final class UploadFileProperties: Reflectable, ResettableProperties {

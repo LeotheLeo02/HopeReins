@@ -20,7 +20,13 @@ extension Reflectable {
         
         for (key, oldValue) in oldDict {
             if let newValue = newDict[key], "\(newValue)" != "\(oldValue)" {
-                changes.append("\(key) changed from \(oldValue) to \(newValue)")
+                switch key {
+                case "data":
+                    changes.append("Changed File")
+                default:
+                    changes.append("\(key) changed from \"\(oldValue)\" to \"\(newValue)\"")
+                }
+                
             }
         }
         
