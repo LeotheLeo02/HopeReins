@@ -13,6 +13,8 @@ struct FileUploadView: View {
     @State var fileName: String = ""
     @State var modifiedProperties: UploadFileProperties = UploadFileProperties()
     @State var titleForChange: String = ""
+    @State var showChanges: Bool = false
+    @State var pastChangesExpanded: Bool = false 
     var uploadFile: UploadFile?
     private var changeDescription: String {
         guard let oldLessonProperties = uploadFile?.properties else { return "" }
@@ -35,80 +37,94 @@ struct FileUploadView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                CustomSectionHeader(title: "File Name")
-                BasicTextField(title: "File Name...", text: $fileName)
-                FileUploadButton(properties: $modifiedProperties)
                 if uploadFile != nil {
-                    if !changeDescription.isEmpty {
-                        TextField("Reason for Change...", text: $titleForChange, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                        Text(changeDescription)
-                            .bold()
-                        Button("Save Changes") {
-                            do {
-                                let newFileChange = FileChange(properties: uploadFile!.properties, fileName: uploadFile!.medicalRecordFile.fileName, title: titleForChange, changeDescription: changeDescription, author: user!.username, date: .now)
-                                uploadFile!.pastChanges.append(newFileChange)
-                                uploadFile!.medicalRecordFile.fileName = fileName
-                                uploadFile!.properties = modifiedProperties
-                                try modelContext.save()
-                                modifiedProperties = UploadFileProperties(other: uploadFile!.properties)
-                            } catch {
-                                print(error.localizedDescription)
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(titleForChange.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    }
-                    CustomSectionHeader(title: "Past Changes")
-                    if let uploadFile = uploadFile {
-                        ForEach(uploadFile.pastChanges) { change in
-                            HStack {
-                                VStack {
-                                    Text(change.fileName)
-                                    Text(change.date.description)
-                                }
-                                Spacer()
-                                Button("Revert To") {
-                                    do {
-                                        revertLessonPlan(otherProperties: change.properties, otherFileName: change.fileName)
-                                        uploadFile.pastChanges.removeAll(where: { element in
-                                            return element.date == change.date
-                                        })
-                                        modelContext.delete(change)
-                                        try modelContext.save()
-                                    } catch {
-                                        print(error.localizedDescription)
-                                    }
-                                }
-                            }
-                            
-                        }
-                    }
+                    pastChangesView()
                 }
+                formDetailsView()
             }
             .padding()
         }
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: {
+                    dismiss()
+                }, label: {
+                    Text((uploadFile == nil || !changeDescription.isEmpty) ? "Cancel" : "Done")
+                })
+            }
             if uploadFile == nil {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
                 ToolbarItem(placement: .confirmationAction) {
-                        Button("Save") {
-                            addFile()
-                            dismiss()
-                        }
-                        .buttonStyle(.borderedProminent)
+                    Button(action: {
+                        addFile()
+                        try? modelContext.save()
+                        dismiss()
+                    }, label: {
+                        Text("Save")
+                    })
+                    .buttonStyle(.borderedProminent)
+                }
+            } else if !changeDescription.isEmpty {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        showChanges.toggle()
+                    } label: {
+                        Text("Apply Changes")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
                 }
             }
+        }
+        .sheet(isPresented: $showChanges) {
+            ReviewChangesView<UploadFile, FileChange>(
+                modifiedProperties: $modifiedProperties,
+                record: uploadFile,
+                description: changeDescription,
+                username: user!.username,
+                oldFileName: uploadFile!.medicalRecordFile.fileName,
+                fileName: fileName
+            )
         }
         .onAppear {
             if let uploadFile = uploadFile {
                 fileName = uploadFile.medicalRecordFile.fileName
                 modifiedProperties = UploadFileProperties(other: uploadFile.properties)
             }
+        }
+    }
+    @ViewBuilder
+    func formDetailsView() -> some View {
+        BasicTextField(title: "File Name...", text: $fileName)
+        FileUploadButton(properties: $modifiedProperties)
+    }
+    @ViewBuilder
+    func pastChangesView() -> some View {
+        ScrollView {
+            DisclosureGroup(isExpanded: $pastChangesExpanded) {
+                ForEach(uploadFile?.pastChanges ?? [], id: \.self) { change in
+                    ChangeView<UploadFile, FileChange>(
+                        record: uploadFile,
+                        fileName: $fileName,
+                        modifiedProperties: $modifiedProperties,
+                        onRevert: {
+                            revertToChange(change: change)
+                        }, change: change
+                    )
+                }
+            } label: {
+                CustomSectionHeader(title: "Past Changes")
+            }
+        }
+    }
+    func revertToChange(change: FileChange) {
+        let objectID = change.persistentModelID
+        let objectInContext = modelContext.model(for: objectID)
+        uploadFile!.pastChanges.removeAll { $0.date == change.date }
+        modelContext.delete(objectInContext)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving context \(error)")
         }
     }
     func addFile() {

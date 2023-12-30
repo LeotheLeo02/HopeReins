@@ -105,18 +105,6 @@ extension HopeReinsSchemaV2 {
 }
 
 
-//struct RevertChangeView<Record: ChangeRecordable & Revertible>: View where Record.ChangeType: SnapshotChange, Record.PropertiesType == Record.ChangeType.PropertiesType {
-//    @Binding var record: Record
-//
-//    var body: some View {
-//        List(record.pastChanges, id: \.date) { change in
-//            Text(change.title)
-//            Button("Revert to this Version") {
-//                record.revertToProperties(change, fileName: change.fileName, modelContext: modelContext)
-//            }
-//        }
-//    }
-//}
 
 protocol ChangeRecordable {
     associatedtype ChangeType

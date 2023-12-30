@@ -10,7 +10,6 @@ import SwiftData
 
 
 struct RidingLessonPlanView: View {
-    @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State var fileName: String = ""
