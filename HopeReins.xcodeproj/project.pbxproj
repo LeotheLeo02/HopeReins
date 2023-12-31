@@ -19,6 +19,9 @@
 		BE1711042ACB38BD00CC27BB /* RidingLessonPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */; };
 		BE31D0FA2B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31D0F92B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift */; };
 		BE31D0FC2B3A172400DDE782 /* ReEvalFillInInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31D0FB2B3A172400DDE782 /* ReEvalFillInInput.swift */; };
+		BE31DFA82B40F9C2006E4806 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31DFA72B40F9C2006E4806 /* LoginView.swift */; };
+		BE31DFAB2B40F9E3006E4806 /* ProfileLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31DFAA2B40F9E3006E4806 /* ProfileLoginView.swift */; };
+		BE31DFB02B40FC47006E4806 /* SetupUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE31DFAF2B40FC47006E4806 /* SetupUsersView.swift */; };
 		BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */; };
 		BE3D070E2B0A700B00953754 /* PatientSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D070D2B0A700B00953754 /* PatientSearch.swift */; };
 		BE46B1472B3889A0004C279D /* MultiSelectOthers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE46B1462B3889A0004C279D /* MultiSelectOthers.swift */; };
@@ -38,7 +41,6 @@
 		BE8E47602B3FD49D0075CEEE /* SnapshotChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E475F2B3FD49D0075CEEE /* SnapshotChange.swift */; };
 		BE8E47622B3FD4BA0075CEEE /* ResettableProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47612B3FD4BA0075CEEE /* ResettableProperties.swift */; };
 		BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47632B3FD5230075CEEE /* HomeView.swift */; };
-		BE8E47672B3FD6520075CEEE /* SetupUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47662B3FD6520075CEEE /* SetupUsersView.swift */; };
 		BE93578F2B3C9F120058198E /* BasicTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE93578E2B3C9F120058198E /* BasicTextField.swift */; };
 		BE9357912B3CA5010058198E /* DateSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357902B3CA5010058198E /* DateSelection.swift */; };
 		BE9357932B3CC2ED0058198E /* Reflectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357922B3CC2EC0058198E /* Reflectable.swift */; };
@@ -75,6 +77,9 @@
 		BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlanView.swift; sourceTree = "<group>"; };
 		BE31D0F92B3A16F500DDE782 /* RecommendedPhysicalTherabyFillIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedPhysicalTherabyFillIn.swift; sourceTree = "<group>"; };
 		BE31D0FB2B3A172400DDE782 /* ReEvalFillInInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReEvalFillInInput.swift; sourceTree = "<group>"; };
+		BE31DFA72B40F9C2006E4806 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		BE31DFAA2B40F9E3006E4806 /* ProfileLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLoginView.swift; sourceTree = "<group>"; };
+		BE31DFAF2B40FC47006E4806 /* SetupUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupUsersView.swift; sourceTree = "<group>"; };
 		BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientFilesSearch.swift; sourceTree = "<group>"; };
 		BE3D070D2B0A700B00953754 /* PatientSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSearch.swift; sourceTree = "<group>"; };
 		BE46B1462B3889A0004C279D /* MultiSelectOthers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectOthers.swift; sourceTree = "<group>"; };
@@ -94,7 +99,6 @@
 		BE8E475F2B3FD49D0075CEEE /* SnapshotChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotChange.swift; sourceTree = "<group>"; };
 		BE8E47612B3FD4BA0075CEEE /* ResettableProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResettableProperties.swift; sourceTree = "<group>"; };
 		BE8E47632B3FD5230075CEEE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		BE8E47662B3FD6520075CEEE /* SetupUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupUsersView.swift; sourceTree = "<group>"; };
 		BE93578E2B3C9F120058198E /* BasicTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTextField.swift; sourceTree = "<group>"; };
 		BE9357902B3CA5010058198E /* DateSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelection.swift; sourceTree = "<group>"; };
 		BE9357922B3CC2EC0058198E /* Reflectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reflectable.swift; sourceTree = "<group>"; };
@@ -172,13 +176,13 @@
 		BE16E2052AAEB20B004052B8 /* HopeReins */ = {
 			isa = PBXGroup;
 			children = (
-				BE8E47652B3FD61F0075CEEE /* SetupUsers */,
+				BE8E47652B3FD61F0075CEEE /* Auth */,
 				BEED21CC2B3C9EA20072DE52 /* BasicFields */,
 				BEA5595D2B3A714700507A73 /* FillIns */,
-				BEAF23A02B3A46C600211039 /* Tables */,
 				BE46B1452B388993004C279D /* Toggles */,
-				BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */,
+				BEAF23A02B3A46C600211039 /* Tables */,
 				BEDFE4C52B364CC4002D75FE /* FakeView.swift */,
+				BE16E2062AAEB20B004052B8 /* HopeReinsApp.swift */,
 				BE72EDBC2B335759006D227C /* Models */,
 				BE676A4F2AD63EE800E8ADD7 /* Utils */,
 				BED042EC2ABC7B9700958DB9 /* Tab.swift */,
@@ -217,6 +221,15 @@
 				BE1711032ACB38BD00CC27BB /* RidingLessonPlanView.swift */,
 			);
 			path = Adaptive_Riding;
+			sourceTree = "<group>";
+		};
+		BE31DFA92B40F9D4006E4806 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				BE31DFA72B40F9C2006E4806 /* LoginView.swift */,
+				BE31DFAA2B40F9E3006E4806 /* ProfileLoginView.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 		BE46B1452B388993004C279D /* Toggles */ = {
@@ -295,12 +308,13 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
-		BE8E47652B3FD61F0075CEEE /* SetupUsers */ = {
+		BE8E47652B3FD61F0075CEEE /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				BE8E47662B3FD6520075CEEE /* SetupUsersView.swift */,
+				BE31DFA92B40F9D4006E4806 /* Login */,
+				BE31DFAF2B40FC47006E4806 /* SetupUsersView.swift */,
 			);
-			path = SetupUsers;
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		BEA5595D2B3A714700507A73 /* FillIns */ = {
@@ -436,6 +450,7 @@
 				BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */,
 				BE93578F2B3C9F120058198E /* BasicTextField.swift in Sources */,
 				BE46B1472B3889A0004C279D /* MultiSelectOthers.swift in Sources */,
+				BE31DFAB2B40F9E3006E4806 /* ProfileLoginView.swift in Sources */,
 				BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */,
 				BEED21CB2B3C9CDB0072DE52 /* RestrictedNumberField.swift in Sources */,
 				BE72EDBE2B3357AA006D227C /* UploadFile.swift in Sources */,
@@ -445,6 +460,7 @@
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
 				BE8E475C2B3FD4560075CEEE /* ChangeRecordable.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
+				BE31DFB02B40FC47006E4806 /* SetupUsersView.swift in Sources */,
 				BEDFE4C82B364D8A002D75FE /* FormAddView.swift in Sources */,
 				BEB662BA2B335B000090BD87 /* User.swift in Sources */,
 				BE1711022ACB376E00CC27BB /* PhysicalTherabyFormType.swift in Sources */,
@@ -470,9 +486,9 @@
 				BE31D0FC2B3A172400DDE782 /* ReEvalFillInInput.swift in Sources */,
 				BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */,
 				BE06844E2AE0D01F004CABE7 /* FileUploadView.swift in Sources */,
+				BE31DFA82B40F9C2006E4806 /* LoginView.swift in Sources */,
 				BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */,
 				BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */,
-				BE8E47672B3FD6520075CEEE /* SetupUsersView.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
 				BECF5D7B2B092C2D0008459C /* RidingFileListView.swift in Sources */,
 				BE9357912B3CA5010058198E /* DateSelection.swift in Sources */,

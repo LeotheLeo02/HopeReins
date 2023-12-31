@@ -59,9 +59,6 @@ func uploadedFile(modelContext: ModelContext, fileType: String, fileId: UUID) th
         
         switch typeOfFile {
         case .releaseStatement, .coverLetter, .updateCoverLetter:
-            let predicate = #Predicate<UploadFile> { uploadedFile in
-                uploadedFile.medicalRecordFile.id == fileId
-            }
             let uploadedFiles = FetchDescriptor<UploadFile>(predicate: #Predicate { file in
                 file.medicalRecordFile.id == fileId
             })
@@ -73,9 +70,6 @@ func uploadedFile(modelContext: ModelContext, fileType: String, fileId: UUID) th
     if let typeOfFile = PhysicalTherabyFormType(rawValue: fileType) {
         switch typeOfFile {
         case .referral:
-            let predicate = #Predicate<UploadFile> { uploadedFile in
-                uploadedFile.medicalRecordFile.id == fileId
-            }
             let uploadedFiles = FetchDescriptor<UploadFile>(predicate: #Predicate { file in
                 file.medicalRecordFile.id == fileId
             })
