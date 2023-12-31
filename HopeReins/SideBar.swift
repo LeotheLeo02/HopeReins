@@ -20,9 +20,14 @@ struct Sidebar: View {
                         .resizable()
                         .frame(width: 50, height: 50, alignment: .center)
                     VStack(alignment: .leading) {
-                        Text(user.username)
-                            .bold()
-                        Text("Account")
+                        HStack {
+                            Text(user.username)
+                                .bold()
+                            if user.isAdmin {
+                                Image(systemName: "lock.shield.fill")
+                                    .font(.title)
+                            }
+                        }
                     }
                 }
                 .tag("Profile")

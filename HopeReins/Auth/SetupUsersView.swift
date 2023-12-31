@@ -35,19 +35,21 @@ struct SetupUsersView: View {
                 }
                 CustomSectionHeader(title: "Create Users:")
                 CreateUserView()
-                List {
-                    ForEach(users.filter { $0.isAdmin == false }) { user in
-                        HStack {
-                            Label(user.username, systemImage: "person.fill")
-                            Spacer()
-                            Button(action: {
-                                selectedUser = user
-                                showDeleteAlert.toggle()
-                            }, label: {
-                                Text("Delete")
-                            })
+                CustomSectionHeader(title: "Users:")
+                ForEach(users.filter { $0.isAdmin == false }) { user in
+                    HStack {
+                        Label(user.username, systemImage: "person.fill")
+                        Spacer()
+                        Button {
+                            selectedUser = user
+                            showDeleteAlert.toggle()
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundStyle(.red)
                         }
+                        .buttonStyle(.plain)
                     }
+                    .padding(.vertical)
                 }
             }
             .padding()
@@ -63,7 +65,7 @@ struct SetupUsersView: View {
             }
         }
         .toolbar {
-            if let _adminUser = adminUser {
+            if let _adminUser = adminUser, _adminUser.isLoggedIn == false {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         _adminUser.isLoggedIn = true

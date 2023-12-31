@@ -38,6 +38,10 @@ struct ProfileLoginView: View {
                 .frame(width: 50, height: 50, alignment: .center)
             Text(user.username)
                 .bold()
+            if user.isAdmin {
+                Image(systemName: "lock.shield.fill")
+                    .font(.title)
+            }
             Spacer()
         }
         .padding()

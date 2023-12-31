@@ -18,34 +18,52 @@ struct ProfileView: View {
     var user: User
     var body: some View {
         ScrollView {
-            VStack {
-                Picker(selection: $settingsType) {
-                    Text("Profile")
-                        .tag(SettingsType.profile)
-                    Text("Data")
-                        .tag(SettingsType.coreData)
-                } label: {
-                    Text("Settings")
+            if user.isAdmin {
+                VStack {
+                    Picker(selection: $settingsType) {
+                        Text("Profile")
+                            .tag(SettingsType.profile)
+                        Text("Data")
+                            .tag(SettingsType.coreData)
+                    } label: {
+                        Text("Settings")
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
                 }
-                .labelsHidden()
-                .pickerStyle(.segmented)
-                
-                switch settingsType {
-                case .coreData:
-                    CopyPathsView()
-                case .profile:
-                    VStack {
-                        Text(user.username)
-                        Button("Log out") {
-                            user.isLoggedIn = false
-                        }
-                    }
-                    if user.isAdmin {
-                        SetupUsersView()
-                    }
+                .padding()
+            }
+            switch settingsType {
+            case .coreData:
+                CopyPathsView()
+            case .profile:
+                ProfileInfoView(user: user)
+            }
+        }
+    }
+}
+
+
+struct ProfileInfoView: View {
+    var user: User
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text(user.username)
+                    .font(.largeTitle.bold())
+                if user.isAdmin {
+                    Image(systemName: "lock.shield.fill")
+                        .font(.largeTitle)
+                }
+                Spacer()
+                Button("Log out") {
+                    user.isLoggedIn = false
                 }
             }
             .padding()
+            if user.isAdmin {
+                SetupUsersView(adminUser: user)
+            }
         }
     }
 }
