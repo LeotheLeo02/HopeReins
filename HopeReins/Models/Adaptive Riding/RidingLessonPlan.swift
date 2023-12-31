@@ -15,7 +15,6 @@ extension HopeReinsSchemaV2 {
         typealias PropertiesType = RidingLessonProperties
         
         @Attribute(.unique) var id: UUID = UUID()
-        @Relationship(deleteRule: .cascade)
         var medicalRecordFile: MedicalRecordFile
         @Relationship(deleteRule: .cascade)
         var pastChanges: [PastChangeRidingLessonPlan] = [PastChangeRidingLessonPlan]()
@@ -29,12 +28,14 @@ extension HopeReinsSchemaV2 {
         
         func addChangeRecord(_ change: PastChangeRidingLessonPlan, modelContext: ModelContext) {
             pastChanges.append(change)
+            self.medicalRecordFile.digitalSignature.modified()
             try? modelContext.save()
         }
         
         func revertToProperties(_ properties: RidingLessonProperties, fileName: String, modelContext: ModelContext) {
             self.properties = properties
             self.medicalRecordFile.fileName = fileName
+            self.medicalRecordFile.digitalSignature.modified()
             try? modelContext.save()
         }
     }

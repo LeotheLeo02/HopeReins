@@ -16,6 +16,7 @@ extension HopeReinsSchemaV2 {
         var fileName: String
         var fileType: String
         var digitalSignature: DigitalSignature
+        var isDead: Bool = false
         
         init(id: UUID = UUID(), patient: Patient, fileName: String, fileType: String, digitalSignature: DigitalSignature) {
             self.id = id
@@ -24,16 +25,31 @@ extension HopeReinsSchemaV2 {
             self.fileType = fileType
             self.digitalSignature = digitalSignature
         }
+        
+        init(file: MedicalRecordFile) {
+            self.id = file.id
+            self.patient = file.patient
+            self.fileName = file.fileName
+            self.fileType = file.fileType
+            self.digitalSignature = file.digitalSignature
+        }
     }
     
     
     @Model class DigitalSignature {
         var author: String
-        var dateAdded: Date
+        var modification: String
+        var dateModified: Date
         
-        init(author: String, dateAdded: Date) {
+        init(author: String, modification: String, dateModified: Date) {
             self.author = author
-            self.dateAdded = dateAdded
+            self.modification = modification
+            self.dateModified = dateModified
+        }
+        
+        func modified() {
+            modification = FileModification.edited.rawValue
+            dateModified = .now
         }
     }
 }

@@ -158,7 +158,7 @@ struct RidingLessonPlanView: View {
     }
     
     func addFile() {
-        let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: DigitalSignature(author: username, dateAdded: .now))
+        let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: RidingFormType.ridingLessonPlan.rawValue, digitalSignature: DigitalSignature(author: username, modification: FileModification.added.rawValue, dateModified: .now))
         let properties = RidingLessonProperties(other: modifiedProperties)
         modelContext.insert(properties)
         try? modelContext.save()
@@ -168,4 +168,10 @@ struct RidingLessonPlanView: View {
     }
 }
 
+
+enum FileModification: String {
+    case added = "Created"
+    case edited = "Modified"
+    case deleted = "Deleted"
+}
 

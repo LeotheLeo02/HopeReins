@@ -22,7 +22,7 @@ extension PatientFilesListView {
                 }
                 // Check if the file date matches
                 if let date = criteria.date {
-                    matches = matches && Calendar.current.isDate(file.digitalSignature.dateAdded, inSameDayAs: date)
+                    matches = matches && Calendar.current.isDate(file.digitalSignature.dateModified, inSameDayAs: date)
                 }
                 // Check if the file type matches
                 if let fileType = criteria.fileType {
@@ -90,7 +90,7 @@ extension PatientFilesListView {
         dateFormatter.timeStyle = .none
 
         suggestions.formUnion(files
-            .map { dateFormatter.string(from: $0.digitalSignature.dateAdded) }
+            .map { dateFormatter.string(from: $0.digitalSignature.dateModified) }
             .filter { $0.contains(searchText) })
 
         return Array(suggestions)

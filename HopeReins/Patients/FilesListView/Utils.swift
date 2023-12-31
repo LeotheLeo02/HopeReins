@@ -34,7 +34,7 @@ struct UploadedListItem: View {
             }
             Text(file.fileName)
             Spacer()
-            Text("Created By: \(file.digitalSignature.author) \(file.digitalSignature.dateAdded.formatted())")
+            Text("\(file.digitalSignature.modification) By: \(file.digitalSignature.author) \(file.digitalSignature.dateModified.formatted())")
                 .font(.caption.italic())
         }
         .font(.title3)

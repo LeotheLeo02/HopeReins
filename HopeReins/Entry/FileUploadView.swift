@@ -144,7 +144,7 @@ struct FileUploadView: View {
                 }
             }
         }
-        let digitalSignature = DigitalSignature(author: user!.username, dateAdded: .now)
+        let digitalSignature = DigitalSignature(author: user!.username, modification: FileModification.added.rawValue, dateModified: .now)
         modelContext.insert(digitalSignature)
         let medicalRecordFile = MedicalRecordFile(patient: patient!, fileName: fileName, fileType: fileType, digitalSignature: digitalSignature)
         modelContext.insert(medicalRecordFile)

@@ -31,6 +31,7 @@ struct PatientFilesListView: View {
     let patient: Patient
     let patientId: UUID
     var user: User
+    var showDeadFiles: Bool
     @State var searchText = ""
     @Environment(\.modelContext) var modelContext
     @State var selectedFile: MedicalRecordFile?
@@ -39,12 +40,13 @@ struct PatientFilesListView: View {
     @State var selectedSpecificForm: String?
     @Query(sort: \MedicalRecordFile.fileType) var files: [MedicalRecordFile]
     
-    init (patient: Patient, user: User) {
+    init (patient: Patient, user: User, showDeadFiles: Bool) {
         self.patient = patient
         self.patientId = patient.id
+        self.showDeadFiles = showDeadFiles
         self.user = user
         let predicate = #Predicate<MedicalRecordFile> { patientFile in
-            patientFile.patient.id == patientId
+            patientFile.patient.id == patientId && patientFile.isDead == showDeadFiles
         }
         _files = Query(filter: predicate, sort: \MedicalRecordFile.fileType)
     }
@@ -74,7 +76,7 @@ struct PatientFilesListView: View {
     var body: some View {
         ScrollView {
             VStack {
-                if searchText.isEmpty {
+                if searchText.isEmpty && !showDeadFiles {
                     Picker(selection: $selectedFormType) {
                         Text("Adaptive Riding")
                             .tag(FormType.riding(.coverLetter))
@@ -154,15 +156,24 @@ struct PatientFilesListView: View {
 
 struct FilteredFilesList: View {
     @Environment(\.modelContext) var modelContext
+    @State var selectedFile: MedicalRecordFile? = nil
+    @State var showEditSheet: Bool = false
     var user: User
     var filteredFiles: [MedicalRecordFile]
     var body: some View {
-        ForEach(filteredFiles, id: \.self) { file in
-            NavigationLink {
-//                    FormEditView(file: file, user: user)
-            } label: {
-                UploadedListItem(file: file)
+        VStack {
+            ForEach(filteredFiles, id: \.self) { file in
+                Button {
+                    selectedFile = file
+                    showEditSheet.toggle()
+                } label: {
+                    UploadedListItem(file: file)
+                }
             }
         }
+        .sheet(isPresented: $showEditSheet, content: {
+            FormEditView(file: $selectedFile, user: user)
+        })
+        
     }
 }

@@ -13,7 +13,6 @@ extension HopeReinsSchemaV2 {
     @Model final class UploadFile: Revertible, ChangeRecordable {
         typealias PropertiesType = UploadFileProperties
         
-        @Relationship(deleteRule: .cascade)
         var medicalRecordFile: MedicalRecordFile
         @Relationship(deleteRule: .cascade)
         var pastChanges: [FileChange] = [FileChange]()
@@ -28,12 +27,14 @@ extension HopeReinsSchemaV2 {
         
         func addChangeRecord(_ change: FileChange, modelContext: ModelContext) {
             pastChanges.append(change)
+            self.medicalRecordFile.digitalSignature.modified()
             try? modelContext.save()
         }
         
         func revertToProperties(_ properties: UploadFileProperties, fileName: String, modelContext: ModelContext) {
             self.properties = properties
             self.medicalRecordFile.fileName = fileName
+            self.medicalRecordFile.digitalSignature.modified()
             try? modelContext.save()
         }
         

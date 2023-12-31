@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftData
 
 struct SetupUsersView: View {
+    @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
     @State var adminPassword: String = ""
     @State var showDeleteAlert: Bool = false
@@ -22,34 +23,13 @@ struct SetupUsersView: View {
         ScrollView {
             VStack {
                 if adminUser == nil {
-                    Text("Hope Reins EMR")
-                        .font(.largeTitle.bold())
-                    CustomSectionHeader(title: "Create Admin Account")
-                    SecureField("Password", text: $adminPassword)
-                        .textFieldStyle(.roundedBorder)
-                    Button("Create Admin Account") {
-                        let newAdmin = User(username: "Admin", password: adminPassword, isAdmin: true)
-                        modelContext.insert(newAdmin)
-                        adminUser = newAdmin
-                    }
+                    createAdminAccountView()
                 }
                 CustomSectionHeader(title: "Create Users:")
                 CreateUserView()
                 CustomSectionHeader(title: "Users:")
                 ForEach(users.filter { $0.isAdmin == false }) { user in
-                    HStack {
-                        Label(user.username, systemImage: "person.fill")
-                        Spacer()
-                        Button {
-                            selectedUser = user
-                            showDeleteAlert.toggle()
-                        } label: {
-                            Image(systemName: "trash")
-                                .foregroundStyle(.red)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.vertical)
+                    userItemLabel(user: user)
                 }
             }
             .padding()
@@ -77,11 +57,40 @@ struct SetupUsersView: View {
             }
         }
     }
+    
+    @ViewBuilder
+    func createAdminAccountView() -> some View {
+        Text("Hope Reins EMR")
+            .font(.largeTitle.bold())
+        CustomSectionHeader(title: "Create Admin Account")
+        SecureField("Password", text: $adminPassword)
+            .textFieldStyle(.roundedBorder)
+        Button("Create Admin Account") {
+            let newAdmin = User(username: "Admin", password: adminPassword, isAdmin: true)
+            modelContext.insert(newAdmin)
+            adminUser = newAdmin
+        }
+    }
+    
+    @ViewBuilder
+    func userItemLabel(user: User) -> some View {
+        HStack {
+            Label(user.username, systemImage: "person.fill")
+            Spacer()
+            Button {
+                selectedUser = user
+                showDeleteAlert.toggle()
+            } label: {
+                Image(systemName: "trash")
+                    .foregroundStyle(.red)
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(.vertical)
+        Divider()
+    }
 }
 
-#Preview {
-    SetupUsersView()
-}
 
 struct CreateUserView: View {
     @Environment(\.modelContext) var modelContext
@@ -98,10 +107,11 @@ struct CreateUserView: View {
                 Button(action: {
                     createUser()
                 }, label: {
-                    Text("Create User")
+                    Label("Create User", systemImage: "person.fill.badge.plus")
                 })
             }
         }
+        .padding()
     }
     func createUser() {
         let newUser = User(username: username, password: password)

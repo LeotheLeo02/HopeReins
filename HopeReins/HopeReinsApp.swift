@@ -29,7 +29,7 @@ struct HopeReinsApp: App {
             User.self,
             FileChange.self,
             RidingLessonPlan.self,
-            UploadFile.self
+            UploadFile.self,
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()
