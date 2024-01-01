@@ -10,22 +10,35 @@ import SwiftUI
 struct PhysicalTherapyFileListView: View {
     @Environment(\.modelContext) var modelContext
     var files: [MedicalRecordFile]
+    var isDeadFiles: Bool
     var user: User
     var body: some View {
         ForEach(PhysicalTherabyFormType.allCases, id: \.self) { formType in
-            DisclosureGroup(
-                content: {
-                    filesForPhysicalTherapyForm(formType)
-                },
-                label: {
-                    HStack {
-                        Text(formType.rawValue)
-                        Image(systemName: "\(fileCountFor(formType)).circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.gray)
+                if isDeadFiles {
+                    VStack {
+                        HStack {
+                            Text(formType.rawValue)
+                            Image(systemName: "\(fileCountFor(formType)).circle.fill")
+                                .font(.title3)
+                                .foregroundColor(.gray)
+                        }
+                        filesForPhysicalTherapyForm(formType)
                     }
+                } else {
+                    DisclosureGroup(
+                        content: {
+                            filesForPhysicalTherapyForm(formType)
+                        },
+                        label: {
+                            HStack {
+                                Text(formType.rawValue)
+                                Image(systemName: "\(fileCountFor(formType)).circle.fill")
+                                    .font(.title3)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    )
                 }
-            )
         }
 
     }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SingleSelectLastDescription: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State var otherString: String = ""
     @State var boolString: String = ""
@@ -48,6 +49,7 @@ struct SingleSelectLastDescription: View {
                         combinedString = ""
                     }
                 }
+                .disabled(!isEditable)
         }
     }
     func getStrings() {

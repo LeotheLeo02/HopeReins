@@ -12,6 +12,7 @@ import SwiftUI
 }
 
 struct MultiSelectOthers: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @State var otherString: String = ""
     @Binding var boolString: String
     var labels: [String]
@@ -46,6 +47,7 @@ struct MultiSelectOthers: View {
                             }
                         })
                         .buttonStyle(.plain)
+                        .disabled(!isEditable)
                         Text(label)
                     }
                     .padding()
@@ -67,12 +69,14 @@ struct MultiSelectOthers: View {
                             }
                         })
                         .buttonStyle(.plain)
+                        .disabled(!isEditable)
                         Text(otherObject)
                     }
                 }
                 HStack {
                     TextField("Other...", text: $otherString, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
+                        .disabled(!isEditable)
                     Spacer()
                     Button(action: {
                         boolString.append("*\(otherString)*")
@@ -80,6 +84,7 @@ struct MultiSelectOthers: View {
                     }, label: {
                         Image(systemName: "plus")
                     })
+                    .disabled(!isEditable)
                 }
             })
         }

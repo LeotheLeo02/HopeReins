@@ -12,11 +12,13 @@ struct FormEditView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @Binding var file: MedicalRecordFile?
+    @State var isEditable: Bool
     var user: User
     var body: some View {
         VStack {
             if let file  = file {
                 InputtedFileType(user: user, fileTypeString: file.fileType, medicalFile: file)
+                    .environment(\.isEditable, isEditable)
             }
         }
         .navigationTitle(file?.fileName ?? "")
@@ -25,6 +27,7 @@ struct FormEditView: View {
 }
 
 struct InputtedFileType: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Environment(\.modelContext) var modelContext
     var user: User
     var fileTypeString: String
@@ -41,6 +44,15 @@ struct InputtedFileType: View {
                     if let lessonPlan = try? fetchRidingLessonPlan(fileId: medicalFile.id) {
                         RidingLessonPlanView(lessonPlan: lessonPlan, username: user.username)
                     }
+                }
+            } else if let fileTypeString = PhysicalTherabyFormType(rawValue: fileTypeString) {
+                switch fileTypeString {
+                case .referral:
+                    if let uploadFile = try? fetchUploadFile(fileId: medicalFile.id) {
+                        FileUploadView(uploadFile: uploadFile, user: user)
+                    }
+                case  .dailyNote, .evaluation, .reEvaluation, .medicalForm, .missedVisit:
+                    Text("Nothing")
                 }
             }
             

@@ -9,6 +9,7 @@ import SwiftUI
 import NaturalLanguage
 
 struct LeRomTable: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State var tableData: [TableCellData] = []
 
@@ -43,6 +44,7 @@ struct LeRomTable: View {
                     combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
                     print(combinedString)
                 }
+                .environment(\.isEditable, isEditable)
             }
         }
         .onAppear {
@@ -101,6 +103,7 @@ struct LeRomTable: View {
 }
 
 struct EntryRowView: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @ObservedObject var rowData: TableCellData
     @Binding var combinedString: String
     @Binding var tableData: [TableCellData]
@@ -123,13 +126,13 @@ struct EntryRowView: View {
                 .frame(width: 100, alignment: .leading)
             
             RestrictedNumberField(range: range, number: $rowData.value1)
-                .disabled(rowData.isPain)
+                .disabled(rowData.isPain || !isEditable)
             RestrictedNumberField(range: range, number: $rowData.value2)
-                .disabled(rowData.isPain)
+                .disabled(rowData.isPain || !isEditable)
             DegreeField(degree: $rowData.value3)
-                .disabled(rowData.isPain)
+                .disabled(rowData.isPain || !isEditable)
             DegreeField(degree: $rowData.value4)
-                .disabled(rowData.isPain)
+                .disabled(rowData.isPain || !isEditable)
                 .onChange(of: rowData.value1) { oldValue, newValue in
                     updateParentCombinedString()
                 }

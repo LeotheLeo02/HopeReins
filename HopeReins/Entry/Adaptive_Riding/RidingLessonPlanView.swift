@@ -12,6 +12,7 @@ import SwiftData
 struct RidingLessonPlanView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
+    @Environment(\.isEditable) var isEditable: Bool
     @State var fileName: String = ""
     @State var modifiedProperties: RidingLessonProperties = RidingLessonProperties()
     @State var titleForChange: String = ""
@@ -46,6 +47,7 @@ struct RidingLessonPlanView: View {
             }
             .padding()
         }
+        .environment(\.isEditable, isEditable)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: {

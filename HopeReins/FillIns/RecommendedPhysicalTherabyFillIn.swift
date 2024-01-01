@@ -9,6 +9,7 @@ import SwiftUI
 
 
 struct RecommendedPhysicalTherabyFillIn: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State private var frequency: String = ""
     @State private var duration: String = ""
@@ -22,9 +23,11 @@ struct RecommendedPhysicalTherabyFillIn: View {
             HStack {
                 TextField("Frequency", text: $frequency)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(!isEditable)
                 Text("/wk x")
                 TextField("Duration", text: $duration)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(!isEditable)
             }
         }
         .onChange(of: frequency) { newValue in

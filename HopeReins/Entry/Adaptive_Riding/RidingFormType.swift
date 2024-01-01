@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum RidingFormType: String, CaseIterable {
+enum RidingFormType: String, CaseIterable, Hashable {
     case releaseStatement = "Release Statement"
     case coverLetter = "Cover Letter"
     case updateCoverLetter = "Update Cover Letter"

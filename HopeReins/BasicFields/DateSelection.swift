@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DateSelection: View {
+    @Environment(\.isEditable) var isEditable: Bool
     var title: String
     var hourAndMinute: Bool
     @Binding var date: Date
@@ -17,9 +18,11 @@ struct DateSelection: View {
                 if hourAndMinute {
                     DatePicker("", selection: $date)
                         .labelsHidden()
+                        .disabled(!isEditable)
                 } else {
                     DatePicker("", selection: $date, displayedComponents: .date)
                         .labelsHidden()
+                        .disabled(!isEditable)
                 }
             }
             .padding(.bottom)

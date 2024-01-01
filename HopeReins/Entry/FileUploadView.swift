@@ -10,6 +10,7 @@ import SwiftUI
 struct FileUploadView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
+    @Environment(\.isEditable) var isEditable: Bool
     @State var fileName: String = ""
     @State var modifiedProperties: UploadFileProperties = UploadFileProperties()
     @State var titleForChange: String = ""

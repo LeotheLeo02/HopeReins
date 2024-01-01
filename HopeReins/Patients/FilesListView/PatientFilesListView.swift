@@ -17,15 +17,63 @@ enum FormType: Hashable {
     case physicalTherapy(PhysicalTherabyFormType)
     case riding(RidingFormType)
 
+    var stringValue: String {
+        switch self {
+        case .physicalTherapy(let type):
+            return "physicalTherapy.\(type.rawValue)"
+        case .riding(let type):
+            return "riding.\(type.rawValue)"
+        }
+    }
+
+    func nestedCases() -> [String] {
+        switch self {
+        case .physicalTherapy(_):
+            return PhysicalTherabyFormType.allCases.map { $0.rawValue }
+        case .riding(_):
+            return RidingFormType.allCases.map { $0.rawValue }
+        }
+    }
+    
     static func from(string: String) -> FormType? {
-        if let physicalTherapyForm = PhysicalTherabyFormType(rawValue: string) {
-            return .physicalTherapy(physicalTherapyForm)
-        } else if let ridingForm = RidingFormType(rawValue: string) {
-            return .riding(ridingForm)
+        let components = string.split(separator: ".")
+        guard components.count == 2 else { return nil }
+        let typePart = String(components[0])
+        let valuePart = String(components[1])
+
+        switch typePart {
+        case "physicalTherapy":
+            if let type = PhysicalTherabyFormType(rawValue: valuePart) {
+                return .physicalTherapy(type)
+            }
+        case "riding":
+            if let type = RidingFormType(rawValue: valuePart) {
+                return .riding(type)
+            }
+        default:
+            return nil
         }
         return nil
     }
 }
+extension FormType: CaseIterable {
+    static var allCases: [FormType] {
+        var cases = [FormType]()
+        
+        // Add all cases of physicalTherapy
+        for physicalCase in PhysicalTherabyFormType.allCases {
+            cases.append(.physicalTherapy(physicalCase))
+        }
+        
+        // Add all cases of riding
+        for ridingCase in RidingFormType.allCases {
+            cases.append(.riding(ridingCase))
+        }
+        
+        return cases
+    }
+}
+
 
 struct PatientFilesListView: View {
     let patient: Patient
@@ -76,7 +124,7 @@ struct PatientFilesListView: View {
     var body: some View {
         ScrollView {
             VStack {
-                if searchText.isEmpty && !showDeadFiles {
+                if searchText.isEmpty {
                     Picker(selection: $selectedFormType) {
                         Text("Adaptive Riding")
                             .tag(FormType.riding(.coverLetter))
@@ -89,12 +137,12 @@ struct PatientFilesListView: View {
                     .pickerStyle(.segmented)
                     switch selectedFormType {
                     case .physicalTherapy(_):
-                        PhysicalTherapyFileListView(files: physicalTherapyFiles, user: user)
+                        FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles)
                     case .riding(_):
-                        RidingFileListView(files: ridingFiles, user: user)
+                        FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles)
                     }
                 } else {
-                    FilteredFilesList(user: user, filteredFiles: filteredFiles)
+                    FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles)
                 }
             }
             .padding()
@@ -160,6 +208,7 @@ struct FilteredFilesList: View {
     @State var showEditSheet: Bool = false
     var user: User
     var filteredFiles: [MedicalRecordFile]
+    var isEditable: Bool
     var body: some View {
         VStack {
             ForEach(filteredFiles, id: \.self) { file in
@@ -172,7 +221,7 @@ struct FilteredFilesList: View {
             }
         }
         .sheet(isPresented: $showEditSheet, content: {
-            FormEditView(file: $selectedFile, user: user)
+            FormEditView(file: $selectedFile, isEditable: isEditable, user: user)
         })
         
     }

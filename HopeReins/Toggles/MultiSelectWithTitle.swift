@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MultiSelectWithTitle: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var boolString: String
     @State private var toggleElements: [ToggleWithTitle] = []
     var labels: [String]
@@ -30,6 +31,7 @@ struct MultiSelectWithTitle: View {
         LazyVGrid(columns: columns, content: {
                 ForEach(toggleElements.indices, id: \.self) { index in
                     DescriptionView(boolString: $boolString, toggleElement: $toggleElements[index], index: index, coordinator: Coordinator(self))
+                        .environment(\.isEditable, isEditable)
                 }
         })
         .onChange(of: toggleElements) { _ in
@@ -85,6 +87,7 @@ struct ToggleWithTitle: Identifiable, Equatable{
 
 
 struct DescriptionView: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var boolString: String
     @Binding var toggleElement: ToggleWithTitle
     var index: Int
@@ -118,6 +121,7 @@ struct DescriptionView: View {
             Text(toggleElement.title)
             TextField("Description", text: $toggleElement.description, axis: .vertical)
                 .textFieldStyle(.roundedBorder)
+                .disabled(!isEditable)
                 .onChange(of: toggleElement.description) { newValue in
                     coordinator.updateString(index: index, newValue: newValue)
                     print(boolString)

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReEvalFillInInput: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State private var totalTreatments: Int = 0
     @State private var fromDate: Date = .now
@@ -30,10 +31,12 @@ struct ReEvalFillInInput: View {
                 Text("Total treatments:")
                 TextField("Enter total treatments", value: $totalTreatments, formatter: NumberFormatter())
                     .textFieldStyle(.roundedBorder)
+                    .disabled(!isEditable)
             }
             HStack {
                 Text("from:")
                 DatePicker("", selection: $fromDate)
+                    .disabled(!isEditable)
             }
             HStack {
                 Text("to:")
@@ -43,6 +46,7 @@ struct ReEvalFillInInput: View {
                 Text("Treatments missed:")
                 TextField("Enter missed treatments", value: $missedTreatments, formatter: NumberFormatter())
                     .textFieldStyle(.roundedBorder)
+                    .disabled(!isEditable)
             }
         }
         .onChange(of: totalTreatments) { newValue in

@@ -13,23 +13,34 @@ struct RidingFileListView: View {
     @State var showEditSheet: Bool = false
     @State var selectedFile: MedicalRecordFile? = nil
     @State var showDeletionConfirmation: Bool = false
+    var isDead: Bool
     var files: [MedicalRecordFile]
     var user: User
     var body: some View {
         ForEach(RidingFormType.allCases, id: \.self) { formType in
-            DisclosureGroup(
-                content: {
-                    filesForRidingForm(formType)
-                },
-                label: {
-                    HStack {
-                        Text(formType.rawValue)
-                        Image(systemName: "\(fileCountFor(formType)).circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.gray)
-                    }
+            if isDead {
+                HStack {
+                    Text(formType.rawValue)
+                    Image(systemName: "\(fileCountFor(formType)).circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.gray)
                 }
-            )
+                filesForRidingForm(formType)
+            } else {
+                DisclosureGroup(
+                    content: {
+                        filesForRidingForm(formType)
+                    },
+                    label: {
+                        HStack {
+                            Text(formType.rawValue)
+                            Image(systemName: "\(fileCountFor(formType)).circle.fill")
+                                .font(.title3)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                )
+            }
         }
         .sheet(isPresented: $showEditSheet, content: {
             FormEditView(file: $selectedFile, user: user)
@@ -68,35 +79,10 @@ struct RidingFileListView: View {
                     message: Text("Are you sure you want to delete \"\(file.fileName)\"? This action cannot be undone."),
                     primaryButton: .destructive(Text("Delete")) {
                         file.isDead = true
-                        if let fileTypeString = RidingFormType(rawValue: file.fileType) {
-                            switch fileTypeString {
-                            case .releaseStatement, .coverLetter, .updateCoverLetter:
-                                if let uploadFile = try? fetchUploadFile(fileId: file.id) {
-                                    modelContext.delete(uploadFile)
-                                }
-                            case .ridingLessonPlan:
-                                if let lessonPlan = try? fetchRidingLessonPlan(fileId: file.id) {
-                                    modelContext.delete(lessonPlan)
-                                }
-                            }
-                        }
                     },
                     secondaryButton: .cancel()
                 )
             }
         }
-    }
-    func fetchRidingLessonPlan(fileId: UUID) throws -> RidingLessonPlan? {
-        let lessonPlans = FetchDescriptor<RidingLessonPlan>(predicate: #Predicate { file in
-            file.medicalRecordFile.id == fileId
-        })
-        return try modelContext.fetch(lessonPlans).first
-    }
-    func fetchUploadFile(fileId: UUID) throws -> UploadFile? {
-        let uploadFiles = FetchDescriptor<UploadFile>(predicate: #Predicate { file in
-            file.medicalRecordFile.id == fileId
-        })
-        
-        return try modelContext.fetch(uploadFiles).first
     }
 }

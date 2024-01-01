@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DailyNoteFillIn: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State private var extractedOnDate: Date = .now
     @State private var extractedFromDate: Date = .now
@@ -28,14 +29,17 @@ struct DailyNoteFillIn: View {
             HStack {
                 Text("On")
                 DatePicker("", selection: $extractedOnDate, displayedComponents: .date)
+                    .disabled(!isEditable)
             }
             HStack {
                 Text("from:")
                 DatePicker("", selection: $extractedFromDate, displayedComponents: .hourAndMinute)
+                    .disabled(!isEditable)
             }
             HStack {
                 Text("to:")
                 DatePicker("", selection: $extractedToDate, displayedComponents: .hourAndMinute)
+                    .disabled(!isEditable)
             }
         }
         .padding()

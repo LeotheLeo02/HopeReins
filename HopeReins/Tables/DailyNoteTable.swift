@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DailyNoteTable: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State private var tableData: [DailyNoteTableCell]
 
@@ -37,6 +38,7 @@ struct DailyNoteTable: View {
             ForEach(tableData) { rowData in
                 EntryRowDailyNoteTable(rowData: rowData, combinedString: $combinedString, tableData: $tableData)
                     .padding(.vertical, 8)
+                    .environment(\.isEditable, isEditable)
             }
         }
     }
@@ -65,6 +67,7 @@ struct DailyNoteTable: View {
 }
 
 struct EntryRowDailyNoteTable: View {
+    @Environment(\.isEditable) var isEditable: Bool
     @State var rowData: DailyNoteTableCell
     @Binding var combinedString: String
     @Binding var tableData: [DailyNoteTableCell]
@@ -76,7 +79,8 @@ struct EntryRowDailyNoteTable: View {
                      updateCombinedString()
                  }
                  .frame(width: 50)
-
+                 .disabled(!isEditable)
+            
              Text(rowData.code)
                  .frame(width: 100)
 
