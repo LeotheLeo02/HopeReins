@@ -75,6 +75,10 @@ extension FormType: CaseIterable {
 }
 
 
+import SwiftUI
+
+// Assuming all the required models and enums (Patient, User, MedicalRecordFile, FormType, etc.) are defined elsewhere
+
 struct PatientFilesListView: View {
     let patient: Patient
     let patientId: UUID
@@ -88,7 +92,7 @@ struct PatientFilesListView: View {
     @State var selectedSpecificForm: String?
     @Query(sort: \MedicalRecordFile.fileType) var files: [MedicalRecordFile]
     
-    init (patient: Patient, user: User, showDeadFiles: Bool) {
+    init(patient: Patient, user: User, showDeadFiles: Bool) {
         self.patient = patient
         self.patientId = patient.id
         self.showDeadFiles = showDeadFiles
@@ -99,51 +103,13 @@ struct PatientFilesListView: View {
         _files = Query(filter: predicate, sort: \MedicalRecordFile.fileType)
     }
     
-    private var physicalTherapyFiles: [MedicalRecordFile] {
-        files.filter {
-            if let formType = FormType.from(string: $0.fileType) {
-                if case .physicalTherapy(_) = formType {
-                    return true
-                }
-            }
-            return false
-        }
-    }
-    
-    private var ridingFiles: [MedicalRecordFile] {
-        files.filter {
-            if let formType = FormType.from(string: $0.fileType) {
-                if case .riding(_) = formType {
-                    return true
-                }
-            }
-            return false
-        }
-    }
-    
     var body: some View {
         ScrollView {
             VStack {
-                if searchText.isEmpty {
-                    Picker(selection: $selectedFormType) {
-                        Text("Adaptive Riding")
-                            .tag(FormType.riding(.coverLetter))
-                        Text("Phyisical Theraby")
-                            .tag(FormType.physicalTherapy(.referral))
-                    } label: {
-                        Text("Form Type")
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.segmented)
-                    switch selectedFormType {
-                    case .physicalTherapy(_):
-                        FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles)
-                    case .riding(_):
-                        FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles)
-                    }
-                } else {
-                    FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles)
-                }
+                deletedFilesLink
+                Divider()
+                formTypePicker
+                formTypeContent
             }
             .padding()
         }
@@ -161,46 +127,83 @@ struct PatientFilesListView: View {
         .navigationTitle(patient.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Menu {
-                    Section {
-                        ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
-                            Button {
-                                    selectedSpecificForm = rideForm.rawValue
-                                    addFile.toggle()
-                            } label: {
-                                Text(rideForm.rawValue)
-                            }
-                        }
-                    } header: {
-                        Text("Adpative Riding")
-                            .bold()
-                            .underline()
-                    }
-                    
-                    Section {
-                        ForEach(PhysicalTherabyFormType.allCases, id: \.rawValue) { phyiscalForm in
-                            Button  {
-                                    selectedSpecificForm = phyiscalForm.rawValue
-                                    addFile.toggle()
-                            } label: {
-                                Text(phyiscalForm.rawValue)
-                            }
-                            
-                        }
-                    } header: {
-                        Text("Physical Theraby")
-                            .bold()
-                            .underline()
-                    }
-                    
-                    
-                } label: {
-                    Image(systemName: "plus")
-                }
+                toolbarMenu
             }
         }
     }
+
+    private var deletedFilesLink: some View {
+        NavigationLink {
+            Text("Hello")  // Placeholder for the destination view
+        } label: {
+            HStack {
+                Image(systemName: "trash.fill")
+                Text("Deleted Files")
+                Spacer()
+                Image(systemName: "chevron.right")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.white)
+        }
+        .buttonStyle(.borderedProminent)
+    }
+
+    private var formTypePicker: some View {
+        Picker(selection: $selectedFormType) {
+            Text("Adaptive Riding").tag(FormType.riding(.coverLetter))
+            Text("Physical Therapy").tag(FormType.physicalTherapy(.referral))
+        } label: {
+            Text("Form Type")
+        }
+        .labelsHidden()
+        .pickerStyle(.segmented)
+    }
+    
+    private var formTypeContent: some View {
+        Group {
+            if searchText.isEmpty {
+                switch selectedFormType {
+                case .physicalTherapy(_):
+                    FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles)
+                case .riding(_):
+                    FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles)
+                }
+            } else {
+                FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles)
+            }
+        }
+    }
+
+    private var toolbarMenu: some View {
+        Menu {
+            Section(header: Text("Adaptive Riding").bold().underline()) {
+                ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
+                    Button {
+                        selectedSpecificForm = rideForm.rawValue
+                        addFile.toggle()
+                    } label: {
+                        Text(rideForm.rawValue)
+                    }
+                }
+            }
+            
+            Section(header: Text("Physical Therapy").bold().underline()) {
+                ForEach(PhysicalTherabyFormType.allCases, id: \.rawValue) { physicalForm in
+                    Button {
+                        selectedSpecificForm = physicalForm.rawValue
+                        addFile.toggle()
+                    } label: {
+                        Text(physicalForm.rawValue)
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: "plus")
+        }
+    }
 }
+
+
 
 struct FilteredFilesList: View {
     @Environment(\.modelContext) var modelContext

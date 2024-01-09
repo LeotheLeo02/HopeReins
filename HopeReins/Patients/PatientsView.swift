@@ -54,7 +54,7 @@ struct PatientsView: View {
         var size: CGFloat
         var body: some View {
             NavigationLink {
-                PatientDetailsView(user: user, patient: patient)
+                PatientFilesListView(patient: patient, user: user, showDeadFiles: false)
             } label: {
                 HStack {
                     Spacer()
@@ -88,27 +88,6 @@ struct PatientsView: View {
             }
             .frame(maxWidth: .infinity)
             .background(.bar)
-        }
-    }
-}
-
-struct PatientDetailsView: View {
-    var user: User
-    var patient: Patient
-    var body: some View {
-        VStack {
-            NavigationLink {
-                PatientFilesListView(patient: patient, user: user, showDeadFiles: true)
-            } label: {
-                HStack {
-                    Text("Deleted Files")
-                    Image(systemName: "trash.fill")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                }
-                .font(.caption)
-            }
-            PatientFilesListView(patient: patient, user: user, showDeadFiles: false)
         }
     }
 }

@@ -17,8 +17,89 @@ struct FileListView: View {
     var formType: FormType
     var isEditable: Bool
 
-    
-    func cases(for formType: FormType) -> [String] {
+    private var fileGroups: [(String, [MedicalRecordFile])] {
+        cases(for: formType).map { formTypeRaw in
+            (formTypeRaw, filesForForm(formTypeRaw: formTypeRaw))
+        }
+    }
+
+    var body: some View {
+        VStack {
+            if fileGroups.allSatisfy({ $0.1.isEmpty }) {
+                emptyStateView
+            } else {
+                fileGroupsView
+            }
+        }
+        .sheet(isPresented: $showEditSheet, content: {
+            FormEditView(file: $selectedFile, isEditable: isEditable, user: user)
+        })
+    }
+
+    private var fileGroupsView: some View {
+        ForEach(fileGroups, id: \.0) { group in
+            if !group.1.isEmpty {
+                fileGroupDisclosureGroup(group)
+            }
+        }
+    }
+
+    private var emptyStateView: some View {
+        Label("No Files Here...", systemImage: "tray.fill")
+            .font(.title3.bold())
+            .foregroundStyle(.gray)
+            .padding()
+    }
+
+    private func fileGroupDisclosureGroup(_ group: (String, [MedicalRecordFile])) -> some View {
+        DisclosureGroup {
+            ForEach(group.1, id: \.id) { file in
+                fileButton(file)
+            }
+        } label: {
+            Label(group.0, systemImage: "\(group.1.count).circle.fill")
+                .font(.title3)
+        }
+    }
+
+    private func fileButton(_ file: MedicalRecordFile) -> some View {
+        Button {
+            selectedFile = file
+            showEditSheet.toggle()
+        } label: {
+            UploadedListItem(file: file)
+        }
+        .contextMenu {
+            if user.isAdmin {
+                deleteFileButton(file)
+            }
+        }
+        .alert(isPresented: $showDeletionConfirmation) {
+            deleteFileAlert(file)
+        }
+    }
+
+    private func deleteFileButton(_ file: MedicalRecordFile) -> some View {
+        Button {
+            showDeletionConfirmation.toggle()
+        } label: {
+            Text("Delete File")
+        }
+    }
+
+    private func deleteFileAlert(_ file: MedicalRecordFile) -> Alert {
+        Alert(
+            title: Text("Confirm Delete"),
+            message: Text("Are you sure you want to delete \"\(file.fileName)\"? This action cannot be undone."),
+            primaryButton: .destructive(Text("Delete")) {
+                file.isDead = true
+            },
+            secondaryButton: .cancel()
+        )
+    }
+
+
+    private func cases(for formType: FormType) -> [String] {
         switch formType {
         case .physicalTherapy(_):
             return PhysicalTherabyFormType.allCases.map { $0.rawValue }
@@ -27,57 +108,6 @@ struct FileListView: View {
         }
     }
 
-    var body: some View {
-        VStack {
-            let nestedCases = cases(for: formType)
-            ForEach(nestedCases, id: \.self) { nestedCase in
-                DisclosureGroup {
-                    ForEach(filesForForm(formTypeRaw: nestedCase), id: \.id) { file in
-                        Button {
-                            selectedFile = file
-                            showEditSheet.toggle()
-                        } label: {
-                            UploadedListItem(file: file)
-                        }
-                        .contextMenu {
-                            if user.isAdmin {
-                                Button {
-                                    showDeletionConfirmation.toggle()
-                                } label: {
-                                    Text("Delete File")
-                                }
-                            }
-                        }
-                        .alert(isPresented: $showDeletionConfirmation) {
-                            Alert(
-                                title: Text("Confirm Delete"),
-                                message: Text("Are you sure you want to delete \"\(file.fileName)\"? This action cannot be undone."),
-                                primaryButton: .destructive(Text("Delete")) {
-                                    file.isDead = true
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
-                    }
-                } label: {
-                    HStack {
-                        Text(nestedCase)
-                        Image(systemName: "\(fileCountFor(formTypeRaw: nestedCase)).circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.gray)
-                    }
-                }
-            }
-        }
-        .sheet(isPresented: $showEditSheet, content: {
-            FormEditView(file: $selectedFile, isEditable: isEditable, user: user)
-        })
-    }
-
-    // Update your helper functions to use a raw value (String) of the nested enum
-    private func fileCountFor(formTypeRaw: String) -> Int {
-        files.filter { $0.fileType == formTypeRaw }.count
-    }
 
     private func filesForForm(formTypeRaw: String) -> [MedicalRecordFile] {
         files.filter { $0.fileType == formTypeRaw }
