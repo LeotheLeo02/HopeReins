@@ -23,16 +23,22 @@ struct RidingLessonPlanView: View {
     var lessonPlan: RidingLessonPlan?
     var username: String
     var patient: Patient?
-    private var description: String {
-        guard let oldLessonProperties = lessonPlan?.properties else { return "" }
+    private var changeDescriptions: [String] {
+        guard let oldLessonProperties = lessonPlan?.properties else { return [] }
         
         let oldFileName = lessonPlan?.medicalRecordFile.fileName ?? "nil"
         let newFileName = fileName
         
         let fileNameChange = (oldFileName != newFileName) ?
-        "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\", " : ""
+        "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\"" : ""
         
-        return fileNameChange + RidingLessonProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
+        var totalChanges = RidingLessonProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
+        
+        if !fileNameChange.isEmpty {
+            totalChanges.append(fileNameChange)
+        }
+        
+        return totalChanges
     }
     
     
@@ -53,7 +59,7 @@ struct RidingLessonPlanView: View {
                 Button(action: {
                     dismiss()
                 }, label: {
-                    Text((lessonPlan == nil || !description.isEmpty) ? "Cancel" : "Done")
+                    Text((lessonPlan == nil || !changeDescriptions.isEmpty) ? "Cancel" : "Done")
                 })
             }
             if lessonPlan == nil {
@@ -67,7 +73,7 @@ struct RidingLessonPlanView: View {
                     })
                     .buttonStyle(.borderedProminent)
                 }
-            } else if !description.isEmpty {
+            } else if !changeDescriptions.isEmpty {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         showChanges.toggle()
@@ -83,7 +89,7 @@ struct RidingLessonPlanView: View {
             ReviewChangesView<RidingLessonPlan, PastChangeRidingLessonPlan>(
                 modifiedProperties: $modifiedProperties,
                 record: lessonPlan,
-                description: description,
+                changeDescriptions: changeDescriptions,
                 username: username,
                 oldFileName: lessonPlan!.medicalRecordFile.fileName,
                 fileName: fileName

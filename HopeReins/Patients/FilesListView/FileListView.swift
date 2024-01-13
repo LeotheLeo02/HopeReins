@@ -45,7 +45,7 @@ struct FileListView: View {
     }
 
     private var emptyStateView: some View {
-        Label("No Files Here...", systemImage: "tray.fill")
+        Label("No \(isEditable ? "" : "Deleted") Files Here...", systemImage: "tray.fill")
             .font(.title3.bold())
             .foregroundStyle(.gray)
             .padding()

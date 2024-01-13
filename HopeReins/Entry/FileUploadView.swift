@@ -17,16 +17,21 @@ struct FileUploadView: View {
     @State var showChanges: Bool = false
     @State var pastChangesExpanded: Bool = false 
     var uploadFile: UploadFile?
-    private var changeDescription: String {
-        guard let oldLessonProperties = uploadFile?.properties else { return "" }
+    private var changeDescriptions: [String] {
+        guard let oldLessonProperties = uploadFile?.properties else { return [] }
         
         let oldFileName = uploadFile?.medicalRecordFile.fileName ?? "nil"
         let newFileName = fileName
         
         let fileNameChange = (oldFileName != newFileName) ?
-            "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\", " : ""
+            "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\"" : ""
         
-        return fileNameChange + UploadFileProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
+        var totalChanges =  UploadFileProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
+        
+        if !fileNameChange.isEmpty {
+            totalChanges.append(fileNameChange)
+        }
+        return totalChanges
     }
 
     
@@ -50,7 +55,7 @@ struct FileUploadView: View {
                 Button(action: {
                     dismiss()
                 }, label: {
-                    Text((uploadFile == nil || !changeDescription.isEmpty) ? "Cancel" : "Done")
+                    Text((uploadFile == nil || !changeDescriptions.isEmpty) ? "Cancel" : "Done")
                 })
             }
             if uploadFile == nil {
@@ -64,7 +69,7 @@ struct FileUploadView: View {
                     })
                     .buttonStyle(.borderedProminent)
                 }
-            } else if !changeDescription.isEmpty {
+            } else if !changeDescriptions.isEmpty {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         showChanges.toggle()
@@ -80,7 +85,7 @@ struct FileUploadView: View {
             ReviewChangesView<UploadFile, FileChange>(
                 modifiedProperties: $modifiedProperties,
                 record: uploadFile,
-                description: changeDescription,
+                changeDescriptions: changeDescriptions,
                 username: user!.username,
                 oldFileName: uploadFile!.medicalRecordFile.fileName,
                 fileName: fileName
@@ -155,18 +160,10 @@ struct FileUploadView: View {
         modelContext.insert(dataFile)
         try? modelContext.save()
     }
-    func revertLessonPlan(otherProperties: UploadFileProperties, otherFileName: String) {
-        let oldProperties = uploadFile!.properties
-        uploadFile!.properties = otherProperties
-        modelContext.delete(oldProperties)
-        uploadFile!.medicalRecordFile.fileName = otherFileName
-        fileName = otherFileName
-        modifiedProperties = UploadFileProperties(other: uploadFile!.properties)
-        try? modelContext.save()
-    }
 }
 
 struct FileUploadButton: View {
+    @Environment(\.isEditable) var isEditable
     @Environment(\.modelContext) var modelContext
     @Binding var properties: UploadFileProperties
     var body: some View {
@@ -199,6 +196,7 @@ struct FileUploadButton: View {
             } label: {
                 Label("\(properties.data != .init() ? "Change" : "Import") File", systemImage: "\(properties.data != .init()  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
             }
+            .disabled(!isEditable)
         }
     }
 }

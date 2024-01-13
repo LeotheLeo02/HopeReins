@@ -12,9 +12,9 @@ protocol SnapshotChange {
     var properties: PropertiesType { get }
     var fileName: String { get }
     var title: String { get }
-    var changeDescription: String { get }
+    var changeDescriptions: [String] { get }
     var author: String { get }
     var date: Date { get }
 
-    init(properties: PropertiesType, fileName: String, title: String, changeDescription: String, author: String, date: Date)
+    init(properties: PropertiesType, fileName: String, title: String, changeDescriptions: [String], author: String, date: Date)
 }

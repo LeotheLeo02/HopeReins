@@ -89,15 +89,15 @@ extension HopeReinsSchemaV2 {
         var properties: RidingLessonProperties
         var fileName: String
         var title: String
-        var changeDescription: String
+        var changeDescriptions: [String]
         var author: String
         var date: Date
         
-        init(properties: RidingLessonProperties, fileName: String, title: String, changeDescription: String, author: String, date: Date) {
+        init(properties: RidingLessonProperties, fileName: String, title: String, changeDescriptions: [String], author: String, date: Date) {
             self.properties = properties
             self.fileName = fileName
             self.title = title
-            self.changeDescription = changeDescription
+            self.changeDescriptions = changeDescriptions
             self.author = author
             self.date = date
         }

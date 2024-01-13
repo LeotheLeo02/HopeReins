@@ -77,7 +77,6 @@ extension FormType: CaseIterable {
 
 import SwiftUI
 
-// Assuming all the required models and enums (Patient, User, MedicalRecordFile, FormType, etc.) are defined elsewhere
 
 struct PatientFilesListView: View {
     let patient: Patient
@@ -106,7 +105,6 @@ struct PatientFilesListView: View {
     var body: some View {
         ScrollView {
             VStack {
-                deletedFilesLink
                 Divider()
                 formTypePicker
                 formTypeContent
@@ -124,28 +122,18 @@ struct PatientFilesListView: View {
             FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user)
                 .frame(minWidth: 500, minHeight: 300)
         })
-        .navigationTitle(patient.name)
+        .navigationTitle(showDeadFiles ? "Deleted Files" : patient.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 toolbarMenu
             }
-        }
-    }
-
-    private var deletedFilesLink: some View {
-        NavigationLink {
-            Text("Hello")  // Placeholder for the destination view
-        } label: {
-            HStack {
-                Image(systemName: "trash.fill")
-                Text("Deleted Files")
-                Spacer()
-                Image(systemName: "chevron.right")
+            ToolbarItem(placement: .navigation) {
+                Image(systemName: "\(showDeadFiles ? "trash" : "person.fill")")
+                    .font(.title3)
+                    .foregroundStyle(showDeadFiles ? .red : .primary)
+                
             }
-            .font(.subheadline)
-            .foregroundStyle(.white)
         }
-        .buttonStyle(.borderedProminent)
     }
 
     private var formTypePicker: some View {

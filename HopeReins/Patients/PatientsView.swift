@@ -22,6 +22,11 @@ struct PatientsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
+                if filteredPatients.isEmpty {
+                    Label("No Patients Found", systemImage: "person.3.sequence")
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(.gray)
+                }
                 LazyVGrid(columns: columns, content: {
                     ForEach(filteredPatients) { patient in
                         GridLabel(user: user, patient: patient, size: itemSize)
@@ -54,7 +59,7 @@ struct PatientsView: View {
         var size: CGFloat
         var body: some View {
             NavigationLink {
-                PatientFilesListView(patient: patient, user: user, showDeadFiles: false)
+                PatientFilesView(user: user, patient: patient)
             } label: {
                 HStack {
                     Spacer()
@@ -89,5 +94,33 @@ struct PatientsView: View {
             .frame(maxWidth: .infinity)
             .background(.bar)
         }
+    }
+}
+
+struct PatientFilesView: View {
+    var user: User
+    var patient: Patient
+    var body: some View {
+        PatientFilesListView(patient: patient, user: user, showDeadFiles: false)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                deletedFilesLink
+            }
+    }
+    private var deletedFilesLink: some View {
+        NavigationLink {
+           PatientFilesListView(patient: patient, user: user, showDeadFiles: true)
+        } label: {
+            HStack {
+                Image(systemName: "trash.fill")
+                    .foregroundStyle(.red)
+                Text("Deleted Files")
+                Spacer()
+                Image(systemName: "chevron.right")
+            }
+            .font(.callout.bold())
+        }
+        .buttonStyle(.borderless)
+        .padding(5)
+        .background(.bar)
     }
 }

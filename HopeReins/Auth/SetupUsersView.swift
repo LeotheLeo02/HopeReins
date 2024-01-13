@@ -22,6 +22,10 @@ struct SetupUsersView: View {
     var body: some View {
         ScrollView {
             VStack {
+                if adminUser == nil || !adminUser!.isLoggedIn {
+                    Text("Hope Reins EMR")
+                        .font(.largeTitle.bold())
+                }
                 if adminUser == nil {
                     createAdminAccountView()
                 }
@@ -60,8 +64,6 @@ struct SetupUsersView: View {
     
     @ViewBuilder
     func createAdminAccountView() -> some View {
-        Text("Hope Reins EMR")
-            .font(.largeTitle.bold())
         CustomSectionHeader(title: "Create Admin Account")
         SecureField("Password", text: $adminPassword)
             .textFieldStyle(.roundedBorder)

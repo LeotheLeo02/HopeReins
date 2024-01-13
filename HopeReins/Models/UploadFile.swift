@@ -71,16 +71,16 @@ extension HopeReinsSchemaV2 {
         typealias PropertiesType = UploadFileProperties
         var properties: UploadFileProperties
         var fileName: String
-        var changeDescription: String
+        var changeDescriptions: [String]
         var title: String
         var author: String
         var date: Date
     
         
-        init(properties: UploadFileProperties, fileName: String, title: String, changeDescription: String, author: String, date: Date) {
+        init(properties: UploadFileProperties, fileName: String, title: String, changeDescriptions: [String], author: String, date: Date) {
             self.properties = properties
             self.fileName = fileName
-            self.changeDescription = changeDescription
+            self.changeDescriptions = changeDescriptions
             self.title = title
             self.author = author
             self.date = date

@@ -28,8 +28,11 @@ struct ChangeView<Record: ChangeRecordable & Revertible, Change: SnapshotChange>
             }
             .font(.caption)
             Divider()
-            Text(change.changeDescription)
-                .font(.caption2)
+            ForEach(change.changeDescriptions, id: \.self) { change in
+                Text(change)
+                    .font(.caption2)
+            }
+
             HStack {
                 Spacer()
                 Button("Revert To This Version") {
