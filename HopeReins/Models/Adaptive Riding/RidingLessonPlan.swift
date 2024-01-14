@@ -13,7 +13,7 @@ extension HopeReinsSchemaV2 {
     
     @Model final class RidingLessonPlan: Revertible, ChangeRecordable {
         typealias PropertiesType = RidingLessonProperties
-        
+        typealias ChangeType = PastChangeRidingLessonPlan 
         @Attribute(.unique) var id: UUID = UUID()
         var medicalRecordFile: MedicalRecordFile
         @Relationship(deleteRule: .cascade)
@@ -85,6 +85,8 @@ extension HopeReinsSchemaV2 {
     }
     
     @Model final class PastChangeRidingLessonPlan: SnapshotChange {
+        var id: UUID = UUID()
+        
         typealias PropertiesType = RidingLessonProperties
         var properties: RidingLessonProperties
         var fileName: String

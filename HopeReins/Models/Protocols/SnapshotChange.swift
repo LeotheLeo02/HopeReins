@@ -7,9 +7,10 @@
 
 import Foundation
 
-protocol SnapshotChange {
+protocol SnapshotChange: Identifiable {
     associatedtype PropertiesType: ResettableProperties
     var properties: PropertiesType { get }
+    var id: UUID { get }
     var fileName: String { get }
     var title: String { get }
     var changeDescriptions: [String] { get }

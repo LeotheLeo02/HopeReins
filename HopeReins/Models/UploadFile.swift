@@ -12,7 +12,6 @@ extension HopeReinsSchemaV2 {
     
     @Model final class UploadFile: Revertible, ChangeRecordable {
         typealias PropertiesType = UploadFileProperties
-        
         var medicalRecordFile: MedicalRecordFile
         @Relationship(deleteRule: .cascade)
         var pastChanges: [FileChange] = [FileChange]()
@@ -68,6 +67,8 @@ extension HopeReinsSchemaV2 {
     }
     
     @Model final class FileChange: SnapshotChange {
+        var id: UUID = UUID()
+        
         typealias PropertiesType = UploadFileProperties
         var properties: UploadFileProperties
         var fileName: String

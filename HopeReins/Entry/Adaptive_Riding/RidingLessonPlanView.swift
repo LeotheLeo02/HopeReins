@@ -15,7 +15,6 @@ struct RidingLessonPlanView: View {
     @Environment(\.isEditable) var isEditable: Bool
     @State var fileName: String = ""
     @State var modifiedProperties: RidingLessonProperties = RidingLessonProperties()
-    @State var titleForChange: String = ""
     @State var showChanges: Bool = false
     @State var pastChangesExpanded: Bool = false
     @Query(sort: \User.username, order: .forward)

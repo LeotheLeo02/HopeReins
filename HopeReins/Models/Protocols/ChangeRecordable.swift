@@ -9,7 +9,9 @@ import Foundation
 import SwiftData
 
 protocol ChangeRecordable {
-    associatedtype ChangeType
+    associatedtype PropertiesType: Reflectable
+    associatedtype ChangeType: SnapshotChange where ChangeType.PropertiesType == PropertiesType
     var pastChanges: [ChangeType] { get set }
+    
     func addChangeRecord(_ change: ChangeType, modelContext: ModelContext)
 }

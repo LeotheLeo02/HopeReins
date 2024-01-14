@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct ChangeView<Record: ChangeRecordable & Revertible, Change: SnapshotChange>: View where Record.ChangeType == Change, Record.PropertiesType == Change.PropertiesType {
+struct ChangeView<Record: ChangeRecordable & Revertible, Change: SnapshotChange>: View
+where Record.ChangeType == Change, Record.PropertiesType == Change.PropertiesType {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
 
