@@ -38,7 +38,7 @@ struct InputtedFileType: View {
                 switch fileTypeString {
                 case .releaseStatement, .coverLetter, .updateCoverLetter:
                     if let uploadFile = try? fetchUploadFile(fileId: medicalFile.id) {
-                        FileUploadView(uploadFile: uploadFile, user: user)
+                        EditingView<UploadFile>(modifiedProperties: UploadFileProperties(other: uploadFile.properties), initialFileName: uploadFile.medicalRecordFile.fileName, record: uploadFile, username: user.username)
                     }
                 case .ridingLessonPlan:
                     if let lessonPlan = try? fetchRidingLessonPlan(fileId: medicalFile.id) {
@@ -49,7 +49,7 @@ struct InputtedFileType: View {
                 switch fileTypeString {
                 case .referral:
                     if let uploadFile = try? fetchUploadFile(fileId: medicalFile.id) {
-                        FileUploadView(uploadFile: uploadFile, user: user)
+                        EditingView<UploadFile>(modifiedProperties: UploadFileProperties(other: uploadFile.properties), initialFileName: uploadFile.medicalRecordFile.fileName, record: uploadFile, username: user.username)
                     }
                 case  .dailyNote, .evaluation, .reEvaluation, .medicalForm, .missedVisit:
                     Text("Nothing")

@@ -34,7 +34,7 @@ extension PhysicalTherabyFormType: FormSpecialGroup {
     func view(for patient: Patient, user: User, physicalTherabyFormType: PhysicalTherabyFormType?, ridingFormType: RidingFormType?) -> AnyView {
         switch self {
         case .referral:
-            return AnyView(FileUploadView(phyiscalFormType: self, patient: patient, user: user))
+            return AnyView(EditingView<UploadFile>(modifiedProperties: UploadFileProperties(), initialFileName: "", username: user.username, patient: patient, phyiscalFormType: self))
         // Handle other cases
         default:
             return AnyView(EmptyView())
@@ -46,7 +46,7 @@ extension RidingFormType: FormSpecialGroup {
     func view(for patient: Patient, user: User, physicalTherabyFormType: PhysicalTherabyFormType?, ridingFormType: RidingFormType?) -> AnyView {
         switch self {
         case .releaseStatement, .coverLetter, .updateCoverLetter :
-            return AnyView(FileUploadView(ridingFormType: self, patient: patient, user: user))
+            return AnyView(EditingView<UploadFile>(modifiedProperties: UploadFileProperties(), initialFileName: "", username: user.username, patient: patient, ridingFormType: self))
         case .ridingLessonPlan:
             return AnyView(RidingLessonPlanView(username: user.username, patient: patient))
         default:

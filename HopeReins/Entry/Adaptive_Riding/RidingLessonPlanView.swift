@@ -23,21 +23,7 @@ struct RidingLessonPlanView: View {
     var username: String
     var patient: Patient?
     private var changeDescriptions: [String] {
-        guard let oldLessonProperties = lessonPlan?.properties else { return [] }
-        
-        let oldFileName = lessonPlan?.medicalRecordFile.fileName ?? "nil"
-        let newFileName = fileName
-        
-        let fileNameChange = (oldFileName != newFileName) ?
-        "File Name changed from \"\(oldFileName)\" to \"\(newFileName)\"" : ""
-        
-        var totalChanges = RidingLessonProperties.compareProperties(old: oldLessonProperties, new: modifiedProperties)
-        
-        if !fileNameChange.isEmpty {
-            totalChanges.append(fileNameChange)
-        }
-        
-        return totalChanges
+        return [] 
     }
     
     
@@ -85,14 +71,14 @@ struct RidingLessonPlanView: View {
             }
         }
         .sheet(isPresented: $showChanges, content: {
-            ReviewChangesView<RidingLessonPlan, PastChangeRidingLessonPlan>(
-                modifiedProperties: $modifiedProperties,
-                record: lessonPlan,
-                changeDescriptions: changeDescriptions,
-                username: username,
-                oldFileName: lessonPlan!.medicalRecordFile.fileName,
-                fileName: fileName
-            )
+//            ReviewChangesView<RidingLessonPlan, PastChangeRidingLessonPlan>(
+//                modifiedProperties: $modifiedProperties,
+//                record: lessonPlan,
+//                changeDescriptions: changeDescriptions,
+//                username: username,
+//                oldFileName: lessonPlan!.medicalRecordFile.fileName,
+//                fileName: fileName
+//            )
 
         })
         .onAppear {
@@ -120,20 +106,20 @@ struct RidingLessonPlanView: View {
     @ViewBuilder
     func pastChangesView() -> some View {
         ScrollView {
-            DisclosureGroup(isExpanded: $pastChangesExpanded) {
-                ForEach(lessonPlan?.pastChanges ?? [], id: \.self) { change in
-                    ChangeView<RidingLessonPlan, PastChangeRidingLessonPlan>(
-                        record: lessonPlan,
-                        fileName: $fileName,
-                        modifiedProperties: $modifiedProperties,
-                        onRevert: {
-                            revertToChange(change: change)
-                        }, change: change
-                    )
-                }
-            } label: {
-                CustomSectionHeader(title: "Past Changes")
-            }
+//            DisclosureGroup(isExpanded: $pastChangesExpanded) {
+//                ForEach(lessonPlan?.pastChanges ?? [], id: \.self) { change in
+//                    ChangeView<RidingLessonPlan, PastChangeRidingLessonPlan>(
+//                        record: lessonPlan,
+//                        fileName: $fileName,
+//                        modifiedProperties: $modifiedProperties,
+//                        onRevert: {
+//                            revertToChange(change: change)
+//                        }, change: change
+//                    )
+//                }
+//            } label: {
+//                CustomSectionHeader(title: "Past Changes")
+//            }
         }
     }
     @ViewBuilder

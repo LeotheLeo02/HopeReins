@@ -9,23 +9,19 @@ import SwiftUI
 
 protocol Reflectable {
     func toDictionary() -> [String: Any]
-    static func compareProperties(old: Reflectable, new: Reflectable) -> [String]
+    func compareProperties(with other: Reflectable) -> [String]
 }
 
 extension Reflectable {
-    static func compareProperties(old: Reflectable, new: Reflectable) -> [String] {
-        let oldDict = old.toDictionary()
-        let newDict = new.toDictionary()
+    func compareProperties(with other: Reflectable) -> [String] {
+        let oldDict = self.toDictionary()
+        let newDict = other.toDictionary()
         var changes = [String]()
-        
+
         for (key, oldValue) in oldDict {
             if let newValue = newDict[key], "\(newValue)" != "\(oldValue)" {
-                switch key {
-                case "data":
-                    changes.append("Changed File Data")
-                default:
-                    changes.append("\(key) changed from \"\(oldValue)\" to \"\(newValue)\"")
-                }
+                let changeDescription = key == "data" ? "Changed File Data" : "\(key) changed from \"\(oldValue)\" to \"\(newValue)\""
+                changes.append(changeDescription)
             }
         }
         
