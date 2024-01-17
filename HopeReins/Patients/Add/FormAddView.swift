@@ -48,7 +48,7 @@ extension RidingFormType: FormSpecialGroup {
         case .releaseStatement, .coverLetter, .updateCoverLetter :
             return AnyView(EditingView<UploadFile>(modifiedProperties: UploadFileProperties(), initialFileName: "", username: user.username, patient: patient, ridingFormType: self))
         case .ridingLessonPlan:
-            return AnyView(RidingLessonPlanView(username: user.username, patient: patient))
+            return AnyView(EditingView<RidingLessonPlan>(modifiedProperties: RidingLessonProperties(), initialFileName: "", username: user.username, patient: patient, ridingFormType: self))
         default:
             return AnyView(EmptyView())
         }

@@ -58,7 +58,7 @@ struct FileListView: View {
             }
         } label: {
             Label(group.0, systemImage: "\(group.1.count).circle.fill")
-                .font(.title3)
+                .font(.headline)
         }
     }
 

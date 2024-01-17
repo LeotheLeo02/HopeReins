@@ -42,7 +42,7 @@ struct InputtedFileType: View {
                     }
                 case .ridingLessonPlan:
                     if let lessonPlan = try? fetchRidingLessonPlan(fileId: medicalFile.id) {
-                        RidingLessonPlanView(lessonPlan: lessonPlan, username: user.username)
+                        EditingView<RidingLessonPlan>(modifiedProperties: RidingLessonProperties(other: lessonPlan.properties), initialFileName: lessonPlan.medicalRecordFile.fileName, record: lessonPlan, username: user.username)
                     }
                 }
             } else if let fileTypeString = PhysicalTherabyFormType(rawValue: fileTypeString) {

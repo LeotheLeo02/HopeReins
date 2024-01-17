@@ -135,7 +135,7 @@ struct EditingView<Record: ChangeRecordable & Revertible>: View where Record.Pro
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                if record != nil {
+                if record != nil && isEditable {
                     PastChangesView(modifiedProperties: $modifiedProperties, record: record, initialFileName: $initialFileName, fileName: $fileName)
                 }
                 formView

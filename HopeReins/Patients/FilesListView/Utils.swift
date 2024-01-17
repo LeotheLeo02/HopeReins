@@ -30,14 +30,18 @@ struct UploadedListItem: View {
     var body: some View {
         HStack {
             if let uploadedFile = try? uploadedFile(modelContext: modelContext, fileType: file.fileType, fileId: file.id) {
-                FilePreview(data: uploadedFile.properties.data, size: 25)
+                FilePreview(data: uploadedFile.properties.data, size: 30)
+            } else {
+                Image(systemName: "doc.fill")
+                    .font(.title3)
+                    .foregroundStyle(Color(.primary))
             }
             Text(file.fileName)
             Spacer()
             Text("\(file.digitalSignature.modification) By: \(file.digitalSignature.author) \(file.digitalSignature.dateModified.formatted())")
-                .font(.caption.italic())
+                .font(.caption2.italic())
         }
-        .font(.title3)
+        .font(.subheadline.bold())
         .padding()
     }
 }
