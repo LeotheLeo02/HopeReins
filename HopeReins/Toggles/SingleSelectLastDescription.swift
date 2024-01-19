@@ -70,6 +70,3 @@ struct SingleSelectLastDescription: View {
 
 
 
-#Preview {
-    FakeView()
-}

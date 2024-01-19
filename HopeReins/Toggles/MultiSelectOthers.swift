@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-#Preview {
-    FakeView()
-}
-
 struct MultiSelectOthers: View {
     @Environment(\.isEditable) var isEditable: Bool
     @State var otherString: String = ""

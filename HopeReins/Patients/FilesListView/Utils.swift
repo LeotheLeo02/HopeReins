@@ -23,7 +23,7 @@ struct FilePreview: View {
     }
 }
 
-struct UploadedListItem: View {
+struct ListItemLabel: View {
     @Environment(\.modelContext) var modelContext
     var file: MedicalRecordFile
     

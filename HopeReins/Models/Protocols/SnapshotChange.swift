@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import SwiftData
 
 protocol SnapshotChange: Identifiable {
     associatedtype PropertiesType: ResettableProperties
     var properties: PropertiesType { get }
     var id: UUID { get }
     var fileName: String { get }
+    var persistentModelID: PersistentIdentifier { get }
     var title: String { get }
     var changeDescriptions: [String] { get }
     var author: String { get }

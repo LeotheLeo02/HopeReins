@@ -207,7 +207,7 @@ struct FilteredFilesList: View {
                     selectedFile = file
                     showEditSheet.toggle()
                 } label: {
-                    UploadedListItem(file: file)
+                    ListItemLabel(file: file)
                 }
             }
         }

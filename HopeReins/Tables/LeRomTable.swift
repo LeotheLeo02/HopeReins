@@ -189,6 +189,3 @@ class TableCellData: Identifiable, ObservableObject, Equatable {
 }
 
 
-#Preview {
-    FakeView()
-}

@@ -67,7 +67,7 @@ struct FileListView: View {
             selectedFile = file
             showEditSheet.toggle()
         } label: {
-            UploadedListItem(file: file)
+            ListItemLabel(file: file)
         }
         .contextMenu {
             if user.isAdmin {

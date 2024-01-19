@@ -162,9 +162,4 @@ struct RidingLessonPlanView: View {
 }
 
 
-enum FileModification: String {
-    case added = "Created"
-    case edited = "Modified"
-    case deleted = "Deleted"
-}
 
