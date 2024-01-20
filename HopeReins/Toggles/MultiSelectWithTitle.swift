@@ -133,3 +133,19 @@ struct DescriptionView: View {
         return !toggleElement.description.isEmpty
     }
 }
+
+struct FakeView: View {
+    @State var boolString: String = ""
+    var body: some View {
+        ScrollView {
+            VStack {
+                SingleSelectLastDescription(combinedString: $boolString, lastDescription: true, title: "Level", labels: ["Independent", "SBA"])
+            }
+        }
+    }
+}
+
+#Preview {
+    FakeView()
+        .frame(width: 500)
+}
