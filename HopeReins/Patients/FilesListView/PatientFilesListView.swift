@@ -17,21 +17,19 @@ enum FormType: Hashable {
     case physicalTherapy(PhysicalTherabyFormType)
     case riding(RidingFormType)
 
+    
+    static var allCases: [FormType] {
+        // Combine all cases from both subtypes
+        return PhysicalTherabyFormType.allCases.map(FormType.physicalTherapy) +
+        RidingFormType.allCases.map(FormType.riding)
+    }
+    
     var stringValue: String {
         switch self {
         case .physicalTherapy(let type):
             return "physicalTherapy.\(type.rawValue)"
         case .riding(let type):
             return "riding.\(type.rawValue)"
-        }
-    }
-
-    func nestedCases() -> [String] {
-        switch self {
-        case .physicalTherapy(_):
-            return PhysicalTherabyFormType.allCases.map { $0.rawValue }
-        case .riding(_):
-            return RidingFormType.allCases.map { $0.rawValue }
         }
     }
     
@@ -56,24 +54,6 @@ enum FormType: Hashable {
         return nil
     }
 }
-extension FormType: CaseIterable {
-    static var allCases: [FormType] {
-        var cases = [FormType]()
-        
-        // Add all cases of physicalTherapy
-        for physicalCase in PhysicalTherabyFormType.allCases {
-            cases.append(.physicalTherapy(physicalCase))
-        }
-        
-        // Add all cases of riding
-        for ridingCase in RidingFormType.allCases {
-            cases.append(.riding(ridingCase))
-        }
-        
-        return cases
-    }
-}
-
 
 import SwiftUI
 
@@ -88,7 +68,7 @@ struct PatientFilesListView: View {
     @State var selectedFile: MedicalRecordFile?
     @State var selectedFormType: FormType = .riding(.coverLetter)
     @State var addFile: Bool = false
-    @State var selectedSpecificForm: String?
+    @State var selectedSpecificForm: FormType?
     @Query(sort: \MedicalRecordFile.fileType) var files: [MedicalRecordFile]
     
     init(patient: Patient, user: User, showDeadFiles: Bool) {
@@ -101,6 +81,7 @@ struct PatientFilesListView: View {
         }
         _files = Query(filter: predicate, sort: \MedicalRecordFile.fileType)
     }
+    
     
     var body: some View {
         ScrollView {
@@ -165,9 +146,9 @@ struct PatientFilesListView: View {
     private var toolbarMenu: some View {
         Menu {
             Section(header: Text("Adaptive Riding").bold().underline()) {
-                ForEach(RidingFormType.allCases, id: \.rawValue) { rideForm in
+                ForEach(RidingFormType.allCases, id: \.self) { rideForm in
                     Button {
-                        selectedSpecificForm = rideForm.rawValue
+                        selectedSpecificForm = .riding(rideForm)
                         addFile.toggle()
                     } label: {
                         Text(rideForm.rawValue)
@@ -176,9 +157,9 @@ struct PatientFilesListView: View {
             }
             
             Section(header: Text("Physical Therapy").bold().underline()) {
-                ForEach(PhysicalTherabyFormType.allCases, id: \.rawValue) { physicalForm in
+                ForEach(PhysicalTherabyFormType.allCases, id: \.self) { physicalForm in
                     Button {
-                        selectedSpecificForm = physicalForm.rawValue
+                        selectedSpecificForm = .physicalTherapy(physicalForm)
                         addFile.toggle()
                     } label: {
                         Text(physicalForm.rawValue)

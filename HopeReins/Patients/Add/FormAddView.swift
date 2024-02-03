@@ -8,50 +8,32 @@
 import SwiftUI
 
 struct FormAddView: View {
-    @Binding var selectedSpecificForm: String?
+    @Binding var selectedSpecificForm: FormType?
     var patient: Patient
     var user: User
-
+    
     var body: some View {
         Group {
-            if let ptForm = PhysicalTherabyFormType(rawValue: selectedSpecificForm ?? "") {
-                ptForm.view(for: patient, user: user, physicalTherabyFormType: PhysicalTherabyFormType(rawValue: selectedSpecificForm ?? ""), ridingFormType: nil)
-            } else if let ridingForm = RidingFormType(rawValue: selectedSpecificForm ?? "") {
-                ridingForm.view(for: patient, user: user, physicalTherabyFormType: nil, ridingFormType: RidingFormType(rawValue: selectedSpecificForm ?? ""))
+            if let formType = selectedSpecificForm {
+                dynamicFormView(for: formType)
             } else {
-                Text("Unknown form type")
+                Text("No Selected Form Type")
             }
         }
     }
-}
-
-
-protocol FormSpecialGroup {
-    func view(for patient: Patient, user: User, physicalTherabyFormType: PhysicalTherabyFormType?,  ridingFormType : RidingFormType?) -> AnyView
-}
-
-extension PhysicalTherabyFormType: FormSpecialGroup {
-    func view(for patient: Patient, user: User, physicalTherabyFormType: PhysicalTherabyFormType?, ridingFormType: RidingFormType?) -> AnyView {
-        switch self {
-        case .referral:
-            return AnyView(EditingView<UploadFile>(modifiedProperties: UploadFileProperties(), initialFileName: "", username: user.username, patient: patient, phyiscalFormType: self))
-        // Handle other cases
-        default:
-            return AnyView(EmptyView())
+    
+    private func dynamicFormView(for formType: FormType) -> some View {
+        let fileType: String
+        switch formType {
+        case .riding(let ridingType):
+            fileType = ridingType.rawValue
+        case .physicalTherapy(let therapyType):
+            fileType = therapyType.rawValue
         }
-    }
-}
-
-extension RidingFormType: FormSpecialGroup {
-    func view(for patient: Patient, user: User, physicalTherabyFormType: PhysicalTherabyFormType?, ridingFormType: RidingFormType?) -> AnyView {
-        switch self {
-        case .releaseStatement, .coverLetter, .updateCoverLetter :
-            return AnyView(EditingView<UploadFile>(modifiedProperties: UploadFileProperties(), initialFileName: "", username: user.username, patient: patient, ridingFormType: self))
-        case .ridingLessonPlan:
-            return AnyView(EditingView<RidingLessonPlan>(modifiedProperties: RidingLessonProperties(), initialFileName: "", username: user.username, patient: patient, ridingFormType: self))
-        default:
-            return AnyView(EmptyView())
-        }
+        
+        let record = MedicalRecordFile(patient: patient, fileType: fileType)
+        
+        return DynamicFormView(isAdding: true, record: record, username: user.username)
     }
 }
 

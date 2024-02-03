@@ -10,63 +10,80 @@ import SwiftUI
 struct SingleSelectLastDescription: View {
     @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
-    @State var otherString: String = ""
-    @State var boolString: String = ""
+    @State private var selections: [String: String] = [:]
+    @State private var descriptions: [String: String] = [:]
+    
     var lastDescription: Bool
-    var title: String
+    var titles: [String]
     var labels: [String]
-    init(combinedString: Binding<String>, lastDescription: Bool, title: String, labels: [String]) {
-        self._combinedString = combinedString
-        self.lastDescription = lastDescription
-        self.title = title
-        self.labels = labels
-    }
+    
     var body: some View {
-        Picker(selection: $boolString) {
-            ForEach(labels.indices, id: \.self) { index in
-                Text(labels[index])
-                    .tag(labels[index])
-            }
-        } label: {
-            Text(title)
-        }
-        .onChange(of: boolString) { oldValue, newValue in
-            if oldValue == labels.last! {
-                otherString = ""
-            }
-            combinedString = boolString
-        }
-        .onAppear {
-            getStrings()
-        }
-        if labels.last! == boolString && lastDescription {
-            TextField("Description...", text: $otherString)
-                .textFieldStyle(.roundedBorder)
-                .onChange(of: otherString) { oldValue, newValue in
-                    if !otherString.isEmpty {
-                        combinedString = "*\(boolString):\(otherString)*"
-                    } else {
-                        combinedString = ""
+        VStack {
+            ForEach(titles, id: \.self) { title in
+                VStack {
+                    Picker(title, selection: Binding(
+                        get: { self.selections[title] ?? self.labels.first! },
+                        set: { newValue in
+                            self.selections[title] = newValue
+                            self.updateCombinedString()
+                        }
+                    )) {
+                        ForEach(labels, id: \.self) { label in
+                            Text(label).tag(label)
+                        }
+                    }
+                    
+                    if lastDescription && selections[title] == labels.last {
+                        TextField("Description...", text: Binding(
+                            get: { self.descriptions[title] ?? "" },
+                            set: { newValue in
+                                self.descriptions[title] = newValue
+                                self.updateCombinedString()
+                            }
+                        ))
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .disabled(!isEditable)
                     }
                 }
-                .disabled(!isEditable)
+            }
+        }
+        .onAppear {
+            self.parseCombinedString()
         }
     }
-    func getStrings() {
-        let components = combinedString.components(separatedBy: ":")
-        print(components)
-        if components.count == 2 {
-            let title = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
-            let description = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
-            boolString = title
-            otherString = description
-        } else {
-            print("Warning: Element '\(combinedString)' does not have the expected format (title:description).")
+    
+    private func updateCombinedString() {
+        combinedString = titles.map { title -> String in
+            if let selection = selections[title] {
+                var titleString = "\(title)::\(selection)"
+                if selection == labels.last, let description = descriptions[title], !description.isEmpty {
+                    titleString += "~~\(description)"
+                }
+                return titleString
+            }
+            return ""
+        }.joined(separator: ", ")
+        print(combinedString)
+    }
+
+    private func parseCombinedString() {
+        let titleComponents = combinedString.components(separatedBy: ", ")
+        selections.removeAll()
+        descriptions.removeAll()
+
+        for component in titleComponents {
+            let titleAndRest = component.split(separator: "::", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
+            if titleAndRest.count == 2, let title = titles.first(where: { titleAndRest[0].contains($0) }) {
+                let selectionAndDescription = titleAndRest[1].split(separator: "~~", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
+                let selection = selectionAndDescription[0]
+                selections[title] = selection
+                
+                if selectionAndDescription.count > 1 {
+                    let description = selectionAndDescription[1]
+                    descriptions[title] = description
+                }
+            }
         }
     }
 
 }
-
-
-
-

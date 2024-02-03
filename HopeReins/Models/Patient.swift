@@ -14,6 +14,7 @@ extension HopeReinsSchemaV2 {
         var name: String
         var mrn: Int
         var dateOfBirth: Date
+        // var personalFile: MedicalRecordFile
         
         @Relationship(deleteRule: .cascade)
         var files = [MedicalRecordFile]()

@@ -11,5 +11,16 @@ import SwiftData
 protocol Revertible {
     associatedtype PropertiesType: ResettableProperties
     var properties: PropertiesType { get set }
-    mutating func revertToProperties(_ properties: PropertiesType, fileName: String, modelContext: ModelContext)
+    var medicalRecordFile: MedicalRecordFile { get set }
+}
+
+extension Revertible {
+    func updateMedicalRecordFileName(value: CodableValue) {
+        self.medicalRecordFile.fileName = value.stringValue
+        modifyMedicalRecord()
+    }
+    
+    func modifyMedicalRecord() {
+        self.medicalRecordFile.digitalSignature.modified()
+    }
 }

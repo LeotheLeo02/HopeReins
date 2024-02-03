@@ -90,7 +90,7 @@ struct FileListView: View {
     private func deleteFileAlert(_ file: MedicalRecordFile) -> Alert {
         Alert(
             title: Text("Confirm Delete"),
-            message: Text("Are you sure you want to delete \"\(file.fileName)\"? This action cannot be undone."),
+            message: Text("Are you sure you want to delete \"\(file.properties["File Name"]!.stringValue)\"? This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
                 file.isDead = true
             },

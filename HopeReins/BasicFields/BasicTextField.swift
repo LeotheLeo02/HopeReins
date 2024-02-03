@@ -19,6 +19,7 @@ struct BasicTextField: View {
         TextField(textFieldHint, text: $text, axis: .vertical)
             .textFieldStyle(.roundedBorder)
             .padding(.bottom)
+            .labelsHidden()
             .disabled(!isEditable)
     }
 }

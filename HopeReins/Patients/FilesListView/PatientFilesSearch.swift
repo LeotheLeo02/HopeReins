@@ -18,11 +18,11 @@ extension PatientFilesListView {
                 
                 // Check if the file name matches
                 if let name = criteria.name {
-                    matches = matches && file.fileName.localizedCaseInsensitiveContains(name)
+                    matches = matches && file.properties["File Name"]!.stringValue.localizedCaseInsensitiveContains(name)
                 }
                 // Check if the file date matches
                 if let date = criteria.date {
-                    matches = matches && Calendar.current.isDate(file.digitalSignature.dateModified, inSameDayAs: date)
+                    matches = matches && Calendar.current.isDate(file.digitalSignature!.dateModified, inSameDayAs: date)
                 }
                 // Check if the file type matches
                 if let fileType = criteria.fileType {
@@ -78,7 +78,7 @@ extension PatientFilesListView {
         var suggestions = Set<String>()
 
         suggestions.formUnion(files
-            .map { $0.fileName }
+            .map { $0.properties["File Name"]!.stringValue }
             .filter { $0.lowercased().contains(lowercasedSearchText) })
 
         suggestions.formUnion(files
@@ -90,7 +90,7 @@ extension PatientFilesListView {
         dateFormatter.timeStyle = .none
 
         suggestions.formUnion(files
-            .map { dateFormatter.string(from: $0.digitalSignature.dateModified) }
+            .map { dateFormatter.string(from: $0.digitalSignature!.dateModified) }
             .filter { $0.contains(searchText) })
 
         return Array(suggestions)

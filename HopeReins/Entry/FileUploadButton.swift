@@ -10,12 +10,12 @@ import SwiftUI
 struct FileUploadButton: View {
     @Environment(\.isEditable) var isEditable
     @Environment(\.modelContext) var modelContext
-    @Binding var properties: UploadFileProperties
+    @Binding var fileData: Data
     var body: some View {
         HStack {
-            if properties.data != .init() {
+            if fileData != .init() {
                 Button {
-                    if let url = saveToTemporaryFile(data: properties.data) {
+                    if let url = saveToTemporaryFile(data: fileData) {
                         NSWorkspace.shared.open(url)
                     }
                 } label: {
@@ -32,14 +32,14 @@ struct FileUploadButton: View {
                 
                 if panel.runModal() == .OK, let url = panel.url {
                     do {
-                        properties.data = try Data(contentsOf: url)
+                        fileData = try Data(contentsOf: url)
                         try modelContext.save()
                     } catch {
                         print("Error reading the file: \(error)")
                     }
                 }
             } label: {
-                Label("\(properties.data != .init() ? "Change" : "Import") File", systemImage: "\(properties.data != .init()  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
+                Label("\(fileData != .init() ? "Change" : "Import") File", systemImage: "\(fileData != .init()  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
             }
             .disabled(!isEditable)
         }

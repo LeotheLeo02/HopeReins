@@ -10,14 +10,9 @@ import SwiftData
 
 typealias Patient = HopeReinsSchemaV2.Patient
 typealias MedicalRecordFile = HopeReinsSchemaV2.MedicalRecordFile
-typealias UploadFile = HopeReinsSchemaV2.UploadFile
 typealias User = HopeReinsSchemaV2.User
-typealias FileChange = HopeReinsSchemaV2.FileChange
-typealias RidingLessonPlan = HopeReinsSchemaV2.RidingLessonPlan
-typealias RidingLessonProperties = HopeReinsSchemaV2.RidingLessonProperties
-typealias PastChangeRidingLessonPlan = HopeReinsSchemaV2.PastChangeRidingLessonPlan
 typealias DigitalSignature = HopeReinsSchemaV2.DigitalSignature
-typealias UploadFileProperties = HopeReinsSchemaV2.UploadFileProperties
+typealias PastChange = HopeReinsSchemaV2.PastChange
 
 
 @main
@@ -27,9 +22,6 @@ struct HopeReinsApp: App {
             Patient.self,
             MedicalRecordFile.self,
             User.self,
-            FileChange.self,
-            RidingLessonPlan.self,
-            UploadFile.self,
         ])
         let fileManager = FileManager.default
         var modelConfiguration = ModelConfiguration()

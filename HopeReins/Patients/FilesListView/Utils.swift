@@ -29,16 +29,16 @@ struct ListItemLabel: View {
     
     var body: some View {
         HStack {
-            if let uploadedFile = try? uploadedFile(modelContext: modelContext, fileType: file.fileType, fileId: file.id) {
-                FilePreview(data: uploadedFile.properties.data, size: 30)
+            if isUploadFile(fileType: file.fileType) {
+                FilePreview(data: file.properties["Data"]!.dataValue, size: 30)
             } else {
                 Image(systemName: "doc.fill")
                     .font(.title3)
                     .foregroundStyle(Color(.primary))
             }
-            Text(file.fileName)
+            Text(file.properties["File Name"]?.stringValue ?? "None")
             Spacer()
-            Text("\(file.digitalSignature.modification) By: \(file.digitalSignature.author) \(file.digitalSignature.dateModified.formatted())")
+            Text("\(file.digitalSignature?.modification ?? "") By: \(file.digitalSignature?.author ?? "") \(file.digitalSignature?.dateModified.formatted() ?? "")")
                 .font(.caption2.italic())
         }
         .font(.subheadline.bold())
@@ -58,29 +58,14 @@ func saveToTemporaryFile(data: Data) -> URL? {
     }
 }
 
-func uploadedFile(modelContext: ModelContext, fileType: String, fileId: UUID) throws ->  UploadFile? {
-    if let typeOfFile = RidingFormType(rawValue: fileType) {
-        
-        switch typeOfFile {
-        case .releaseStatement, .coverLetter, .updateCoverLetter:
-            let uploadedFiles = FetchDescriptor<UploadFile>(predicate: #Predicate { file in
-                file.medicalRecordFile.id == fileId
-            })
-            return try modelContext.fetch(uploadedFiles).first
-        case .ridingLessonPlan:
-            return nil
-        }
-    }
-    if let typeOfFile = PhysicalTherabyFormType(rawValue: fileType) {
-        switch typeOfFile {
-        case .referral:
-            let uploadedFiles = FetchDescriptor<UploadFile>(predicate: #Predicate { file in
-                file.medicalRecordFile.id == fileId
-            })
-            return try modelContext.fetch(uploadedFiles).first
-        case .evaluation, .dailyNote, .reEvaluation, .medicalForm, .missedVisit:
-            return nil
-        }
-    }
-    return nil
+func isUploadFile(fileType: String) -> Bool {
+    
+    let specificFileTypes = [
+        RidingFormType.releaseStatement.rawValue,
+        RidingFormType.coverLetter.rawValue,
+        RidingFormType.updateCoverLetter.rawValue,
+        PhysicalTherabyFormType.referral.rawValue
+    ]
+
+    return specificFileTypes.contains(fileType)
 }

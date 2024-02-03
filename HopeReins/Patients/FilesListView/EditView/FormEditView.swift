@@ -17,11 +17,11 @@ struct FormEditView: View {
     
     var body: some View {
         VStack {
-            if let file = file, let formType = determineFormType(from: file) {
-                editingViewForFormType(formType)
+            if let file = file {
+                DynamicFormView(isAdding: false, record: file, username: user.username)
             }
         }
-        .navigationTitle(file?.fileName ?? "")
+        .navigationTitle(file?.properties["File Name"]?.stringValue ?? "")
         .frame(minWidth: 500, minHeight: 500)
         .environment(\.isEditable, isEditable)
     }
@@ -35,41 +35,5 @@ struct FormEditView: View {
         else {
             return nil
         }
-    }
-    
-    @ViewBuilder
-    private func editingViewForFormType(_ formType: FormType) -> some View {
-        switch formType {
-        case .riding(let type):
-            switch type {
-            case .releaseStatement, .coverLetter, .updateCoverLetter:
-                if let uploadFile = fetchUploadFile(fileId: file!.id) {
-                    EditingView<UploadFile>(
-                        modifiedProperties: UploadFileProperties(other: uploadFile.properties),
-                        initialFileName: uploadFile.medicalRecordFile.fileName,
-                        record: uploadFile,
-                        username: user.username
-                    )
-                }
-            case .ridingLessonPlan:
-                if let lessonPlan = fetchRidingLessonPlan(fileId: file!.id) {
-                    EditingView<RidingLessonPlan>(
-                        modifiedProperties: RidingLessonProperties(other: lessonPlan.properties),
-                        initialFileName: lessonPlan.medicalRecordFile.fileName,
-                        record: lessonPlan,
-                        username: user.username
-                    )
-                }
-            }
-        case .physicalTherapy(let type):
-            Text("Nothing Yet...")
-        }
-    }
-    private func fetchRidingLessonPlan(fileId: UUID) -> RidingLessonPlan? {
-        return try? modelContext.fetch(FetchDescriptor<RidingLessonPlan>(predicate: #Predicate { $0.medicalRecordFile.id == fileId })).first
-    }
-    
-    private func fetchUploadFile(fileId: UUID)  -> UploadFile? {
-        return try? modelContext.fetch(FetchDescriptor<UploadFile>(predicate: #Predicate { $0.medicalRecordFile.id == fileId })).first
     }
 }
