@@ -15,9 +15,6 @@ struct MultiSelectWithTitle: View {
     var title: String
     let columns = [
         GridItem(.adaptive(minimum: 300)),
-        GridItem(.adaptive(minimum: 300)),
-        GridItem(.adaptive(minimum: 300)),
-        GridItem(.adaptive(minimum: 300)),
     ]
     init(boolString: Binding<String>, labels: [String], title: String) {
         self._boolString = boolString
@@ -27,7 +24,7 @@ struct MultiSelectWithTitle: View {
     }
     
     var body: some View {
-        CustomSectionHeader(title: title)
+        PropertyHeader(title: title)
         LazyVGrid(columns: columns, content: {
                 ForEach(toggleElements.indices, id: \.self) { index in
                     DescriptionView(boolString: $boolString, toggleElement: $toggleElements[index], index: index, coordinator: Coordinator(self))
@@ -120,7 +117,6 @@ struct DescriptionView: View {
             .buttonStyle(.plain)
             Text(toggleElement.title)
             TextField("Description", text: $toggleElement.description, axis: .vertical)
-                .textFieldStyle(.roundedBorder)
                 .disabled(!isEditable)
                 .onChange(of: toggleElement.description) { newValue in
                     coordinator.updateString(index: index, newValue: newValue)

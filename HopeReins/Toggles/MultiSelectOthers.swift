@@ -15,9 +15,6 @@ struct MultiSelectOthers: View {
     var title: String
     let columns = [
         GridItem(.adaptive(minimum: 200)),
-        GridItem(.adaptive(minimum: 200)),
-        GridItem(.adaptive(minimum: 200)),
-        GridItem(.adaptive(minimum: 200)),
     ]
     var body: some View {
         ScrollView {
@@ -25,28 +22,30 @@ struct MultiSelectOthers: View {
                 .bold()
             LazyVGrid(columns: columns, content: {
                 ForEach(labels, id: \.self) { label in
-                    HStack {
-                        Button(action: {
-                            toggle(input: label)
-                        }, label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .foregroundStyle(isTrueToggle(input: label) ? .blue : .gray)
-                                    .opacity(isTrueToggle(input: label)  ? 1.0 : 0.5)
-                                    .frame(width: 20, height: 20)
-                                    .overlay {
-                                        if isTrueToggle(input: label)  {
-                                            Image(systemName: "checkmark")
-                                                .foregroundStyle(.white)
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Button(action: {
+                                toggle(input: label)
+                            }, label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .foregroundStyle(isTrueToggle(input: label) ? .blue : .gray)
+                                        .opacity(isTrueToggle(input: label)  ? 1.0 : 0.5)
+                                        .frame(width: 20, height: 20)
+                                        .overlay {
+                                            if isTrueToggle(input: label)  {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundStyle(.white)
+                                            }
                                         }
-                                    }
-                            }
-                        })
-                        .buttonStyle(.plain)
-                        .disabled(!isEditable)
-                        Text(label)
+                                }
+                            })
+                            .buttonStyle(.plain)
+                            .disabled(!isEditable)
+                            Text(label)
+                                .frame(maxWidth: 200, alignment: .leading)
+                        }
                     }
-                    .padding()
                 }
                 ForEach(getOtherElements(), id: \.self) { otherObject in
                     HStack {
@@ -71,7 +70,6 @@ struct MultiSelectOthers: View {
                 }
                 HStack {
                     TextField("Other...", text: $otherString, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
                         .disabled(!isEditable)
                     Spacer()
                     Button(action: {

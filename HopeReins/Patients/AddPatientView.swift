@@ -17,20 +17,18 @@ struct AddPatientView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                CustomSectionHeader(title: "Name Of Patient")
+                PropertyHeader(title: "Name Of Patient")
                 TextField("Name...", text: $name)
-                    .textFieldStyle(.roundedBorder)
                     .padding(.vertical, 5)
 
-                CustomSectionHeader(title: "MRN Number")
+                PropertyHeader(title: "MRN Number")
                 TextField("Enter MRN Number...", text: $mrnString)
-                    .textFieldStyle(.roundedBorder)
                     .onReceive(mrnString.publisher.collect()) {
                         self.mrnString = String($0.prefix(while: { "0123456789".contains($0) }))
                     }
                     .padding(.vertical, 5)
 
-                CustomSectionHeader(title: "Date Of Birth")
+                PropertyHeader(title: "Date Of Birth")
                 DatePicker("Date of Birth", selection: $dateOfBirth, displayedComponents: .date)
                     .labelsHidden()
                     .padding(.vertical, 5)
@@ -60,14 +58,14 @@ struct AddPatientView: View {
     }
 }
 
-struct CustomSectionHeader: View {
+struct PropertyHeader: View {
     var title: String
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)
                 .font(.subheadline.bold())
                 .foregroundStyle(.gray)
-            Divider()
         }
+        .padding(.top, 3.5)
     }
 }

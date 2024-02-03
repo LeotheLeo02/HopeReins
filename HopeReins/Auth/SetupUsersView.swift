@@ -29,9 +29,9 @@ struct SetupUsersView: View {
                 if adminUser == nil {
                     createAdminAccountView()
                 }
-                CustomSectionHeader(title: "Create Users:")
+                PropertyHeader(title: "Create Users:")
                 CreateUserView()
-                CustomSectionHeader(title: "Users:")
+                PropertyHeader(title: "Users:")
                 ForEach(users.filter { $0.isAdmin == false }) { user in
                     userItemLabel(user: user)
                 }
@@ -64,9 +64,8 @@ struct SetupUsersView: View {
     
     @ViewBuilder
     func createAdminAccountView() -> some View {
-        CustomSectionHeader(title: "Create Admin Account")
+        PropertyHeader(title: "Create Admin Account")
         SecureField("Password", text: $adminPassword)
-            .textFieldStyle(.roundedBorder)
         Button("Create Admin Account") {
             let newAdmin = User(username: "Admin", password: adminPassword, isAdmin: true)
             modelContext.insert(newAdmin)
@@ -101,9 +100,7 @@ struct CreateUserView: View {
     var body: some View {
         VStack {
             TextField("Username", text: $username)
-                .textFieldStyle(.roundedBorder)
             SecureField("Password", text: $password)
-                .textFieldStyle(.roundedBorder)
             HStack {
                 Spacer()
                 Button(action: {

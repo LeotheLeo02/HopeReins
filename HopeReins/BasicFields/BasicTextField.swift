@@ -15,18 +15,19 @@ struct BasicTextField: View {
     }
     @Binding var text: String
     var body: some View {
-        CustomSectionHeader(title: title)
-        TextField(textFieldHint, text: $text, axis: .vertical)
-            .textFieldStyle(.roundedBorder)
-            .padding(.bottom)
-            .labelsHidden()
-            .disabled(!isEditable)
+        VStack(alignment: .leading) {
+            PropertyHeader(title: title)
+            TextField(textFieldHint, text: $text, axis: .vertical)
+                .padding(.bottom)
+                .labelsHidden()
+                .disabled(!isEditable)
+        }
     }
 }
 
 
 struct IsEditableKey: EnvironmentKey {
-    static let defaultValue: Bool = true  // default value is editable
+    static let defaultValue: Bool = true
 }
 
 extension EnvironmentValues {

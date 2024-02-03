@@ -32,11 +32,11 @@ struct OriginalValueView: View {
     }
 }
 
-
 struct DynamicFormView: View  {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State var isAdding: Bool
+    @State var text: String = ""
     @State var patient: Patient?
     @State var initialProperties: [String: CodableValue] = [:]
     @State var record: MedicalRecordFile
@@ -50,6 +50,9 @@ struct DynamicFormView: View  {
     @State var reviewChanges: Bool = false
     @State var isRevertingVersion: Bool = false
     @State var showRevertAlert: Bool = false
+    var uiElements: [FormSection] {
+        return getUIElements()
+    }
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -59,42 +62,18 @@ struct DynamicFormView: View  {
                         PastChangeSelectionView(showPastChanges: $showPastChanges, selectedPastChange: $selectedPastChange, pastChanges: record.pastChanges)
                     }
                 }
-                ForEach(getUIElements().map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            DynamicElementView(wrappedElement: wrappedElement.element)
-                            if changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
-                               Text("Modified")
-                                    .font(.caption)
-                                    .italic()
-                                    .foregroundStyle(.red)
+                ForEach(uiElements, id: \.title) { section in
+                    if uiElements.count == 1 {
+                        sectionContent(section: section)
+                    } else {
+                        DisclosureGroup(
+                            content: {
+                                sectionContent(section: section)
+                            },
+                            label: {
+                                SectionHeader(title: section.title)
                             }
-                        }
-                        if let value = selectedPastChange?.propertyChanges[wrappedElement.id] {
-                            OriginalValueView(value: value, onTap: {
-                                selectedFieldChange = wrappedElement.id
-                            })
-                            .popover(isPresented: Binding<Bool>(
-                                get: { self.selectedFieldChange == wrappedElement.id },
-                                set: { show in if !show { self.selectedFieldChange = nil } }
-                            ), attachmentAnchor: .point(UnitPoint.bottom), arrowEdge: .bottom) {
-                                Button {
-                                    if  record.revertToPastChange(fieldId: selectedFieldChange, pastChange: selectedPastChange!, revertToAll: false, modelContext: modelContext) {
-                                        modelContext.delete(selectedPastChange!)
-                                        selectedPastChange = nil
-                                    }
-                                    initialProperties[selectedFieldChange!] = value
-                                } label: {
-                                    HStack {
-                                        Image(systemName: "arrowshape.turn.up.backward.fill")
-                                        Text("Revert To Field")
-                                    }
-                                }
-                                .buttonStyle(.borderless)
-                                .padding(5)
-
-                            }
-                        }
+                        )
                     }
                 }
                 
@@ -133,9 +112,53 @@ struct DynamicFormView: View  {
             })
             .padding()
         }
+        .frame(minHeight: 600)
         .toolbar {
             toolbarContent()
         }
+    }
+    
+    @ViewBuilder
+    func sectionContent(section: FormSection) -> some View {
+        ForEach(section.elements.map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
+            HStack {
+                VStack(alignment: .leading) {
+                    DynamicElementView(wrappedElement: wrappedElement.element)
+                    if changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
+                       Text("Modified")
+                            .font(.caption)
+                            .italic()
+                            .foregroundStyle(.red)
+                    }
+                }
+                if let value = selectedPastChange?.propertyChanges[wrappedElement.id] {
+                    OriginalValueView(value: value, onTap: {
+                        selectedFieldChange = wrappedElement.id
+                    })
+                    .popover(isPresented: Binding<Bool>(
+                        get: { self.selectedFieldChange == wrappedElement.id },
+                        set: { show in if !show { self.selectedFieldChange = nil } }
+                    ), attachmentAnchor: .point(UnitPoint.bottom), arrowEdge: .bottom) {
+                        Button {
+                            if  record.revertToPastChange(fieldId: selectedFieldChange, pastChange: selectedPastChange!, revertToAll: false, modelContext: modelContext) {
+                                modelContext.delete(selectedPastChange!)
+                                selectedPastChange = nil
+                            }
+                            initialProperties[selectedFieldChange!] = value
+                        } label: {
+                            HStack {
+                                Image(systemName: "arrowshape.turn.up.backward.fill")
+                                Text("Revert To Field")
+                            }
+                        }
+                        .buttonStyle(.borderless)
+                        .padding(5)
+
+                    }
+                }
+            }
+        }
+        .padding(3)
     }
     
     @ToolbarContentBuilder
@@ -223,7 +246,7 @@ struct DynamicFormView: View  {
        try? modelContext.save()
     }
     
-    func getUIElements() -> [DynamicUIElement] {
+    func getUIElements() -> [FormSection] {
         if let type = RidingFormType(rawValue: record.fileType) {
             switch type {
             case .releaseStatement:
@@ -239,7 +262,7 @@ struct DynamicFormView: View  {
         if let type = PhysicalTherabyFormType(rawValue: record.fileType) {
             switch type {
             case .evaluation:
-                return []
+                return record.getEvaluation()
             case .dailyNote:
                 return []
             case .reEvaluation:

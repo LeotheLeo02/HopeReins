@@ -20,7 +20,8 @@ struct SingleSelectLastDescription: View {
     var body: some View {
         VStack {
             ForEach(titles, id: \.self) { title in
-                VStack {
+                VStack(alignment: .leading) {
+                    PropertyHeader(title: title)
                     Picker(title, selection: Binding(
                         get: { self.selections[title] ?? self.labels.first! },
                         set: { newValue in
@@ -32,6 +33,7 @@ struct SingleSelectLastDescription: View {
                             Text(label).tag(label)
                         }
                     }
+                    .labelsHidden()
                     
                     if lastDescription && selections[title] == labels.last {
                         TextField("Description...", text: Binding(
@@ -40,8 +42,7 @@ struct SingleSelectLastDescription: View {
                                 self.descriptions[title] = newValue
                                 self.updateCombinedString()
                             }
-                        ))
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        ), axis: .vertical)
                         .disabled(!isEditable)
                     }
                 }

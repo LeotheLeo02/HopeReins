@@ -19,14 +19,12 @@ struct RecommendedPhysicalTherabyFillIn: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            CustomSectionHeader(title: "Recommended Physical Theraby")
+            PropertyHeader(title: "Recommended Physical Theraby")
             HStack {
                 TextField("Frequency", text: $frequency)
-                    .textFieldStyle(.roundedBorder)
                     .disabled(!isEditable)
                 Text("/wk x")
                 TextField("Duration", text: $duration)
-                    .textFieldStyle(.roundedBorder)
                     .disabled(!isEditable)
             }
         }

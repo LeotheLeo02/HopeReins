@@ -14,7 +14,7 @@ struct InstructorsMenu: View {
     @Query(sort: \User.username, order: .forward)
     var instructors: [User]
     var body: some View {
-        CustomSectionHeader(title: "Instructor")
+        PropertyHeader(title: "Instructor")
         Picker(selection: $instructorName) {
             ForEach(instructors) { user in
                 Text(user.username)

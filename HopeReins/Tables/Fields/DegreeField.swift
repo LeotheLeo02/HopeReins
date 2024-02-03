@@ -19,7 +19,6 @@ struct DegreeField: View {
                     self.degree = min(max($0, range.lowerBound), range.upperBound)
                 }
             ), format: .number)
-            .textFieldStyle(.roundedBorder)
             Text("°")
         }
     }

@@ -18,6 +18,5 @@ struct RestrictedNumberField: View {
                 self.number = min(max($0, range.lowerBound), range.upperBound)
             }
         ), format: .number)
-        .textFieldStyle(.roundedBorder)
     }
 }

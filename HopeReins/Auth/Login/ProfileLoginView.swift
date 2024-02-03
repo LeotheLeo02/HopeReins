@@ -18,7 +18,6 @@ struct ProfileLoginView: View {
             if selectedUser == user {
                 SecureField("Password...", text: $password)
                     .focused($isFocused)
-                    .textFieldStyle(.roundedBorder)
                     .padding()
                     .onSubmit {
                         if password == user.password {

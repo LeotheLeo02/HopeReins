@@ -27,7 +27,7 @@ struct DateSelection: View {
             }
             .padding(.bottom)
         } header: {
-            CustomSectionHeader(title: title)
+            PropertyHeader(title: title)
         }
     }
 }
