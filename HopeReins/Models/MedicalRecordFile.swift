@@ -151,7 +151,12 @@ extension MedicalRecordFile {
 
     private func stringBinding(for key: String, defaultValue: String = "") -> Binding<String> {
         Binding<String>(
-            get: { self.properties[key]?.stringValue ?? defaultValue },
+            get: {
+                if self.properties[key] == nil {
+                    self.properties[key] = .string(defaultValue)
+                }
+                return self.properties[key]?.stringValue ?? defaultValue
+            },
             set: { self.properties[key] = .string($0) }
         )
     }
@@ -163,12 +168,14 @@ extension MedicalRecordFile {
         )
     }
 
+
     private func dataBinding(for key: String, defaultValue: Data = .init()) -> Binding<Data> {
         Binding<Data>(
             get: { self.properties[key]?.dataValue ?? defaultValue },
             set: { self.properties[key] = .data($0) }
         )
     }
+
     
     private func dateBinding(for key: String, defaultValue: Date = .now) -> Binding<Date> {
         Binding<Date>(
@@ -176,6 +183,7 @@ extension MedicalRecordFile {
             set: { self.properties[key] = .date($0) }
         )
     }
+
     
     func getEvaluation() -> [FormSection]{
         let uiElements: [FormSection] = [
@@ -199,9 +207,7 @@ extension MedicalRecordFile {
                 .textField(title: "Upper Extremities:", binding: stringBinding(for: "S Upper Extremity")),
                 .textField(title: "Lower Extremities:", binding: stringBinding(for: "S Lower Extremity")),
                 .textField(title: "Trunk Musculature:", binding: stringBinding(for: "Trunk Musculature")),
-                .customView(title: "LE Strength and ROM Table:", viewProvider: {
-                    AnyView(LeRomTable(combinedString: self.stringBinding(for: "LE Strength and ROM Table")))
-                }),
+                .leRomTable(title: "LE Strength and ROM Table:", combinedString: stringBinding(for: "LE Strength and ROM Table:")),
                 .singleSelectDescription(titles: ["Pain"], labels: ["No", "Yes"], combinedString: stringBinding(for: "Pain"), isDescription: true)
             ]),
             FormSection(title: "Neurological Functioning", elements: [

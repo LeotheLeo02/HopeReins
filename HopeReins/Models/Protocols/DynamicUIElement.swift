@@ -20,6 +20,7 @@ struct DynamicElementView: View {
         case .sectionHeader(let title):
             SectionHeader(title: title)
         case .customView(title: let title, viewProvider: let viewProvider):
+            PropertyHeader(title: title)
             viewProvider()
         case .singleSelectDescription(titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
             SingleSelectLastDescription(combinedString: combinedString, lastDescription: isDescription, titles: titles, labels: labels)
@@ -27,6 +28,8 @@ struct DynamicElementView: View {
             MultiSelectWithTitle(boolString: combinedString, labels: labels, title: title)
         case .multiSelectOthers(combinedString: let combinedString, labels: let labels, title: let title):
             MultiSelectOthers(boolString: combinedString, labels: labels, title: title)
+        case .leRomTable(title: let title, combinedString: let combinedString):
+            LeRomTable(combinedString: combinedString)
         }
     }
 }
@@ -36,6 +39,7 @@ enum DynamicUIElement: Hashable {
     case datePicker(title: String, hourAndMinute: Bool, binding: Binding<Date>)
     case numberField(title: String, binding: Binding<Int>)
     case sectionHeader(title: String)
+    case leRomTable(title: String, combinedString: Binding<String>)
     case singleSelectDescription(titles: [String], labels: [String], combinedString: Binding<String>, isDescription: Bool)
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
@@ -58,7 +62,8 @@ enum DynamicUIElement: Hashable {
         switch self {
         case .textField(let title, _),
                 .numberField(let title, _),
-                .sectionHeader(let title):
+                .sectionHeader(let title),
+                .leRomTable(let title, _):
             hasher.combine(title)
         case .singleSelectDescription(let titles, let labels, _, let isDescription):
             hasher.combine(titles)
@@ -92,7 +97,8 @@ struct DynamicUIElementWrapper: Hashable {
              .customView(let title, _),
              .datePicker(let title, _, _),
              .multiSelectWithTitle(_, _, let title),
-             .multiSelectOthers(_, _, let title):
+             .multiSelectOthers(_, _, let title),
+             .leRomTable(let title, _):
             self.id = title
         case .singleSelectDescription(let titles, _, _, _):
             self.id = titles.joined(separator: "-")

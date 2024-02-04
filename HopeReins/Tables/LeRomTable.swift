@@ -18,7 +18,7 @@ struct LeRomTable: View {
     }
 
     var body: some View {
-        List {
+        VStack(alignment: .leading) {
             HStack {
                 Text("* = pain")
                     .frame(width: 100, alignment: .leading)
@@ -41,21 +41,42 @@ struct LeRomTable: View {
 
             ForEach(tableData, id: \.id) { rowData in
                 EntryRowView(rowData: rowData, combinedString: $combinedString, tableData: $tableData) {
-                    combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
-                    print(combinedString)
+                    updateCombinedString()
                 }
                 .environment(\.isEditable, isEditable)
             }
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundStyle(.windowBackground)
+                .shadow(radius: 3)
+        )
+        .frame(maxWidth: 600)
         .onAppear {
-            self.tableData = combineTableData(combinedString: combinedString)
+            if combinedString.isEmpty {
+                self.tableData = self.initialTableData.map { TableCellData(isPain: $0.isPain, label1: $0.label1, value1: $0.value1, value2: $0.value2, value3: $0.value3, value4: $0.value4) }
+            } else {
+                self.tableData = self.combineTableData(combinedString: self.combinedString)
+            }
         }
+        
+        
         
     }
     private func updateCombinedString() {
-        combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
-        print(combinedString)
+        
+        if tableData == initialTableData {
+            combinedString = ""
+        } else {
+            combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
+        }
+        print("Combined String:\(combinedString)")
     }
+    
+    
+    
+    
     private func combineTableData(combinedString: String) -> [TableCellData] {
         guard !combinedString.isEmpty else {
             return initialTableData
@@ -74,8 +95,8 @@ struct LeRomTable: View {
                 tableData.append(cellData)
                 index += 2
             } else {
-                let value1 = Int(entries[index + 2]) ?? 0
-                let value2 = Int(entries[index + 3]) ?? 0
+                let value1 = Int(entries[index + 2]) ?? 1
+                let value2 = Int(entries[index + 3]) ?? 1
                 let value3 = Double(entries[index + 4]) ?? 0.0
                 let value4 = Double(entries[index + 5]) ?? 0.0
                 
@@ -88,17 +109,17 @@ struct LeRomTable: View {
         return tableData
     }
 
-    var initialTableData: [TableCellData] = [
-        TableCellData(label1: "Knee Flexion", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Knee Extension", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Flexion", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Extension", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Abduction", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Internal Rot.", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Hip External Rot.", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Ankle Dorsifl", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Ankle Plantar", value1: 0, value2: 0, value3: 0, value4: 0),
-        TableCellData(label1: "Other", value1: 0, value2: 0, value3: 0, value4: 0)
+    let initialTableData: [TableCellData] = [
+        TableCellData(label1: "Knee Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Knee Extension", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Hip Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Hip Extension", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Hip Abduction", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Hip Internal Rot.", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Hip External Rot.", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Ankle Dorsifl", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Ankle Plantar", value1: 1, value2: 1, value3: 0, value4: 0),
+        TableCellData(label1: "Other", value1: 1, value2: 1, value3: 0, value4: 0)
     ]
 }
 
@@ -122,7 +143,7 @@ struct EntryRowView: View {
             .buttonStyle(.borderless)
             
             Text(rowData.label1)
-                .bold()
+                .font(.subheadline)
                 .frame(width: 100, alignment: .leading)
             
             RestrictedNumberField(range: range, number: $rowData.value1)
@@ -156,7 +177,12 @@ struct EntryRowView: View {
 
 class TableCellData: Identifiable, ObservableObject, Equatable {
     static func == (lhs: TableCellData, rhs: TableCellData) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.isPain == rhs.isPain &&
+               lhs.label1 == rhs.label1 &&
+               lhs.value1 == rhs.value1 &&
+               lhs.value2 == rhs.value2 &&
+               lhs.value3 == rhs.value3 &&
+               lhs.value4 == rhs.value4
     }
     
     let id = UUID()

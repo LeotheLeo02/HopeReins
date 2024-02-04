@@ -50,7 +50,7 @@ struct MultiSelectOthers: View {
                 ForEach(getOtherElements(), id: \.self) { otherObject in
                     HStack {
                         Button(action: {
-                            boolString = boolString.replacingOccurrences(of: otherObject, with: "")
+                            self.removeOtherString(otherObject)
                         }, label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 5)
@@ -83,6 +83,12 @@ struct MultiSelectOthers: View {
             })
         }
     }
+    func removeOtherString(_ other: String) {
+         let removableString = "*\(other)*"
+         if boolString.contains(removableString) {
+             boolString = boolString.replacingOccurrences(of: removableString, with: "")
+         }
+     }
     func getOtherElements() -> [String] {
         let regex = try! NSRegularExpression(pattern: "\\*([^*]+)\\*", options: [])
         let matches = regex.matches(in: boolString, options: [], range: NSRange(boolString.startIndex..., in: boolString))

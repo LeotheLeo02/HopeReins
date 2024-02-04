@@ -54,65 +54,71 @@ struct DynamicFormView: View  {
         return getUIElements()
     }
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                if !isAdding {
-                    HStack {
-                        Spacer()
-                        PastChangeSelectionView(showPastChanges: $showPastChanges, selectedPastChange: $selectedPastChange, pastChanges: record.pastChanges)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading) {
+                    if !isAdding {
+                        HStack {
+                            Spacer()
+                            PastChangeSelectionView(showPastChanges: $showPastChanges, selectedPastChange: $selectedPastChange, pastChanges: record.pastChanges)
+                        }
+                    }
+                    ForEach(uiElements, id: \.title) { section in
+                        if uiElements.count == 1 {
+                            sectionContent(section: section)
+                        } else {
+                            DisclosureGroup(
+                                content: {
+                                    sectionContent(section: section)
+                                        .onAppear {
+                                            proxy.scrollTo(section.title)
+                                        }
+                                },
+                                label: {
+                                    SectionHeader(title: section.title)
+                                }
+                            )
+                            .id(section.title)
+                        }
+                    }
+                    
+                }
+                .onAppear {
+                    if !isAdding {
+                        initialProperties = record.properties
                     }
                 }
-                ForEach(uiElements, id: \.title) { section in
-                    if uiElements.count == 1 {
-                        sectionContent(section: section)
-                    } else {
-                        DisclosureGroup(
-                            content: {
-                                sectionContent(section: section)
+                .alert(isPresented: $showRevertAlert) {
+                    if isRevertingVersion {
+                        Alert(
+                            title: Text("Revert To Version \(selectedPastChange!.reason)"),
+                            message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
+                            primaryButton: .destructive(Text("Revert")) {
+                                record.revertToPastChange(fieldId: nil, pastChange: selectedPastChange!, revertToAll: true, modelContext: modelContext)
+                                selectedPastChange = nil
+                                initialProperties = record.properties
                             },
-                            label: {
-                                SectionHeader(title: section.title)
-                            }
+                            secondaryButton: .cancel()
+                        )
+                    } else {
+                        Alert(
+                            title: Text("Revert Changes"),
+                            message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
+                            primaryButton: .destructive(Text("Undo")) {
+                                record.properties = initialProperties
+                                dismiss()
+                            },
+                            secondaryButton: .cancel()
                         )
                     }
                 }
-                
+                .sheet(isPresented: $reviewChanges, content: {
+                    ReviewChangesView(changeDescriptions: changeDescriptions, record: record, initialProperties: $initialProperties, username: username)
+                })
+                .padding()
             }
-            .onAppear {
-                if !isAdding {
-                    initialProperties = record.properties
-                }
-            }
-            .alert(isPresented: $showRevertAlert) {
-                if isRevertingVersion {
-                    Alert(
-                        title: Text("Revert To Version \(selectedPastChange!.reason)"),
-                        message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
-                        primaryButton: .destructive(Text("Revert")) {
-                            record.revertToPastChange(fieldId: nil, pastChange: selectedPastChange!, revertToAll: true, modelContext: modelContext)
-                            selectedPastChange = nil
-                            initialProperties = record.properties
-                        },
-                        secondaryButton: .cancel()
-                    )
-                } else {
-                    Alert(
-                        title: Text("Revert Changes"),
-                        message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
-                        primaryButton: .destructive(Text("Undo")) {
-                            record.properties = initialProperties
-                            dismiss()
-                        },
-                        secondaryButton: .cancel()
-                    )
-                }
-            }
-            .sheet(isPresented: $reviewChanges, content: {
-                ReviewChangesView(changeDescriptions: changeDescriptions, record: record, initialProperties: $initialProperties, username: username)
-            })
-            .padding()
         }
-        .frame(minHeight: 600)
+        .frame(minWidth: 650, minHeight: 600)
         .toolbar {
             toolbarContent()
         }
@@ -215,6 +221,9 @@ struct DynamicFormView: View  {
             }
         }
         
+    }
+    func getCountOfFields() -> Int {
+        return uiElements.reduce(0) { $0 + $1.elements.count }
     }
     
     func pastChangeValueString(value: CodableValue) -> String {

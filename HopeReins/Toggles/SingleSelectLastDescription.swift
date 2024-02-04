@@ -54,18 +54,38 @@ struct SingleSelectLastDescription: View {
     }
     
     private func updateCombinedString() {
-        combinedString = titles.map { title -> String in
-            if let selection = selections[title] {
-                var titleString = "\(title)::\(selection)"
+        var isAllDefault = true
+        
+        // Construct combinedString from the current selections and descriptions
+        let combinedComponents = titles.compactMap { title -> String? in
+            guard let selection = selections[title] else { return nil }
+
+            // Check if the current selection is the default value
+            let isDefaultSelection = selection == labels.first
+
+            var component: String? = nil
+            if !isDefaultSelection || (selection == labels.last && descriptions[title]?.isEmpty == false) {
+                // Construct component only if it's not default
+                component = "\(title)::\(selection)"
                 if selection == labels.last, let description = descriptions[title], !description.isEmpty {
-                    titleString += "~~\(description)"
+                    component! += "~~\(description)"
                 }
-                return titleString
+                isAllDefault = false  // Found at least one non-default value
             }
-            return ""
-        }.joined(separator: ", ")
-        print(combinedString)
+
+            return component
+        }
+
+        if isAllDefault {
+            combinedString = ""
+        } else {
+            combinedString = combinedComponents.joined(separator: ", ")
+        }
+
+        print("Combined String: \(combinedString)")
     }
+
+
 
     private func parseCombinedString() {
         let titleComponents = combinedString.components(separatedBy: ", ")

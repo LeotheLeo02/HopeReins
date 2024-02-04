@@ -40,8 +40,17 @@ struct MultiSelectWithTitle: View {
 
     
     func updateString() {
-        boolString = toggleElements.map { "\($0.title): \($0.description)" }.joined(separator: "\\")
+        let nonDefaultElements = toggleElements.filter { !$0.description.isEmpty }
+
+        if nonDefaultElements.isEmpty {
+            // If all elements are at their default (i.e., descriptions are empty), set boolString to empty
+            boolString = ""
+        } else {
+            // Construct the boolString only with elements that are not at their default state
+            boolString = nonDefaultElements.map { "\($0.title): \($0.description)" }.joined(separator: "\\")
+        }
     }
+
     func getToggleWithTitles() -> [ToggleWithTitle] {
         let elements = boolString.components(separatedBy: "\\")
         
