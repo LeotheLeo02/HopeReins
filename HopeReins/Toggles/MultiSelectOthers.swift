@@ -73,8 +73,7 @@ struct MultiSelectOthers: View {
                         .disabled(!isEditable)
                     Spacer()
                     Button(action: {
-                        boolString.append("*\(otherString)*")
-                        otherString = ""
+                        addOtherString()
                     }, label: {
                         Image(systemName: "plus")
                     })
@@ -83,34 +82,46 @@ struct MultiSelectOthers: View {
             })
         }
     }
-    func removeOtherString(_ other: String) {
-         let removableString = "*\(other)*"
-         if boolString.contains(removableString) {
-             boolString = boolString.replacingOccurrences(of: removableString, with: "")
-         }
-     }
-    func getOtherElements() -> [String] {
-        let regex = try! NSRegularExpression(pattern: "\\*([^*]+)\\*", options: [])
-        let matches = regex.matches(in: boolString, options: [], range: NSRange(boolString.startIndex..., in: boolString))
-        
-        var elements = [String]()
-        for match in matches {
-            let range = Range(match.range, in: boolString)!
-            let element = String(boolString[range])
-            
-            let trimmedElement = element.dropFirst().dropLast()
-            elements.append(String(trimmedElement))
+    func addOtherString() {
+        if !otherString.isEmpty {
+            boolString += "|other:\(otherString)"
+            otherString = "" // Clear the TextField
         }
-        return elements
+    }
+
+    func removeOtherString(_ other: String) {
+        var items = boolString.components(separatedBy: "|")
+        items.removeAll { $0 == "other:\(other)" }
+        boolString = items.joined(separator: "|")
+    }
+
+    func getOtherElements() -> [String] {
+        return boolString.components(separatedBy: "|")
+            .filter { $0.starts(with: "other:") }
+            .map { $0.replacingOccurrences(of: "other:", with: "") }
     }
     func isTrueToggle(input: String) -> Bool {
-        return boolString.contains(input)
-    }
-    func toggle(input: String) {
-        if isTrueToggle(input: input) {
-            boolString = boolString.replacingOccurrences(of: input, with: "")
-        } else {
-            boolString.append(input)
+        // Check if the input is a standard label and is set to true
+        if boolString.contains("\(input):true") {
+            return true
         }
+        
+        if boolString.contains("other:\(input)") {
+            return true
+        }
+        
+        return false
     }
+
+    func toggle(input: String) {
+        var items = boolString.components(separatedBy: "|")
+        if let index = items.firstIndex(where: { $0.starts(with: input) }) {
+            let currentState = items[index].contains("true")
+            items[index] = "\(input):\(currentState ? "false" : "true")"
+        } else {
+            items.append("\(input):true")
+        }
+        boolString = items.joined(separator: "|")
+    }
+
 }

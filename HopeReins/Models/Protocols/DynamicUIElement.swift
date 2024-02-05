@@ -30,6 +30,8 @@ struct DynamicElementView: View {
             MultiSelectOthers(boolString: combinedString, labels: labels, title: title)
         case .leRomTable(title: let title, combinedString: let combinedString):
             LeRomTable(combinedString: combinedString)
+        case .dailyNoteTable(let title, let combinedString):
+            DailyNoteTable(combinedString: combinedString)
         }
     }
 }
@@ -44,6 +46,7 @@ enum DynamicUIElement: Hashable {
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
     case customView(title: String, viewProvider: () -> AnyView)
+    case dailyNoteTable(title: String, combinedString: Binding<String>)
     
     static func == (lhs: DynamicUIElement, rhs: DynamicUIElement) -> Bool {
            switch (lhs, rhs) {
@@ -63,7 +66,8 @@ enum DynamicUIElement: Hashable {
         case .textField(let title, _),
                 .numberField(let title, _),
                 .sectionHeader(let title),
-                .leRomTable(let title, _):
+                .leRomTable(let title, _),
+                .dailyNoteTable(let title, _):
             hasher.combine(title)
         case .singleSelectDescription(let titles, let labels, _, let isDescription):
             hasher.combine(titles)
@@ -98,7 +102,8 @@ struct DynamicUIElementWrapper: Hashable {
              .datePicker(let title, _, _),
              .multiSelectWithTitle(_, _, let title),
              .multiSelectOthers(_, _, let title),
-             .leRomTable(let title, _):
+             .leRomTable(let title, _),
+             .dailyNoteTable(let title, _):
             self.id = title
         case .singleSelectDescription(let titles, _, _, _):
             self.id = titles.joined(separator: "-")

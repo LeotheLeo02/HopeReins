@@ -61,18 +61,189 @@ extension HopeReinsSchemaV2 {
 }
 
 
+struct LabelValue {
+    var label: String
+    var value: String
+}
+struct DetailedChange {
+    var label: String
+    var oldValue: String
+    var newValue: String
+}
+
+
+
 extension MedicalRecordFile {
+    func decodeDailyNote(_ combinedString: String) -> [LabelValue] {
+        let stringComponents: [String] = ["PTNEUR15", "THERA15", "PTGAIT15", "THEREX", "MANUAL"]
+        let components = combinedString.components(separatedBy: "//")
+        var labels: [LabelValue] = []
+
+        for (index, component) in components.enumerated() {
+            if index < stringComponents.count {
+                let label = stringComponents[index]
+                labels.append(LabelValue(label: label, value: component))
+            }
+        }
+        
+        return labels
+    }
+    
+    func compareAndDescribeChangesDailyNote(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+         let oldTableData = decodeDailyNote(oldCombinedString)
+         let newTableData = decodeDailyNote(newCombinedString)
+
+         var changes: [DetailedChange] = []
+
+        for oldTableDatum in oldTableData {
+            for newTableDatum in newTableData {
+                if oldTableDatum.value != newTableDatum.value {
+                    changes.append(DetailedChange(label: oldTableDatum.label, oldValue: oldTableDatum.value, newValue: newTableDatum.value))
+                }
+            }
+        }
+
+         return changes
+     }
+    
+    func compareAndDescribeChanges(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+        let oldParsedData = parseLeRomTable(oldCombinedString)
+        let newParsedData = parseLeRomTable(newCombinedString)
+
+        var changes = [DetailedChange]()
+
+        for (label, oldData) in oldParsedData {
+            let newData = newParsedData[label]
+
+            // Check if pain indicator changed
+            if oldData.isPain != newData?.isPain {
+                let changeDescription = newData?.isPain == true ? "Pain detected" : "Pain indicator removed"
+                changes.append(DetailedChange(label: label, oldValue: oldData.isPain ? "Pain detected" : "No pain", newValue: newData?.isPain == true ? "Pain detected" : "No pain"))
+            }
+
+            // Compare metrics if not just a pain indicator
+            if !oldData.isPain, let oldMetrics = oldData.metrics, let newMetrics = newData?.metrics {
+                for (metric, oldValue) in oldMetrics {
+                    if let newValue = newMetrics[metric], newValue != oldValue {
+                        let detailedChangeDescription = "\(metric) changed from \(oldValue) to \(newValue)"
+                        changes.append(DetailedChange(label: label, oldValue: oldValue, newValue: newValue))
+                    }
+                }
+            }
+        }
+
+        return changes
+    }
+
+
+
     func compareProperties(with other: [String: CodableValue]) -> [ChangeDescription] {
         var changes = [ChangeDescription]()
-
+        
         for (key, newValue) in self.properties {
             if let oldValue = other[key], newValue != oldValue {
+                print(compareAndDescribeChangesDailyNote(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue))
+//                print(compareAndDescribeChanges(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue))
                 changes.append(ChangeDescription(id: key, oldValue: oldValue, value: newValue))
             }
         }
         
         return changes
     }
+    
+    func parseLeRomTable(_ combinedString: String) -> [String: (isPain: Bool, metrics: [String: String]?)] {
+        let components = combinedString.components(separatedBy: "//")
+        var result = [String: (isPain: Bool, metrics: [String: String]?)]()
+
+        var index = 0
+        while index < components.count {
+            let isPain = components[index] == "true"
+            index += 1 // Move to the next component, which should be the label
+
+            if index < components.count {
+                let label = components[index]
+                index += 1 // Move to the next component
+
+                var metrics: [String: String]? = nil
+                if !isPain && (index + 3) < components.count { // Check for metrics
+                    metrics = [
+                        "MMT R": components[index],
+                        "MMT L": components[index + 1],
+                        "A/PROM (R)": components[index + 2],
+                        "A/PROM (L)": components[index + 3]
+                    ]
+                    index += 4 // Move past the metrics
+                }
+
+                result[label] = (isPain: isPain, metrics: metrics)
+            }
+        }
+
+        return result
+    }
+
+
+
+    
+    func decodeBoolString(boolString: String) {
+        let entries = boolString.components(separatedBy: "\\") // Split into entries by "\"
+
+        for entry in entries {
+            let parts = entry.components(separatedBy: ":") // Split each entry into label and value
+            if parts.count == 2 {
+                let label = parts[0].trimmingCharacters(in: .whitespacesAndNewlines)
+                let value = parts[1].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                print("Label: \(label)")
+                print("Value: \(value)")
+            }
+        }
+    }
+
+    private func parseCombinedString(combinedString: String) {
+
+        let components = combinedString.split(separator: ",").map(String.init)
+        for component in components {
+            let parts = component.split(separator: "::", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
+            guard parts.count >= 1 else { continue }
+
+            let titlePart = parts[0].trimmingCharacters(in: .whitespaces)
+            let selectionAndMaybeDescription = parts.count > 1 ? parts[1] : ""
+
+            let selectionParts = selectionAndMaybeDescription.split(separator: "~~", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
+            let selection = selectionParts[0].trimmingCharacters(in: .whitespaces)
+            let description = selectionParts.count > 1 ? selectionParts[1].trimmingCharacters(in: .whitespaces) : ""
+
+            print("Selection:\(selection)")
+            print("Description: \(description)")
+        }
+    }
+
+    func decodeCombinedString(_ combinedString: String) -> [LabelValue] {
+        // Split the combined string into components based on the "|" delimiter
+        let components = combinedString.components(separatedBy: "|")
+        
+        var decodedData = [LabelValue]()
+        
+        for component in components {
+            // Further split each component into label and value based on the ":" delimiter
+            let parts = component.components(separatedBy: ":")
+            
+            if parts.count == 2 {
+                let label = parts[0].trimmingCharacters(in: .whitespaces)
+                let value = parts[1].trimmingCharacters(in: .whitespaces)
+                decodedData.append(LabelValue(label: label, value: value))
+            } else if component.starts(with: "other:") {
+                // Handle "other" inputs differently if needed
+                let value = String(component.dropFirst("other:".count))
+                decodedData.append(LabelValue(label: "Other", value: value))
+            }
+        }
+        
+        return decodedData
+    }
+
+
     
     func addPastChanges(reason: String, changes: [ChangeDescription], author: String, modelContext: ModelContext) {
         let codableChanges = changes.reduce(into: [String: CodableValue]()) { result, change in
@@ -208,35 +379,35 @@ extension MedicalRecordFile {
                 .textField(title: "Lower Extremities:", binding: stringBinding(for: "S Lower Extremity")),
                 .textField(title: "Trunk Musculature:", binding: stringBinding(for: "Trunk Musculature")),
                 .leRomTable(title: "LE Strength and ROM Table:", combinedString: stringBinding(for: "LE Strength and ROM Table:")),
-                .singleSelectDescription(titles: ["Pain"], labels: ["No", "Yes"], combinedString: stringBinding(for: "Pain"), isDescription: true)
+                .singleSelectDescription(titles: ["Pain"], labels: ["No", "Yes"], combinedString: stringBinding(for: "SS Pain"), isDescription: true)
             ]),
             FormSection(title: "Neurological Functioning", elements: [
-                .singleSelectDescription(titles: ["Tone"], labels: ["WNL", "Hypotonic", "Fluctuating", "NT"], combinedString: stringBinding(for: "Tone"), isDescription: true),
-                .singleSelectDescription(titles: ["Sensation"], labels: ["WNL", "Hyposensitive", "Hypersensitive", "Absent", "NT"], combinedString: stringBinding(for: "Sensation"), isDescription: true),
-                .singleSelectDescription(titles: ["Reflexes"], labels: ["WNL", "Hyporesponse", "Hyperresponse", "Deficits", "NT"], combinedString: stringBinding(for: "Reflexes"), isDescription: true),
-                .singleSelectDescription(titles: ["Protective Extension", "Righting", "Equilibrium", "Praxis"], labels: ["WNL", "Deficient", "Emerging", "Absent", "NT"], combinedString: stringBinding(for: "Protective Extension to Praxis"), isDescription: true),
+                .singleSelectDescription(titles: ["Tone"], labels: ["WNL", "Hypotonic", "Fluctuating", "NT"], combinedString: stringBinding(for: "SS Tone"), isDescription: true),
+                .singleSelectDescription(titles: ["Sensation"], labels: ["WNL", "Hyposensitive", "Hypersensitive", "Absent", "NT"], combinedString: stringBinding(for: "SS Sensation"), isDescription: true),
+                .singleSelectDescription(titles: ["Reflexes"], labels: ["WNL", "Hyporesponse", "Hyperresponse", "Deficits", "NT"], combinedString: stringBinding(for: "SS Reflexes"), isDescription: true),
+                .singleSelectDescription(titles: ["Protective Extension", "Righting", "Equilibrium", "Praxis"], labels: ["WNL", "Deficient", "Emerging", "Absent", "NT"], combinedString: stringBinding(for: "SS Protective Extension to Praxis"), isDescription: true),
                 .textField(title: "Notes:", binding: stringBinding(for: "Neurological Notes")),
                 .textField(title: "Toileting", binding: stringBinding(for: "Toileting")),
             ]),
             FormSection(title: "Coordination", elements: [
-                .singleSelectDescription(titles: ["Upper Extremities", "Lower Extremities"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "Coordination Extremities"), isDescription: true),
+                .singleSelectDescription(titles: ["Upper Extremities", "Lower Extremities"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Coordination Extremities"), isDescription: true),
                 .textField(title: "Notes", binding: stringBinding(for: "Coordination Notes")),
-                .singleSelectDescription(titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "Endurance"), isDescription: true)
+                .singleSelectDescription(titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Endurance"), isDescription: true)
             ]),
             FormSection(title: "Endurance", elements: [
-                .singleSelectDescription(titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "Endurance"), isDescription: true)
+                .singleSelectDescription(titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Endurance"), isDescription: true)
             ]),
             FormSection(title: "Balance", elements: [
-                .singleSelectDescription(titles: ["Sit Static", "Sit Dynamic", "Stance Static", "Stance Dynamic"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "Balance"), isDescription: true),
+                .singleSelectDescription(titles: ["Sit Static", "Sit Dynamic", "Stance Static", "Stance Dynamic"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Balance"), isDescription: true),
                 .textField(title: "Notes", binding: stringBinding(for: "Balance Notes"))
             ]),
             FormSection(title: "Current Equipment", elements: [
-                .multiSelectWithTitle(combinedString: stringBinding(for: "Current Equipment"), labels: ["Orthotics", "Wheelchair", "Bath Equipment", "Glasses", "Augmentative Communication Device", "Walking Device", "Training Aids", "Other"], title: "Current Equipment")
+                .multiSelectWithTitle(combinedString: stringBinding(for: "MST Current Equipment"), labels: ["Orthotics", "Wheelchair", "Bath Equipment", "Glasses", "Augmentative Communication Device", "Walking Device", "Training Aids", "Other"], title: "Current Equipment")
             ]),
             FormSection(title: "Mobility", elements: [
-                .multiSelectOthers(combinedString: stringBinding(for: "Locomotion"), labels: ["Ambulation", "Non-Mobile", "Wheel Chair"], title: "Locomotion"),
-                .multiSelectWithTitle(combinedString: stringBinding(for: "Assistance & Distance"), labels: ["Independent", "Supervision for safety", "Minimal", "Maximal", "SBA", "CGA", "Moderate", "Dependent"], title: "Assistance & Distance"),
-                .singleSelectDescription(titles: ["Level", "Ramp", "Curb", "Stairs", "Uneven terrain"], labels: ["Independent", "SBA", "CGA", "Min", "Mod", "Max"], combinedString: stringBinding(for: "Surfaces"), isDescription: true),
+                .multiSelectOthers(combinedString: stringBinding(for: "MSO Locomotion"), labels: ["Ambulation", "Non-Mobile", "Wheel Chair"], title: "Locomotion"),
+                .multiSelectWithTitle(combinedString: stringBinding(for: "MST Assistance & Distance"), labels: ["Independent", "Supervision for safety", "Minimal", "Maximal", "SBA", "CGA", "Moderate", "Dependent"], title: "Assistance & Distance"),
+                .singleSelectDescription(titles: ["Level", "Ramp", "Curb", "Stairs", "Uneven terrain"], labels: ["Independent", "SBA", "CGA", "Min", "Mod", "Max"], combinedString: stringBinding(for: "SS Surfaces"), isDescription: true),
                 .textField(title: "Gait Deviations", binding: stringBinding(for: "Gait Deviations")),
                 .textField(title: "Wheelchair Skills", binding: stringBinding(for: "Wheelchair Skills"))
             ]),
@@ -259,7 +430,7 @@ extension MedicalRecordFile {
                 .textField(title: "Other", binding: stringBinding(for: "Transitions Other"))
             ]),
             FormSection(title: "Posture/Body Mechanics/Ergonomics", elements: [
-                .singleSelectDescription(titles: ["Posture/Body Mechanics/Ergonomics"], labels: ["WNL", "Patient demonstrated the following deviations"], combinedString: stringBinding(for: "Posture/Body Mechanics/Ergonomics"), isDescription: true)
+                .singleSelectDescription(titles: ["Posture/Body Mechanics/Ergonomics"], labels: ["WNL", "Patient demonstrated the following deviations"], combinedString: stringBinding(for: "SS Posture/Body Mechanics/Ergonomics"), isDescription: true)
             ]),
             FormSection(title: "Gross Motor Developmental Status", elements: [
                 .textField(title: "Chronological Age", binding: stringBinding(for: "Chronological Age")),
@@ -267,8 +438,12 @@ extension MedicalRecordFile {
                 .textField(title: "Special Testing/Standardized Testing", binding: stringBinding(for: "Special Testing/Standardized Testing"))
             ]),
             FormSection(title: "Primary Problems/Deficits Include", elements: [
-                .multiSelectOthers(combinedString: stringBinding(for: "Primary Problems/Deficits Include"), labels: ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"], title: "Primary Problems/Deficits Include")
+                .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"], title: "Primary Problems/Deficits Include")
+            ]),
+            FormSection(title: "Daily Note", elements: [
+                .dailyNoteTable(title: "Daily Note", combinedString: stringBinding(for: "Daily Note"))
             ])
+
         ]
 
         return uiElements

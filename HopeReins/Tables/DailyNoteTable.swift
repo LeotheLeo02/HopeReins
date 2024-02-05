@@ -18,7 +18,7 @@ struct DailyNoteTable: View {
     }
 
     var body: some View {
-        List {
+        VStack {
             HStack {
                 Text("#")
                     .frame(width: 50)
@@ -103,6 +103,7 @@ struct EntryRowDailyNoteTable: View {
     private func updateCombinedString() {
         let updatedString = tableData.map { "\($0.number)" }.joined(separator: "//")
         combinedString = updatedString
+        print(combinedString)
     }
 }
 
