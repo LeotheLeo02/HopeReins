@@ -22,7 +22,7 @@ struct DynamicElementView: View {
         case .customView(title: let title, viewProvider: let viewProvider):
             PropertyHeader(title: title)
             viewProvider()
-        case .singleSelectDescription(titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
+        case .singleSelectDescription(title: let title, titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
             SingleSelectLastDescription(combinedString: combinedString, lastDescription: isDescription, titles: titles, labels: labels)
         case .multiSelectWithTitle(combinedString: let combinedString, labels: let labels, title: let title):
             MultiSelectWithTitle(boolString: combinedString, labels: labels, title: title)
@@ -42,7 +42,7 @@ enum DynamicUIElement: Hashable {
     case numberField(title: String, binding: Binding<Int>)
     case sectionHeader(title: String)
     case leRomTable(title: String, combinedString: Binding<String>)
-    case singleSelectDescription(titles: [String], labels: [String], combinedString: Binding<String>, isDescription: Bool)
+    case singleSelectDescription(title: String, titles: [String], labels: [String], combinedString: Binding<String>, isDescription: Bool)
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
     case customView(title: String, viewProvider: () -> AnyView)
@@ -69,7 +69,7 @@ enum DynamicUIElement: Hashable {
                 .leRomTable(let title, _),
                 .dailyNoteTable(let title, _):
             hasher.combine(title)
-        case .singleSelectDescription(let titles, let labels, _, let isDescription):
+        case .singleSelectDescription(_,let titles, let labels, _, let isDescription):
             hasher.combine(titles)
             hasher.combine(labels)
             hasher.combine(isDescription)
@@ -103,10 +103,9 @@ struct DynamicUIElementWrapper: Hashable {
              .multiSelectWithTitle(_, _, let title),
              .multiSelectOthers(_, _, let title),
              .leRomTable(let title, _),
-             .dailyNoteTable(let title, _):
+             .dailyNoteTable(let title, _),
+             .singleSelectDescription(let title,_, _, _, _):
             self.id = title
-        case .singleSelectDescription(let titles, _, _, _):
-            self.id = titles.joined(separator: "-")
         }
         self.element = element
     }

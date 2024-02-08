@@ -6,22 +6,37 @@
 //
 
 import SwiftUI
+import Combine
 
+// TODO: Debug AttributeGraph Cycle issue...
 struct MultiSelectWithTitle: View {
     @Environment(\.isEditable) var isEditable: Bool
     @Binding var boolString: String
     @State private var toggleElements: [ToggleWithTitle] = []
     var labels: [String]
     var title: String
-    let columns = [
-        GridItem(.adaptive(minimum: 300)),
-    ]
+
+    private var updateStringPublisher = PassthroughSubject<Void, Never>()
+    private var cancellables = Set<AnyCancellable>()
+    
     init(boolString: Binding<String>, labels: [String], title: String) {
         self._boolString = boolString
         self.labels = labels
         self.title = title
         self._toggleElements = State(initialValue: getToggleWithTitles())
+
+        // Debounce updates to reduce frequency
+        updateStringPublisher
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [self] in
+                self.updateString()
+            }
+            .store(in: &cancellables)
     }
+    
+    let columns = [
+        GridItem(.adaptive(minimum: 300)),
+    ]
     
     var body: some View {
         PropertyHeader(title: title)
@@ -31,25 +46,34 @@ struct MultiSelectWithTitle: View {
                         .environment(\.isEditable, isEditable)
                 }
         })
-        .onChange(of: toggleElements) { _ in
-            updateString()
+        .onReceive(updateStringPublisher) { _ in
+            self.updateString()
         }
+        
+        .onChange(of: toggleElements, { oldValue, newValue in
+            self.updateString()
+        })
+
         .padding()
     }
     
 
     
     func updateString() {
-        let nonDefaultElements = toggleElements.filter { !$0.description.isEmpty }
-
-        if nonDefaultElements.isEmpty {
-            // If all elements are at their default (i.e., descriptions are empty), set boolString to empty
-            boolString = ""
-        } else {
-            // Construct the boolString only with elements that are not at their default state
-            boolString = nonDefaultElements.map { "\($0.title): \($0.description)" }.joined(separator: "\\")
+        DispatchQueue.main.async {
+            let nonDefaultElements = toggleElements.filter { !$0.description.isEmpty }
+            
+            if nonDefaultElements.isEmpty {
+                // If all elements are at their default (i.e., descriptions are empty), set boolString to empty
+                boolString = ""
+            } else {
+                // Construct the boolString only with elements that are not at their default state
+                boolString = nonDefaultElements.map { "\($0.title): \($0.description)" }.joined(separator: "\\")
+                print(boolString)
+            }
         }
     }
+
 
     func getToggleWithTitles() -> [ToggleWithTitle] {
         let elements = boolString.components(separatedBy: "\\")
@@ -96,9 +120,9 @@ struct DescriptionView: View {
     @Environment(\.isEditable) var isEditable: Bool
     @Binding var boolString: String
     @Binding var toggleElement: ToggleWithTitle
+    @FocusState var textIsFocused: Bool
     var index: Int
     var coordinator: MultiSelectWithTitle.Coordinator
-
     var body: some View {
         HStack {
             Button(action: {
@@ -127,10 +151,6 @@ struct DescriptionView: View {
             Text(toggleElement.title)
             TextField("Description", text: $toggleElement.description, axis: .vertical)
                 .disabled(!isEditable)
-                .onChange(of: toggleElement.description) { newValue in
-                    coordinator.updateString(index: index, newValue: newValue)
-                    print(boolString)
-                }
         }
     }
 

@@ -81,7 +81,21 @@ struct MultiSelectOthers: View {
                 }
             })
         }
+        .onChange(of: boolString) { oldValue, newValue in
+            checkAndUpdateBoolString()
+        }
     }
+    
+    private func checkAndUpdateBoolString() {
+        let items = boolString.components(separatedBy: "|")
+        let nonDefaultItems = items.filter { !$0.hasSuffix(":false") && !$0.hasPrefix("other:") && !$0.isEmpty }
+        
+       
+        if nonDefaultItems.isEmpty && !boolString.contains("other:") {
+            boolString = ""
+        }
+    }
+    
     func addOtherString() {
         if !otherString.isEmpty {
             boolString += "|other:\(otherString)"

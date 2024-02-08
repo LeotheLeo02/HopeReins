@@ -50,9 +50,7 @@ struct DynamicFormView: View  {
     @State var reviewChanges: Bool = false
     @State var isRevertingVersion: Bool = false
     @State var showRevertAlert: Bool = false
-    var uiElements: [FormSection] {
-        return getUIElements()
-    }
+    @State var uiElements: [FormSection] = []
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -87,6 +85,7 @@ struct DynamicFormView: View  {
                     if !isAdding {
                         initialProperties = record.properties
                     }
+                    uiElements = getUIElements()
                 }
                 .alert(isPresented: $showRevertAlert) {
                     if isRevertingVersion {
