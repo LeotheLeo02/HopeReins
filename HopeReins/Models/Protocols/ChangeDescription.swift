@@ -10,9 +10,9 @@ import SwiftData
 
 
 struct ChangeDescription: Hashable {
-    var displayName: String?
+    var displayName: String
     var id: String
-    var oldValue: CodableValue
-    var value: CodableValue
-    var actualValue: CodableValue
+    var oldValue: String
+    var value: String
+    var actualValue: String
 }

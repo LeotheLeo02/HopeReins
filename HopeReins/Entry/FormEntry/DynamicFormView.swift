@@ -27,27 +27,26 @@ struct FormSectionContent: View {
         ScrollView {
             VStack {
                 if selectedVersion != nil {
-                    ForEach(selectedVersion!.changes, id: \.self) { change in
-                        if change.fieldID == wrappedElement.id {
-                            HStack {
-                                OriginalValueView(id: wrappedElement.id, value: change.propertyChange, displayName: change.displayName, onTap: {
-                                    selectedFieldChange = wrappedElement.id
-                                })
-                                Button(action: {
-                                    if  record.revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: false, modelContext: modelContext) {
-                                        modelContext.delete(selectedVersion!)
-                                        selectedVersion = nil
-                                    }
-                                    print(change.propertyChange)
-                                    initialProperties[selectedFieldChange!] = CodableValue.string(change.propertyChange)
-                                }, label: {
-                                    Image(systemName: "arrowshape.turn.up.backward.fill")
-                                })
-                                .buttonStyle(.plain)
-                            }
-                            .padding(5)
-                            .background(RoundedRectangle(cornerRadius: 8).foregroundStyle(.windowBackground))
+                    ForEach(selectedVersion!.changes.filter { $0.fieldID == wrappedElement.id }, id: \.self) { change in
+                        HStack {
+                            OriginalValueView(id: wrappedElement.id, value: change.propertyChange, displayName: change.displayName, onTap: {
+                                selectedFieldChange = wrappedElement.id
+                            })
+                            Button(action: {
+                                if  record.revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: false, modelContext: modelContext) {
+                                    record.versions.removeAll{ $0 == selectedVersion! }
+                                    modelContext.delete(selectedVersion!)
+                                    selectedVersion = nil
+                                }
+                                print(change.propertyChange)
+                                initialProperties[selectedFieldChange!] = CodableValue.string(change.propertyChange)
+                            }, label: {
+                                Image(systemName: "arrowshape.turn.up.backward.fill")
+                            })
+                            .buttonStyle(.plain)
                         }
+                        .padding(5)
+                        .background(RoundedRectangle(cornerRadius: 8).foregroundStyle(.windowBackground))
                     }
                 }
             }
@@ -60,7 +59,7 @@ struct FormSectionContent: View {
 struct OriginalValueView: View {
     var id: String
     var value: String
-    var displayName: String?
+    var displayName: String
     var onTap: () -> Void
 
     var body: some View {
@@ -68,7 +67,7 @@ struct OriginalValueView: View {
             Text("Original Value:")
                 .foregroundStyle(.gray)
                 .font(.caption.bold())
-            Text(displayName ?? (value.isEmpty ? "Default Value" : value))
+            Text(displayName)
                    .font(.caption2)
                    .bold(displayName != nil)
 
@@ -120,10 +119,19 @@ struct DynamicFormView: View  {
                                         }
                                 },
                                 label: {
-                                    SectionHeader(title: section.title)
+                                    HStack {
+                                        SectionHeader(title: section.title)
+                                        let changesCount = countChangesInSection(section)
+                                        if changesCount > 0 {
+                                            Text("\(changesCount) changes")
+                                                .font(.subheadline)
+                                                .foregroundColor(.red)
+                                        }
+                                    }
                                 }
                             )
                             .id(section.title)
+
                         }
                     }
                     
@@ -176,12 +184,14 @@ struct DynamicFormView: View  {
             HStack {
                 VStack(alignment: .leading) {
                     VStack {
-                        if selectedVersion?.changes.contains(where: { $0.fieldID == wrappedElement.id }) == true {
+                        if let changes = selectedVersion?.changes, changes.contains(where: { $0.fieldID == wrappedElement.id }) {
                             Button(action: {
                                 selectedFieldChange = wrappedElement.id
                             }, label: {
-                                Text("Changes")
-                                Image(systemName: "chevron.right.circle.fill")
+                                HStack {
+                                    Text("Changes (\(changes.filter { $0.fieldID == wrappedElement.id }.count))")
+                                    Image(systemName: "chevron.right.circle.fill")
+                                }
                             })
                             .popover(isPresented: Binding<Bool>(
                                 get: { self.selectedFieldChange == wrappedElement.id },
@@ -190,6 +200,7 @@ struct DynamicFormView: View  {
                                 FormSectionContent(wrappedElement: wrappedElement, changeDescriptions: changeDescriptions, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, initialProperties: $initialProperties, record: record)
                             }
                         }
+
                         DynamicElementView(wrappedElement: wrappedElement.element)
                     }
                     if changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
@@ -266,6 +277,17 @@ struct DynamicFormView: View  {
         return uiElements.reduce(0) { $0 + $1.elements.count }
     }
     
+    func countChangesInSection(_ section: FormSection) -> Int {
+        let wrappedElements = section.elements.map(DynamicUIElementWrapper.init)
+        let changesInSection = wrappedElements.compactMap { wrappedElement -> Int? in
+            if let changes = selectedVersion?.changes, changes.contains(where: { $0.fieldID == wrappedElement.id }) {
+                return changes.filter { $0.fieldID == wrappedElement.id }.count
+            }
+            return nil
+        }
+        return changesInSection.reduce(0, +)
+    }
+
     func pastChangeValueString(value: CodableValue) -> String {
         switch value {
         case .int(let value):

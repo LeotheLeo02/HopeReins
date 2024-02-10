@@ -11,10 +11,10 @@ extension HopeReinsSchemaV2 {
     @Model final class PastChange {
         var fieldID: String = ""
         var type: String = ""
-        var displayName: String?
+        var displayName: String = ""
         var propertyChange: String = ""
 
-        init (fieldID: String, type: String, propertyChange: String, displayName: String?) {
+        init (fieldID: String, type: String, propertyChange: String, displayName: String) {
             self.fieldID = fieldID
             self.type = type
             self.propertyChange = propertyChange

@@ -13,6 +13,7 @@ struct SingleSelectLastDescription: View {
     @State private var selections: [String: String] = [:]
     @State private var descriptions: [String: String] = [:]
     
+
     var lastDescription: Bool
     var titles: [String]
     var labels: [String]
@@ -34,6 +35,7 @@ struct SingleSelectLastDescription: View {
                         }
                     }
                     .labelsHidden()
+
                     
                     if lastDescription && selections[title] == labels.last {
                         TextField("Description...", text: Binding(
@@ -54,50 +56,46 @@ struct SingleSelectLastDescription: View {
     }
     
     private func updateCombinedString() {
-        var isAllDefault = true
-        
-        // Construct combinedString from the current selections and descriptions
-        let combinedComponents = titles.compactMap { title -> String? in
-            guard let selection = selections[title] else { return nil }
+        var components: [String] = []
 
-            // Check if the current selection is the default value
-            let isDefaultSelection = selection == labels.first
+        for title in titles {
+            guard let selection = selections[title] else { continue }
+            var component = "\(title)::\(selection)"
 
-            var component: String? = nil
-            if !isDefaultSelection || (selection == labels.last && descriptions[title]?.isEmpty == false) {
-                // Construct component only if it's not default
-                component = "\(title)::\(selection)"
-                if selection == labels.last, let description = descriptions[title], !description.isEmpty {
-                    component! += "~~\(description)"
-                }
-                isAllDefault = false  // Found at least one non-default value
+            if selection == labels.last, let description = descriptions[title], !description.isEmpty {
+                component += "~~\(description)"
+            } else if selection == "Not Indicated" {
+                // Skip adding "Not Indicated" to combinedString if it's not meant to be explicitly saved
+                continue
             }
 
-            return component
+            components.append(component)
         }
 
-        if isAllDefault {
-            combinedString = ""
-        } else {
-            combinedString = combinedComponents.joined(separator: ", ")
-        }
-
-        print("Combined String: \(combinedString)")
+        combinedString = components.joined(separator: ", ")
     }
 
 
 
     private func parseCombinedString() {
-        let titleComponents = combinedString.components(separatedBy: ", ")
+        let titleComponents = combinedString.isEmpty ? [] : combinedString.components(separatedBy: ", ")
         selections.removeAll()
         descriptions.removeAll()
+
+        titles.forEach { title in
+            selections[title] = "Not Indicated" // Default to "Not Indicated"
+        }
 
         for component in titleComponents {
             let titleAndRest = component.split(separator: "::", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
             if titleAndRest.count == 2, let title = titles.first(where: { titleAndRest[0].contains($0) }) {
                 let selectionAndDescription = titleAndRest[1].split(separator: "~~", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
                 let selection = selectionAndDescription[0]
-                selections[title] = selection
+                
+                // Only update the selection if it's a valid label
+                if labels.contains(selection) {
+                    selections[title] = selection
+                }
                 
                 if selectionAndDescription.count > 1 {
                     let description = selectionAndDescription[1]
@@ -106,5 +104,7 @@ struct SingleSelectLastDescription: View {
             }
         }
     }
+
+
 
 }

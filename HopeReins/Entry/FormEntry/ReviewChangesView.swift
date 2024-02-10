@@ -35,14 +35,14 @@ struct ReviewChangesView: View {
                 Divider()
                 ForEach(Array(changeDescriptions.enumerated()), id: \.element.self) { index, changeDescription in
                     HStack {
-                        Text("\(changeDescription.displayName ?? changeDescription.id)")
+                        Text("\(changeDescription.displayName.isEmpty ? changeDescription.id : changeDescription.displayName)")
                             .frame(width: 100, alignment: .center)
                             .padding(.trailing, 8)
-                        Text("\(changeDescription.oldValue.stringValue)")
+                        Text("\(changeDescription.oldValue.isEmpty ? "Default Value" : changeDescription.oldValue)")
                             .foregroundStyle(.red)
                             .frame(width: 100, alignment: .center)
                             .padding(.trailing, 8)
-                        Text("\(changeDescription.value.stringValue)")
+                        Text("\(changeDescription.value)")
                             .foregroundStyle(.green)
                             .frame(width: 100, alignment: .center)
                     }

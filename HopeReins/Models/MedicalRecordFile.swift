@@ -205,6 +205,8 @@ extension MedicalRecordFile {
 
          return changes
      }
+
+    
     
     func createDefaultLETableData() -> [LabelValue] {
         let initialTableData: [TableCellData] = [
@@ -235,7 +237,7 @@ extension MedicalRecordFile {
      func compareLETable(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
         let oldLabelValues = oldCombinedString.isEmpty ? createDefaultLETableData() : parseLeRomTable(oldCombinedString)
          let newLabelValues = newCombinedString.isEmpty ? createDefaultLETableData() :  parseLeRomTable(newCombinedString)
-
+        
         var changes = [DetailedChange]()
 
         // Create dictionaries for easier access
@@ -261,22 +263,23 @@ extension MedicalRecordFile {
             if let oldValue = other[key], newValue != oldValue {
                 if key.contains("SS") {
                     for change in compareSingleSelection(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
+                        
+                        changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
                     }
                 } else if key.contains("LE") {
                     for change in compareLETable(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
+                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
                     }
                 } else if key.contains("MSO") {
                     for change in compareMultiSelectOthers(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
+                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
                     }
                 } else if key.contains("MST") {
                     for change in compareMultiSelectWithTitle(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
+                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
                     }
                 } else {
-                    changes.append(ChangeDescription(id: key, oldValue: oldValue, value: newValue, actualValue: oldValue))
+                    changes.append(ChangeDescription(displayName: "", id: key, oldValue: oldValue.stringValue, value: newValue.stringValue, actualValue: oldValue.stringValue))
                 }
             }
         }
@@ -335,7 +338,7 @@ extension MedicalRecordFile {
 
             if oldValue != newValue {
                 // If the value has changed or the label is new
-                changes.append(DetailedChange(label: newLabelValue.label, oldValue: oldValue ?? "", newValue: newValue))
+                changes.append(DetailedChange(label: newLabelValue.label, oldValue: oldValue ?? "Not Indicated", newValue: newValue))
             }
         }
 
@@ -387,7 +390,7 @@ extension MedicalRecordFile {
         let newVersion = Version(date: Date.now, reason: reason, author: author)
         var newChanges: [PastChange] = []
         for change in changes {
-            newChanges.append(PastChange(fieldID: change.id, type: "String", propertyChange: change.actualValue.stringValue, displayName: (change.displayName ?? "") + "\(change.oldValue.stringValue)"))
+            newChanges.append(PastChange(fieldID: change.id, type: "String", propertyChange: change.actualValue, displayName: (change.displayName) + " \(change.oldValue)"))
         }
 
         self.versions.append(newVersion)
@@ -412,9 +415,6 @@ extension MedicalRecordFile {
             version.changes.forEach { change in
                 self.properties[change.fieldID] = CodableValue.string(change.propertyChange)
             }
-            
-            self.versions.removeAll { $0 == version }
-            modelContext.delete(version)
         } else if let fieldId = fieldId {
             for change in version.changes {
                 if change.fieldID == fieldId {
