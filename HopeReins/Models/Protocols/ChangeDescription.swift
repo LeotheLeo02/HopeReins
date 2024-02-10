@@ -14,4 +14,5 @@ struct ChangeDescription: Hashable {
     var id: String
     var oldValue: CodableValue
     var value: CodableValue
+    var actualValue: CodableValue
 }

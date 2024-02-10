@@ -15,7 +15,7 @@ extension HopeReinsSchemaV2 {
         public var id = UUID()
         var properties: [String: CodableValue] = [:]
         @Relationship(deleteRule: .cascade)
-        var pastChanges: [PastChange] = []
+        var versions: [Version] = []
         var patient: Patient
         var fileType: String
         var digitalSignature: DigitalSignature?
@@ -61,7 +61,7 @@ extension HopeReinsSchemaV2 {
 }
 
 
-struct LabelValue {
+public struct LabelValue: Hashable {
     var label: String
     var value: String
 }
@@ -73,7 +73,7 @@ struct DetailedChange {
 
 
 
-private func singleSelectionParse(combinedString: String) -> [LabelValue] {
+public func singleSelectionParse(combinedString: String) -> [LabelValue] {
     var labelValues = [LabelValue]()
 
     let components = combinedString.split(separator: ",").map(String.init)
@@ -99,7 +99,7 @@ private func singleSelectionParse(combinedString: String) -> [LabelValue] {
     return labelValues
 }
 
-func decodeMultiSelectWithTitle(boolString: String) -> [LabelValue] {
+public func decodeMultiSelectWithTitle(boolString: String) -> [LabelValue] {
     let entries = boolString.components(separatedBy: "\\") // Split into entries by "\"
     var labelValues: [LabelValue] = []
 
@@ -155,6 +155,36 @@ func decodeMultiSelectOthers(_ combinedString: String) -> [LabelValue] {
 }
 
 
+public func parseLeRomTable(_ combinedString: String) -> [LabelValue] {
+    let entries = combinedString.components(separatedBy: "//")
+    var labelValues = [LabelValue]()
+
+    var index = 0
+    while index < entries.count {
+        let isPain = entries[index] == "true"
+        let label = entries[index + 1]
+
+        var valueString = ""
+        if isPain {
+            valueString = "Pain detected"
+            index += 2
+        } else {
+            let value1 = entries[index + 2]
+            let value2 = entries[index + 3]
+            let value3 = entries[index + 4]
+            let value4 = entries[index + 5]
+            valueString = "MMT R = \(value1), MMT L = \(value2), A/PROM (R) = \(value3), A/PROM (L) = \(value4)"
+            index += 6
+        }
+
+        let labelValue = LabelValue(label: label, value: valueString)
+        labelValues.append(labelValue)
+    }
+
+    return labelValues
+}
+
+
 
 extension MedicalRecordFile {
 
@@ -176,7 +206,7 @@ extension MedicalRecordFile {
          return changes
      }
     
-    func createDefaultLETableData() -> [String: (isPain: Bool, metrics: [String: String])] {
+    func createDefaultLETableData() -> [LabelValue] {
         let initialTableData: [TableCellData] = [
             TableCellData(label1: "Knee Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
             TableCellData(label1: "Knee Extension", value1: 1, value2: 1, value3: 0, value4: 0),
@@ -190,54 +220,38 @@ extension MedicalRecordFile {
             TableCellData(label1: "Other", value1: 1, value2: 1, value3: 0, value4: 0)
         ]
 
-        var defaultData = [String: (isPain: Bool, metrics: [String: String])]()
-        
+        var labelValues = [LabelValue]()
+
         for cellData in initialTableData {
-            defaultData[cellData.label1] = (
-                isPain: cellData.isPain,
-                metrics: [
-                    "MMT R": String(cellData.value1),
-                    "MMT L": String(cellData.value2),
-                    "A/PROM (R)": String(cellData.value3),
-                    "A/PROM (L)": String(cellData.value4)
-                ]
-            )
+            let valueString = "MMT R = \(cellData.value1), MMT L = \(cellData.value2), A/PROM (R) = \(cellData.value3), A/PROM (L) = \(cellData.value4)"
+            let labelValue = LabelValue(label: cellData.label1, value: valueString)
+            labelValues.append(labelValue)
         }
-        
-        return defaultData
+
+        return labelValues
     }
+
     
-    func compareLETable(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
-        let oldParsedData = oldCombinedString.isEmpty ? createDefaultLETableData() : parseLeRomTable(oldCombinedString)
-        let newParsedData = parseLeRomTable(newCombinedString)
+     func compareLETable(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+        let oldLabelValues = oldCombinedString.isEmpty ? createDefaultLETableData() : parseLeRomTable(oldCombinedString)
+         let newLabelValues = newCombinedString.isEmpty ? createDefaultLETableData() :  parseLeRomTable(newCombinedString)
 
         var changes = [DetailedChange]()
 
-        for (label, oldData) in oldParsedData {
-            let newData = newParsedData[label]
+        // Create dictionaries for easier access
+        let oldDataDict = Dictionary(uniqueKeysWithValues: oldLabelValues.map { ($0.label, $0.value) })
+        let newDataDict = Dictionary(uniqueKeysWithValues: newLabelValues.map { ($0.label, $0.value) })
 
-            // Check if pain indicator changed
-            if oldData.isPain != newData?.isPain {
-                let changeDescription = newData?.isPain == true ? "Pain detected" : "Pain indicator removed"
-                changes.append(DetailedChange(label: label, oldValue: oldData.isPain ? "Pain detected" : "No pain", newValue: newData?.isPain == true ? "Pain detected" : "No pain"))
-            }
-
-            // Compare metrics if not just a pain indicator
-            if !oldData.isPain, let oldMetrics = oldData.metrics, let newMetrics = newData?.metrics {
-                for (metric, oldValue) in oldMetrics {
-                    if let newValue = newMetrics[metric], newValue != oldValue {
-                        let detailedChangeDescription = "\(metric) changed from \(oldValue) to \(newValue)"
-                        changes.append(DetailedChange(label: label, oldValue: oldValue, newValue: newValue))
-                    }
-                }
+        for (label, oldValue) in oldDataDict {
+            if let newValue = newDataDict[label], newValue != oldValue {
+                changes.append(DetailedChange(label: label, oldValue: oldValue, newValue: newValue))
             }
         }
 
-        // Optionally handle removed entries
-        // ...
 
         return changes
     }
+
 
 
     func compareProperties(with other: [String: CodableValue]) -> [ChangeDescription] {
@@ -247,23 +261,22 @@ extension MedicalRecordFile {
             if let oldValue = other[key], newValue != oldValue {
                 if key.contains("SS") {
                     for change in compareSingleSelection(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        print(key)
-                        changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: .string(change.oldValue), value: .string(change.newValue)))
+                        changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
                     }
                 } else if key.contains("LE") {
                     for change in compareLETable(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue)))
+                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
                     }
                 } else if key.contains("MSO") {
                     for change in compareMultiSelectOthers(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue)))
+                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
                     }
                 } else if key.contains("MST") {
                     for change in compareMultiSelectWithTitle(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue)))
+                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: .string(change.oldValue), value: .string(change.newValue), actualValue: oldValue))
                     }
                 } else {
-                    changes.append(ChangeDescription(id: key, oldValue: oldValue, value: newValue))
+                    changes.append(ChangeDescription(id: key, oldValue: oldValue, value: newValue, actualValue: oldValue))
                 }
             }
         }
@@ -271,37 +284,6 @@ extension MedicalRecordFile {
         return changes
     }
     
-    func parseLeRomTable(_ combinedString: String) -> [String: (isPain: Bool, metrics: [String: String]?)] {
-        let components = combinedString.components(separatedBy: "//")
-        var result = [String: (isPain: Bool, metrics: [String: String]?)]()
-
-        var index = 0
-        while index < components.count {
-            let isPain = components[index] == "true"
-            index += 1 // Move to the next component, which should be the label
-
-            if index < components.count {
-                let label = components[index]
-                index += 1 // Move to the next component
-
-                var metrics: [String: String]? = nil
-                if !isPain && (index + 3) < components.count { // Check for metrics
-                    metrics = [
-                        "MMT R": components[index],
-                        "MMT L": components[index + 1],
-                        "A/PROM (R)": components[index + 2],
-                        "A/PROM (L)": components[index + 3]
-                    ]
-                    index += 4 // Move past the metrics
-                }
-
-                result[label] = (isPain: isPain, metrics: metrics)
-            }
-        }
-
-        return result
-    }
-
 
 
     
@@ -402,16 +384,18 @@ extension MedicalRecordFile {
 
     
     func addPastChanges(reason: String, changes: [ChangeDescription], author: String, modelContext: ModelContext) {
-        let codableChanges = changes.reduce(into: [String: CodableValue]()) { result, change in
-            result[change.id] = change.oldValue
+        let newVersion = Version(date: Date.now, reason: reason, author: author)
+        var newChanges: [PastChange] = []
+        for change in changes {
+            newChanges.append(PastChange(fieldID: change.id, type: "String", propertyChange: change.actualValue.stringValue, displayName: (change.displayName ?? "") + "\(change.oldValue.stringValue)"))
         }
 
-
-        let newChange = PastChange(date: Date.now, reason: reason, propertyChanges: codableChanges, author: author)
-        self.pastChanges.append(newChange)
+        self.versions.append(newVersion)
+       
 
         try? modelContext.transaction {
-            modelContext.insert(newChange)
+            modelContext.insert(newVersion)
+            newVersion.changes = newChanges
             updateProperties(author: author, modelContext: modelContext)
         }
     }
@@ -423,17 +407,26 @@ extension MedicalRecordFile {
     }
 
     
-    func revertToPastChange(fieldId: String?, pastChange: PastChange, revertToAll: Bool, modelContext: ModelContext) -> Bool {
+    func revertToPastChange(fieldId: String?, version: Version, revertToAll: Bool, modelContext: ModelContext) -> Bool {
         if revertToAll {
-            pastChange.propertyChanges.forEach { id, value in
-                self.properties[id] = value
+            version.changes.forEach { change in
+                self.properties[change.fieldID] = CodableValue.string(change.propertyChange)
             }
-            self.pastChanges.removeAll { $0 == pastChange }
-            modelContext.delete(pastChange)
-        } else if let fieldId = fieldId, let value = pastChange.propertyChanges[fieldId] {
-            self.properties[fieldId] = value
-            pastChange.propertyChanges.removeValue(forKey: fieldId)
-            return pastChange.propertyChanges.isEmpty
+            
+            self.versions.removeAll { $0 == version }
+            modelContext.delete(version)
+        } else if let fieldId = fieldId {
+            for change in version.changes {
+                if change.fieldID == fieldId {
+                    self.properties[change.fieldID] = CodableValue.string(change.propertyChange)
+                    version.changes.removeAll { change in
+                        return change == change
+                    }
+                    modelContext.delete(change)
+                }
+            }
+
+            return version.changes.isEmpty
         }
 
         try? modelContext.save()

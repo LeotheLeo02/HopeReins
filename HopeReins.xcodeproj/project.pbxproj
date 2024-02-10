@@ -36,7 +36,7 @@
 		BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */; };
 		BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6FC4EB2B25267500670F7D /* SideBar.swift */; };
 		BE72EDBB2B335719006D227C /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBA2B335719006D227C /* Patient.swift */; };
-		BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */; };
+		BE72EDC02B335816006D227C /* PastChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBF2B335816006D227C /* PastChange.swift */; };
 		BE73F8B42B3A71760059A9B8 /* DailyNoteFillIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */; };
 		BE7C78942B3A78CB00561886 /* DailyNoteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */; };
 		BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47632B3FD5230075CEEE /* HomeView.swift */; };
@@ -90,7 +90,7 @@
 		BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
 		BE6FC4EB2B25267500670F7D /* SideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SideBar.swift; path = ../SideBar.swift; sourceTree = "<group>"; };
 		BE72EDBA2B335719006D227C /* Patient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
-		BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingLessonPlan.swift; sourceTree = "<group>"; };
+		BE72EDBF2B335816006D227C /* PastChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastChange.swift; sourceTree = "<group>"; };
 		BE73F8B32B3A71760059A9B8 /* DailyNoteFillIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteFillIn.swift; sourceTree = "<group>"; };
 		BE7C78932B3A78CB00561886 /* DailyNoteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteTable.swift; sourceTree = "<group>"; };
 		BE8E47632B3FD5230075CEEE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -269,7 +269,7 @@
 		BE72EDC12B3359E8006D227C /* Adaptive Riding */ = {
 			isa = PBXGroup;
 			children = (
-				BE72EDBF2B335816006D227C /* RidingLessonPlan.swift */,
+				BE72EDBF2B335816006D227C /* PastChange.swift */,
 			);
 			path = "Adaptive Riding";
 			sourceTree = "<group>";
@@ -490,7 +490,7 @@
 				BE16E2072AAEB20B004052B8 /* HopeReinsApp.swift in Sources */,
 				BE06844E2AE0D01F004CABE7 /* FileUploadButton.swift in Sources */,
 				BE31DFA82B40F9C2006E4806 /* LoginView.swift in Sources */,
-				BE72EDC02B335816006D227C /* RidingLessonPlan.swift in Sources */,
+				BE72EDC02B335816006D227C /* PastChange.swift in Sources */,
 				BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
 				BE9357912B3CA5010058198E /* DateSelection.swift in Sources */,

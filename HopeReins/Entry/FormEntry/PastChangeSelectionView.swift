@@ -9,15 +9,15 @@ import SwiftUI
 
 struct PastChangeSelectionView: View {
     @Binding var showPastChanges: Bool
-    @Binding var selectedPastChange: PastChange?
-    var pastChanges: [PastChange]
+    @Binding var selectedVersion: Version?
+    var pastVersions: [Version]
 
     var body: some View {
         Button {
             showPastChanges.toggle()
         } label: {
             HStack {
-                Text("\(selectedPastChange?.reason ?? "Current Version")")
+                Text("\(selectedVersion?.reason ?? "Current Version")")
                 Image(systemName: "chevron.up.chevron.down")
             }
             .fontWeight(.semibold)
@@ -27,8 +27,8 @@ struct PastChangeSelectionView: View {
             ScrollView {
                 VStack {
                     currentVersionButton
-                    ForEach(pastChanges) { pastChange in
-                        pastChangeButton(pastChange: pastChange)
+                    ForEach(pastVersions) { pastVersion in
+                        pastChangeButton(pastVersion: pastVersion)
                     }
                 }
                 .padding(5)
@@ -38,11 +38,11 @@ struct PastChangeSelectionView: View {
     
     private var currentVersionButton: some View {
         Button {
-            selectedPastChange = nil
+            selectedVersion = nil
             showPastChanges.toggle()
         } label: {
             HStack {
-                if selectedPastChange == nil {
+                if selectedVersion == nil {
                     Image(systemName: "checkmark")
                         .bold()
                 }
@@ -57,20 +57,20 @@ struct PastChangeSelectionView: View {
     }
     
     @ViewBuilder
-    func pastChangeButton(pastChange: PastChange) -> some View {
+    func pastChangeButton(pastVersion: Version) -> some View {
         Button {
-            selectedPastChange = pastChange
+            selectedVersion = pastVersion
             showPastChanges.toggle()
         } label: {
             HStack {
-                if selectedPastChange == pastChange {
+                if selectedVersion == pastVersion {
                     Image(systemName: "checkmark")
                         .bold()
                 }
                 VStack(alignment: .leading) {
-                    Text(pastChange.reason)
+                    Text(pastVersion.reason)
                         .font(.subheadline)
-                    Text("Modified by \(pastChange.author) \(pastChange.date.formatted())")
+                    Text("Modified by \(pastVersion.author) \(pastVersion.date.formatted())")
                         .font(.caption2)
                 }
             }

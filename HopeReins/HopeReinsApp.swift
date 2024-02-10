@@ -13,6 +13,7 @@ typealias MedicalRecordFile = HopeReinsSchemaV2.MedicalRecordFile
 typealias User = HopeReinsSchemaV2.User
 typealias DigitalSignature = HopeReinsSchemaV2.DigitalSignature
 typealias PastChange = HopeReinsSchemaV2.PastChange
+typealias Version = HopeReinsSchemaV2.Version
 
 
 @main

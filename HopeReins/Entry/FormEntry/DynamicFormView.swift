@@ -14,8 +14,53 @@ enum FileModification: String {
     case deleted = "Deleted"
 }
 
+struct FormSectionContent: View {
+    @Environment(\.modelContext) var modelContext
+    var wrappedElement: DynamicUIElementWrapper
+    var changeDescriptions: [ChangeDescription]
+    @Binding var selectedVersion: Version?
+    @Binding var selectedFieldChange: String?
+    @Binding var initialProperties: [String : CodableValue]
+    var record: MedicalRecordFile
+    
+    var body: some View {
+        ScrollView {
+            VStack {
+                if selectedVersion != nil {
+                    ForEach(selectedVersion!.changes, id: \.self) { change in
+                        if change.fieldID == wrappedElement.id {
+                            HStack {
+                                OriginalValueView(id: wrappedElement.id, value: change.propertyChange, displayName: change.displayName, onTap: {
+                                    selectedFieldChange = wrappedElement.id
+                                })
+                                Button(action: {
+                                    if  record.revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: false, modelContext: modelContext) {
+                                        modelContext.delete(selectedVersion!)
+                                        selectedVersion = nil
+                                    }
+                                    print(change.propertyChange)
+                                    initialProperties[selectedFieldChange!] = CodableValue.string(change.propertyChange)
+                                }, label: {
+                                    Image(systemName: "arrowshape.turn.up.backward.fill")
+                                })
+                                .buttonStyle(.plain)
+                            }
+                            .padding(5)
+                            .background(RoundedRectangle(cornerRadius: 8).foregroundStyle(.windowBackground))
+                        }
+                    }
+                }
+            }
+            .padding(5)
+        }
+    }
+}
+
+
 struct OriginalValueView: View {
-    var value: CodableValue
+    var id: String
+    var value: String
+    var displayName: String?
     var onTap: () -> Void
 
     var body: some View {
@@ -23,13 +68,15 @@ struct OriginalValueView: View {
             Text("Original Value:")
                 .foregroundStyle(.gray)
                 .font(.caption.bold())
-            Text(value.stringValue)
-                .font(.caption2.bold())
+            Text(displayName ?? (value.isEmpty ? "Default Value" : value))
+                   .font(.caption2)
+                   .bold(displayName != nil)
+
         }
         .padding(5)
-        .background(RoundedRectangle(cornerRadius: 8).foregroundStyle(.windowBackground))
         .onTapGesture(perform: onTap)
     }
+    
 }
 
 struct DynamicFormView: View  {
@@ -45,7 +92,7 @@ struct DynamicFormView: View  {
         return record.compareProperties(with: initialProperties)
     }
     @State var showPastChanges: Bool = false
-    @State var selectedPastChange: PastChange?
+    @State var selectedVersion: Version?
     @State var selectedFieldChange: String?
     @State var reviewChanges: Bool = false
     @State var isRevertingVersion: Bool = false
@@ -58,7 +105,7 @@ struct DynamicFormView: View  {
                     if !isAdding {
                         HStack {
                             Spacer()
-                            PastChangeSelectionView(showPastChanges: $showPastChanges, selectedPastChange: $selectedPastChange, pastChanges: record.pastChanges)
+                            PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: record.versions)
                         }
                     }
                     ForEach(uiElements, id: \.title) { section in
@@ -90,11 +137,11 @@ struct DynamicFormView: View  {
                 .alert(isPresented: $showRevertAlert) {
                     if isRevertingVersion {
                         Alert(
-                            title: Text("Revert To Version \(selectedPastChange!.reason)"),
+                            title: Text("Revert To Version \(selectedVersion!.reason)"),
                             message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
                             primaryButton: .destructive(Text("Revert")) {
-                                record.revertToPastChange(fieldId: nil, pastChange: selectedPastChange!, revertToAll: true, modelContext: modelContext)
-                                selectedPastChange = nil
+                                record.revertToPastChange(fieldId: nil, version: selectedVersion!, revertToAll: true, modelContext: modelContext)
+                                selectedVersion = nil
                                 initialProperties = record.properties
                             },
                             secondaryButton: .cancel()
@@ -128,38 +175,32 @@ struct DynamicFormView: View  {
         ForEach(section.elements.map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
             HStack {
                 VStack(alignment: .leading) {
-                    DynamicElementView(wrappedElement: wrappedElement.element)
+                    VStack {
+                        if selectedVersion?.changes.contains(where: { $0.fieldID == wrappedElement.id }) == true {
+                            Button(action: {
+                                selectedFieldChange = wrappedElement.id
+                            }, label: {
+                                Text("Changes")
+                                Image(systemName: "chevron.right.circle.fill")
+                            })
+                            .popover(isPresented: Binding<Bool>(
+                                get: { self.selectedFieldChange == wrappedElement.id },
+                                set: { show in if !show { self.selectedFieldChange = nil } }
+                            ), attachmentAnchor: .point(UnitPoint.top), arrowEdge: .top) {
+                                FormSectionContent(wrappedElement: wrappedElement, changeDescriptions: changeDescriptions, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, initialProperties: $initialProperties, record: record)
+                            }
+                        }
+                        DynamicElementView(wrappedElement: wrappedElement.element)
+                    }
                     if changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
-                       Text("Modified")
+                        Text("Modified")
                             .font(.caption)
                             .italic()
                             .foregroundStyle(.red)
                     }
                 }
-                if let value = selectedPastChange?.propertyChanges[wrappedElement.id] {
-                    OriginalValueView(value: value, onTap: {
-                        selectedFieldChange = wrappedElement.id
-                    })
-                    .popover(isPresented: Binding<Bool>(
-                        get: { self.selectedFieldChange == wrappedElement.id },
-                        set: { show in if !show { self.selectedFieldChange = nil } }
-                    ), attachmentAnchor: .point(UnitPoint.bottom), arrowEdge: .bottom) {
-                        Button {
-                            if  record.revertToPastChange(fieldId: selectedFieldChange, pastChange: selectedPastChange!, revertToAll: false, modelContext: modelContext) {
-                                modelContext.delete(selectedPastChange!)
-                                selectedPastChange = nil
-                            }
-                            initialProperties[selectedFieldChange!] = value
-                        } label: {
-                            HStack {
-                                Image(systemName: "arrowshape.turn.up.backward.fill")
-                                Text("Revert To Field")
-                            }
-                        }
-                        .buttonStyle(.borderless)
-                        .padding(5)
-
-                    }
+                if selectedVersion != nil {
+                    
                 }
             }
         }
@@ -193,7 +234,7 @@ struct DynamicFormView: View  {
                 .buttonStyle(.borderedProminent)
             }
         }
-        if selectedPastChange != nil {
+        if selectedVersion != nil {
             ToolbarItem(placement: .destructiveAction) {
                 Button {
                     isRevertingVersion = true
