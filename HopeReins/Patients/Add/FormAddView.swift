@@ -33,7 +33,7 @@ struct FormAddView: View {
         
         let record = MedicalRecordFile(patient: patient, fileType: fileType)
         
-        return DynamicFormView(isAdding: true, record: record, username: user.username)
+        return DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record), isAdding: true, username: user.username)
     }
 }
 

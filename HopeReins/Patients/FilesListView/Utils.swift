@@ -30,7 +30,7 @@ struct ListItemLabel: View {
     var body: some View {
         HStack {
             if isUploadFile(fileType: file.fileType) {
-                FilePreview(data: file.properties["Data"]!.dataValue, size: 30)
+                FilePreview(data: file.properties["File Data"]!.dataValue, size: 30)
             } else {
                 Image(systemName: "doc.fill")
                     .font(.title3)
@@ -58,7 +58,7 @@ func saveToTemporaryFile(data: Data) -> URL? {
     }
 }
 
-func isUploadFile(fileType: String) -> Bool {
+public func isUploadFile(fileType: String) -> Bool {
     
     let specificFileTypes = [
         RidingFormType.releaseStatement.rawValue,

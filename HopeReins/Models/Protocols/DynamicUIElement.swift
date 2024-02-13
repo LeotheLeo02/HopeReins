@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DynamicElementView: View {
-    let wrappedElement: DynamicUIElement
+    @State var wrappedElement: DynamicUIElement
     var body: some View {
         switch wrappedElement {
         case .textField(let title, let binding):
@@ -19,9 +19,6 @@ struct DynamicElementView: View {
             TextField(title, value: binding, formatter: NumberFormatter())
         case .sectionHeader(let title):
             SectionHeader(title: title)
-        case .customView(title: let title, viewProvider: let viewProvider):
-            PropertyHeader(title: title)
-            viewProvider()
         case .singleSelectDescription(title: let title, titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
             SingleSelectLastDescription(combinedString: combinedString, lastDescription: isDescription, titles: titles, labels: labels)
         case .multiSelectWithTitle(combinedString: let combinedString, labels: let labels, title: let title):
@@ -32,6 +29,9 @@ struct DynamicElementView: View {
             LeRomTable(combinedString: combinedString)
         case .dailyNoteTable(let title, let combinedString):
             DailyNoteTable(combinedString: combinedString)
+        case .fileUploadButton(title: let title, dataValue: let dataValue):
+            PropertyHeader(title: title)
+            FileUploadButton(fileData: dataValue)
         }
     }
 }
@@ -45,8 +45,8 @@ enum DynamicUIElement: Hashable {
     case singleSelectDescription(title: String, titles: [String], labels: [String], combinedString: Binding<String>, isDescription: Bool)
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
-    case customView(title: String, viewProvider: () -> AnyView)
     case dailyNoteTable(title: String, combinedString: Binding<String>)
+    case fileUploadButton(title: String, dataValue: Binding<Data?>)
     
     static func == (lhs: DynamicUIElement, rhs: DynamicUIElement) -> Bool {
            switch (lhs, rhs) {
@@ -67,14 +67,13 @@ enum DynamicUIElement: Hashable {
                 .numberField(let title, _),
                 .sectionHeader(let title),
                 .leRomTable(let title, _),
-                .dailyNoteTable(let title, _):
+                .dailyNoteTable(let title, _),
+                .fileUploadButton(let title, _):
             hasher.combine(title)
         case .singleSelectDescription(_,let titles, let labels, _, let isDescription):
             hasher.combine(titles)
             hasher.combine(labels)
             hasher.combine(isDescription)
-        case .customView(let title, _):
-            hasher.combine(title)
         case .datePicker(title: let title, _, _):
             hasher.combine(title)
         case .multiSelectWithTitle(_, let labels, let title):
@@ -98,28 +97,15 @@ struct DynamicUIElementWrapper: Hashable {
         case .textField(let title, _),
              .numberField(let title, _),
              .sectionHeader(let title),
-             .customView(let title, _),
              .datePicker(let title, _, _),
              .multiSelectWithTitle(_, _, let title),
              .multiSelectOthers(_, _, let title),
              .leRomTable(let title, _),
              .dailyNoteTable(let title, _),
-             .singleSelectDescription(let title,_, _, _, _):
+             .singleSelectDescription(let title,_, _, _, _),
+             .fileUploadButton(let title, _):
             self.id = title
         }
         self.element = element
-    }
-}
-
-struct SectionHeader: View {
-    var title: String
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.title2.bold())
-                .foregroundStyle(.gray)
-            Divider()
-        }
-        .padding(.vertical)
     }
 }

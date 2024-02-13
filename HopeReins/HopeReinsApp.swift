@@ -28,7 +28,7 @@ struct HopeReinsApp: App {
         var modelConfiguration = ModelConfiguration()
         if let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
             let storeURL = documentDirectory.appendingPathComponent("HopeReins.sqlite")
-            modelConfiguration = ModelConfiguration(schema: schema, url: storeURL)
+            modelConfiguration = ModelConfiguration(schema: schema, url: storeURL, allowsSave: true)
         }
         do  {
             return try ModelContainer(for: schema,migrationPlan: HopeReinsMigrationPlan.self, configurations: [modelConfiguration])

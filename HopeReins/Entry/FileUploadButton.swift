@@ -6,42 +6,58 @@
 //
 
 import SwiftUI
+import AppKit
 
 struct FileUploadButton: View {
     @Environment(\.isEditable) var isEditable
-    @Environment(\.modelContext) var modelContext
-    @Binding var fileData: Data
+    @Binding var fileData: Data?
     var body: some View {
         HStack {
-            if fileData != .init() {
-                Button {
-                    if let url = saveToTemporaryFile(data: fileData) {
-                        NSWorkspace.shared.open(url)
-                    }
-                } label: {
-                    Label("Open", systemImage: "doc.fill")
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.trailing, 7)
-            }
             Button {
-                let panel = NSOpenPanel()
-                panel.allowsMultipleSelection = false
-                panel.canChooseDirectories = false
-                panel.canChooseFiles = true
-                
-                if panel.runModal() == .OK, let url = panel.url {
-                    do {
-                        fileData = try Data(contentsOf: url)
-                        try modelContext.save()
-                    } catch {
+                openFile()
+            } label: {
+                Label("Open", systemImage: "doc.fill")
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.trailing, 7)
+            .disabled(fileData == nil)
+            
+            Button {
+                updateFile()
+            } label: {
+                Label("\(fileData != nil ? "Change" : "Import") File", systemImage: "\(fileData != nil  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
+            }
+            .disabled(!isEditable)
+
+        }
+    }
+
+    func openFile() {
+        guard let data = fileData, let url = saveToTemporaryFile(data: data) else { return }
+        NSWorkspace.shared.open(url)
+    }
+
+    func updateFile() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+
+        if panel.runModal() == .OK, let url = panel.url {
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    let data = try Data(contentsOf: url)
+                    DispatchQueue.main.async {
+                        self.fileData = data
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        // Update the UI to show an error message to the user
                         print("Error reading the file: \(error)")
                     }
                 }
-            } label: {
-                Label("\(fileData != .init() ? "Change" : "Import") File", systemImage: "\(fileData != .init()  ? "arrow.left.arrow.right.square.fill" : "square.and.arrow.down.fill")")
             }
-            .disabled(!isEditable)
         }
     }
+
 }

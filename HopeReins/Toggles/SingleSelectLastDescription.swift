@@ -53,6 +53,12 @@ struct SingleSelectLastDescription: View {
         .onAppear {
             self.parseCombinedString()
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundStyle(.windowBackground)
+                .shadow(radius: 3)
+        )
     }
     
     private func updateCombinedString() {

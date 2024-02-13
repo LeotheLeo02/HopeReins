@@ -10,14 +10,11 @@ import SwiftUI
 struct BasicTextField: View {
     @Environment(\.isEditable) var isEditable: Bool
     var title: String
-    var textFieldHint: String {
-        return title.replacingOccurrences(of: ":", with: "...").lowercased()
-    }
     @Binding var text: String
     var body: some View {
         VStack(alignment: .leading) {
             PropertyHeader(title: title)
-            TextField(textFieldHint, text: $text, axis: .vertical)
+            TextField("", text: $text, axis: .vertical)
                 .padding(.bottom)
                 .labelsHidden()
                 .disabled(!isEditable)

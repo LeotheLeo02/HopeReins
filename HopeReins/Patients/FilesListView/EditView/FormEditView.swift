@@ -18,7 +18,7 @@ struct FormEditView: View {
     var body: some View {
         VStack {
             if let file = file {
-                DynamicFormView(isAdding: false, record: file, username: user.username)
+                DynamicFormView(uiManagement: UIManagement(modifiedProperties: file.properties, record: file), isAdding: false, username: user.username)
             }
         }
         .navigationTitle(file?.properties["File Name"]?.stringValue ?? "")

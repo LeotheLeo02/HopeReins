@@ -10,10 +10,9 @@ import SwiftUI
 struct ReviewChangesView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
+    @ObservedObject var uiManagement: UIManagement
     @State var changeDescriptions: [ChangeDescription]
-    @State var record: MedicalRecordFile
     @State var reason: String = ""
-    @Binding var initialProperties: [String : CodableValue]
     var username: String
     var body: some View {
         ScrollView {
@@ -57,8 +56,8 @@ struct ReviewChangesView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
-                    initialProperties = record.properties
-                    record.addPastChanges(reason: reason, changes: changeDescriptions, author: username, modelContext: modelContext)
+                    uiManagement.record.properties = uiManagement.modifiedProperties
+                    uiManagement.record.addPastChanges(reason: reason, changes: changeDescriptions, author: username, modelContext: modelContext)
                     dismiss()
                 }, label: {
                     Text("Apply Changes")
