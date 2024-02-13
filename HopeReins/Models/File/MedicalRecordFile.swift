@@ -61,18 +61,6 @@ extension HopeReinsSchemaV2 {
 }
 
 
-public struct LabelValue: Hashable {
-    var label: String
-    var value: String
-}
-struct DetailedChange {
-    var label: String
-    var oldValue: String
-    var newValue: String
-}
-
-
-
 struct FormSection {
     let title: String
     let elements: [DynamicUIElement]
