@@ -111,6 +111,4 @@ struct SingleSelectLastDescription: View {
         }
     }
 
-
-
 }

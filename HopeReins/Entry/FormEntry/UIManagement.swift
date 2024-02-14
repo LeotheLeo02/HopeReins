@@ -11,7 +11,6 @@ class UIManagement: ObservableObject {
     @Published var modifiedProperties: [String : CodableValue]
     @Published var dynamicUIElements: [FormSection] = []
     @Published var record: MedicalRecordFile
-    @Published var forceUpdateToggle: Bool = false
     
     init(modifiedProperties: [String : CodableValue], record: MedicalRecordFile) {
         self.modifiedProperties = modifiedProperties
@@ -24,6 +23,9 @@ class UIManagement: ObservableObject {
     public func getUIElements() -> [FormSection] {
         if isUploadFile(fileType: record.fileType) {
             return getUploadFile()
+        }
+        if record.fileType == "Patient" {
+            return getPatientFile()
         }
 
         if let type = RidingFormType(rawValue: record.fileType) {
@@ -47,6 +49,44 @@ class UIManagement: ObservableObject {
         return []
     }
     
+    
+    func getPatientFile() -> [FormSection] {
+        // TODO: Add int fields and number fields types
+        // TODO: ensure that date is working properly
+        let uiElements: [FormSection] = [
+            FormSection(title: "Client Contact and Release Form", elements: [
+                .textField(title: "Name", binding: stringBinding(for: "Name")),
+                .datePicker(title: "Date of Birth", hourAndMinute: false, binding: dateBinding(for: "Date of Birth")),
+                .textField(title: "Address", binding: stringBinding(for: "Address")),
+                .textField(title: "City", binding: stringBinding(for: "City")),
+                .textField(title: "State", binding: stringBinding(for: "State")),
+                .textField(title: "Zip", binding: stringBinding(for: "Zip")),
+                .textField(title: "Home Phone", binding: stringBinding(for: "Home Phone")),
+                .textField(title: "Work Phone", binding: stringBinding(for: "Work Phone")),
+                .textField(title: "Cell Phone", binding: stringBinding(for: "Cell Phone")),
+                .textField(title: "Email Address", binding: stringBinding(for: "Email Address")),
+                .sectionHeader(title: "Guardian Information (if participant is under 18 years old)"),
+                .textField(title: "Guardian Name", binding: stringBinding(for: "Guardian Name")),
+                .textField(title: "Guardian Phone", binding: stringBinding(for: "Guardian Phone")),
+                .textField(title: "Guardian Address", binding: stringBinding(for: "Guardian Address")),
+                .textField(title: "Guardian City", binding: stringBinding(for: "Guardian City")),
+                .textField(title: "Guardian State", binding: stringBinding(for: "Guardian State")),
+                .textField(title: "Guardian Zip", binding: stringBinding(for: "Guardian Zip")),
+                .sectionHeader(title: "Emergency Contact Information"),
+                .textField(title: "Emergency Contact Name", binding: stringBinding(for: "Emergency Contact Name")),
+                .textField(title: "Emergency Phone", binding: stringBinding(for: "Emergency Phone")),
+                .textField(title: "Relation", binding: stringBinding(for: "Relation")),
+                .textField(title: "Address", binding: stringBinding(for: "Address")),
+                .textField(title: "Emergency City", binding: stringBinding(for: "Emergency City")),
+                .textField(title: "Emergency Zip", binding: stringBinding(for: "Emergency Zip")),
+                .textField(title: "Emergency Physician", binding: stringBinding(for: "Emergency Physician")),
+                .textField(title: "Emergency Phone", binding: stringBinding(for: "Emergency Phone")),
+                .textField(title: "Hospital of Preference", binding: stringBinding(for: "Hospital of Preference"))
+            ])
+        ]
+        
+        return uiElements
+    }
     func getUploadFile() -> [FormSection] {
         let uiElements: [FormSection] = [
             FormSection(title: "Upload File", elements: [
@@ -71,7 +111,12 @@ class UIManagement: ObservableObject {
 
     private func intBinding(for key: String, defaultValue: Int = 0) -> Binding<Int> {
         Binding<Int>(
-            get: { self.modifiedProperties[key]?.intValue ?? defaultValue },
+            get: {
+                if self.modifiedProperties[key] == nil {
+                    self.modifiedProperties[key] = .int(defaultValue)
+                }
+                return self.modifiedProperties[key]?.intValue ?? defaultValue
+            },
             set: { self.modifiedProperties[key] = .int($0) }
         )
     }
@@ -79,7 +124,12 @@ class UIManagement: ObservableObject {
 
     private func dataBinding(for key: String, defaultValue: Data = .init()) -> Binding<Data?> {
         Binding<Data?>(
-            get: { self.modifiedProperties[key]?.dataValue ?? defaultValue },
+            get: {
+                if self.modifiedProperties[key] == nil {
+                    self.modifiedProperties[key] = .data(defaultValue)
+                }
+                return self.modifiedProperties[key]?.dataValue ?? defaultValue
+            },
             set: { self.modifiedProperties[key] = .data($0!) }
         )
     }
@@ -88,7 +138,12 @@ class UIManagement: ObservableObject {
     
     private func dateBinding(for key: String, defaultValue: Date = .now) -> Binding<Date> {
         Binding<Date>(
-            get: { self.modifiedProperties[key]?.dateValue ?? defaultValue },
+            get: {
+                if self.modifiedProperties[key] == nil {
+                    self.modifiedProperties[key] = .date(defaultValue)
+                }
+                return self.modifiedProperties[key]?.dateValue ?? defaultValue
+            },
             set: { self.modifiedProperties[key] = .date($0) }
         )
     }

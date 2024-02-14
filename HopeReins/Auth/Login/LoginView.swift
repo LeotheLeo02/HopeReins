@@ -19,29 +19,34 @@ struct LoginView: View {
     @State var password: String = ""
     
     var body: some View {
-        VStack {
-            if adminUser == nil {
-                SetupUsersView(adminUser: adminUser)
-            } else {
-                VStack {
-                    ForEach(users) { user in
-                        Button(action: {
-                            withAnimation {
-                                selectedUser = user
-                                isFocused = true
-                            }
-                        }, label: {
-                            ProfileLoginView(selectedUser: $selectedUser, user: user)
-                        })
-                        .buttonStyle(.borderedProminent)
+        ScrollView {
+            VStack {
+                if adminUser == nil {
+                    SetupUsersView(adminUser: adminUser)
+                } else {
+                    Text("Hope Reins EMR Login")
+                        .font(.largeTitle.bold())
+                    VStack {
+                        ForEach(users) { user in
+                            Button(action: {
+                                withAnimation {
+                                    selectedUser = user
+                                    isFocused = true
+                                }
+                            }, label: {
+                                ProfileLoginView(selectedUser: $selectedUser, user: user)
+                            })
+                            .buttonStyle(.borderedProminent)
+                        }
                     }
+                    .padding()
+                    
                 }
-                .padding()
-
             }
-        }
-        .onAppear {
-            fetchAdminUser()
+            .padding()
+            .onAppear {
+                fetchAdminUser()
+            }
         }
     }
     func fetchAdminUser() {

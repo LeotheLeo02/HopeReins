@@ -186,6 +186,13 @@ struct DynamicFormView: View  {
         newDigitalSig.created(by: username)
         uiManagement.record.properties = uiManagement.modifiedProperties
         print(uiManagement.modifiedProperties)
+        if patient == nil {
+            let newPatient = Patient(personalFile: uiManagement.record)
+            modelContext.insert(newPatient)
+            newPatient.files.append(uiManagement.record)
+        } else {
+            patient!.files.append(uiManagement.record)
+        }
         modelContext.insert(uiManagement.record)
        try? modelContext.save()
     }

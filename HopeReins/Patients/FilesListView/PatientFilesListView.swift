@@ -68,6 +68,7 @@ struct PatientFilesListView: View {
     @State var selectedFile: MedicalRecordFile?
     @State var selectedFormType: FormType = .riding(.coverLetter)
     @State var addFile: Bool = false
+    @State var showPatientInfo: Bool = false
     @State var selectedSpecificForm: FormType?
     @Query(sort: \MedicalRecordFile.fileType) var files: [MedicalRecordFile]
     
@@ -77,7 +78,7 @@ struct PatientFilesListView: View {
         self.showDeadFiles = showDeadFiles
         self.user = user
         let predicate = #Predicate<MedicalRecordFile> { patientFile in
-            patientFile.patient.id == patientId && patientFile.isDead == showDeadFiles
+            patientFile.patient?.id == patientId && patientFile.isDead == showDeadFiles
         }
         _files = Query(filter: predicate, sort: \MedicalRecordFile.fileType)
     }
@@ -85,7 +86,8 @@ struct PatientFilesListView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
+                listHeader()
                 Divider()
                 formTypePicker
                 formTypeContent
@@ -99,24 +101,40 @@ struct PatientFilesListView: View {
                     .searchCompletion(suggestion)
             }
         })
+        .sheet(isPresented: $showPatientInfo, content: {
+            DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile), isAdding: false, username: user.username)
+                .environment(\.isEditable, !showDeadFiles)
+        })
         .sheet(isPresented: $addFile, content: {
             FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user)
                 .frame(minWidth: 500, minHeight: 300)
         })
-        .navigationTitle(showDeadFiles ? "Deleted Files" : patient.name)
+        .navigationTitle(showDeadFiles ? "Existing Files" : "Patients")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 toolbarMenu
             }
-            ToolbarItem(placement: .navigation) {
-                Image(systemName: "\(showDeadFiles ? "trash" : "person.fill")")
-                    .font(.title3)
-                    .foregroundStyle(showDeadFiles ? .red : .primary)
-                
-            }
         }
     }
 
+    @ViewBuilder
+    func listHeader() -> some View {
+        HStack {
+            Image(systemName:  showDeadFiles ? "trash.fill" : "person.circle")
+                .foregroundStyle(showDeadFiles ? .red : .primary)
+            Text(showDeadFiles ? "Deleted Files" : patient.personalFile.properties["Name"]?.stringValue ?? "")
+                .bold()
+        }
+        .font(.largeTitle)
+        if !showDeadFiles {
+            Button {
+                showPatientInfo.toggle()
+            } label: {
+                Label("Personal Info", systemImage: "person.text.rectangle.fill")
+            }
+        }
+    }
+    
     private var formTypePicker: some View {
         Picker(selection: $selectedFormType) {
             Text("Adaptive Riding").tag(FormType.riding(.coverLetter))

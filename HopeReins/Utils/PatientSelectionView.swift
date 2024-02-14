@@ -11,16 +11,17 @@ import SwiftData
 struct PatientSelectionView: View {
     @Environment(\.dismiss) var dismiss
     @State var searchText: String = ""
-    @Query(sort: \Patient.dateOfBirth, order: .forward)
-    var patients: [Patient]
+    @Query var patients: [Patient]
     
     var filteredPatients: [Patient] {
         if searchText.isEmpty {
             return patients
         } else {
-            return patients.filter { patient in
-                patient.name.lowercased().contains(searchText.lowercased())
+            let lowercasedSearchText = searchText.lowercased()
+            let filteredPatients = patients.filter { patient in
+                (patient.personalFile.properties["Name"]?.stringValue.lowercased() ?? "").contains(lowercasedSearchText)
             }
+            return filteredPatients
         }
     }
     @Binding var selection: Patient?
@@ -34,7 +35,7 @@ struct PatientSelectionView: View {
                             selection = patient
                             dismiss()
                         } label: {
-                            Text(patient.name)
+                            Text(patient.personalFile.properties["Name"]!.stringValue)
                         }
                     }
                 }

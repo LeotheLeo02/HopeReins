@@ -16,21 +16,19 @@ extension HopeReinsSchemaV2 {
         var properties: [String: CodableValue] = [:]
         @Relationship(deleteRule: .cascade)
         var versions: [Version] = []
-        var patient: Patient
+        var patient: Patient?
         var fileType: String
         var digitalSignature: DigitalSignature?
         var isDead: Bool = false
         
-        init(id: UUID = UUID(), patient: Patient, fileType: String) {
+        init(id: UUID = UUID(), fileType: String) {
             self.id = id
-            self.patient = patient
             self.fileType = fileType
             self.digitalSignature = digitalSignature
         }
         
         init(file: MedicalRecordFile) {
             self.id = file.id
-            self.patient = file.patient
             self.fileType = file.fileType
             self.digitalSignature = file.digitalSignature
         }

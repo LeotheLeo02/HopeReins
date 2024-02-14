@@ -11,7 +11,7 @@ import SwiftData
 
 struct PatientsView: View {
     @Environment(\.modelContext) var modelContext
-    @Query(sort: \Patient.dateOfBirth, order: .forward) var patients: [Patient]
+    @Query var patients: [Patient]
     var user: User
     @State private var itemSize: CGFloat = 200
     var columns: [GridItem] {
@@ -35,7 +35,8 @@ struct PatientsView: View {
                 .padding()
                 .searchable(text: $searchQuery, prompt: "Patient Name, MRN Number")
                 .sheet(isPresented: $addPatient, content: {
-                    AddPatientView()
+                    let record = MedicalRecordFile(fileType: "Patient")
+                    DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record), isAdding: true, username: user.username)
                 })
             }
             .padding([.horizontal, .top])
@@ -68,7 +69,7 @@ struct PatientsView: View {
                             .resizable()
                             .frame(width: 75, height: 75)
                             .foregroundStyle(Color(.primary))
-                        Text(patient.name)
+                        Text(patient.personalFile.properties["Name"]!.stringValue)
                     }
                     .font(.title2)
                     .foregroundStyle(.primary)
@@ -117,7 +118,7 @@ struct PatientFilesView: View {
                 Spacer()
                 Image(systemName: "chevron.right")
             }
-            .font(.callout.bold())
+            .font(.headline)
         }
         .buttonStyle(.borderless)
         .padding(5)

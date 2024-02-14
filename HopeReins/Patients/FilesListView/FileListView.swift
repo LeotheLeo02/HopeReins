@@ -45,10 +45,14 @@ struct FileListView: View {
     }
 
     private var emptyStateView: some View {
-        Label("No \(isEditable ? "" : "Deleted") Files Here...", systemImage: "tray.fill")
-            .font(.title3.bold())
-            .foregroundStyle(.gray)
-            .padding()
+        HStack {
+            Spacer()
+            Label("No \(isEditable ? "" : "Deleted") Files Here...", systemImage: "tray.fill")
+                .font(.title3.bold())
+                .foregroundStyle(.gray)
+                .padding()
+            Spacer()
+        }
     }
 
     private func fileGroupDisclosureGroup(_ group: (String, [MedicalRecordFile])) -> some View {
