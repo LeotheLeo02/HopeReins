@@ -46,17 +46,39 @@ class UIManagement: ObservableObject {
     }
     
     
-    func revertToPastVersion(selectedVersion: Version?, selectedFieldChange: String?, change: PastChange, modelContext: ModelContext) -> Bool {
+    func revertToPastVersion(selectedVersion: Version?, selectedFieldChange: String?, change: PastChange, revertToAll: Bool, modelContext: ModelContext) -> Bool {
         var isLastChange: Bool = false
-        if  record.revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: false, modelContext: modelContext) {
+        if  revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: revertToAll, modelContext: modelContext) {
             record.versions.removeAll{ $0 == selectedVersion! }
             modelContext.delete(selectedVersion!)
             isLastChange = true
         }
-        modifiedProperties[selectedFieldChange!] = CodableValue.string(change.propertyChange)
-        record.properties[selectedFieldChange!] = CodableValue.string(change.propertyChange)
+        record.properties = modifiedProperties
+        
         return isLastChange
     }
+    
+    
+    //TODO: Fix Inconvienence of showing different changes that are all the same via combined string...
+    func revertToPastChange(fieldId: String?, version: Version, revertToAll: Bool, modelContext: ModelContext) -> Bool {
+        if revertToAll {
+            version.changes.forEach { change in
+                self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
+            }
+        } else if let fieldId = fieldId {
+            for change in version.changes where change.fieldID == fieldId {
+                self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
+                version.changes.removeAll { $0 == change }
+                modelContext.delete(change)
+            }
+            
+            return version.changes.isEmpty
+        }
+        
+        try? modelContext.save()
+        return false
+    }
+    
     
     func getUIElements() -> [FormSection] {
         if isUploadFile(fileType: record.fileType) {
@@ -140,4 +162,19 @@ class UIManagement: ObservableObject {
         )
     }
 
+}
+
+public func convertToCodableValue(type: String, propertyChange: String) -> CodableValue {
+    switch type {
+    case "String":
+        return .string(propertyChange)
+    case "Data":
+        guard let data = propertyChange.data(using: .utf8) else { return .string("") }
+        return .data(data)
+    case "Date":
+        guard let date = DateFormatter().date(from: propertyChange) else { return .string("") }
+        return .date(date)
+    default:
+        return .string("")
+    }
 }

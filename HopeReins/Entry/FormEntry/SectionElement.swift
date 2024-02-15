@@ -22,18 +22,18 @@ struct SectionElement: View {
                             selectedFieldChange = wrappedElement.id
                         }, label: {
                             HStack {
-                                Text("Changes (\(changes.filter { $0.fieldID == wrappedElement.id }.count))")
-                                Image(systemName: "chevron.right.circle.fill")
+                                Image(systemName: "chevron.up.circle.fill")
+                                    .foregroundStyle(.red)
                             }
                         })
+                        .buttonStyle(.plain)
                         .popover(isPresented: Binding<Bool>(
                             get: { self.selectedFieldChange == wrappedElement.id },
                             set: { show in if !show { self.selectedFieldChange = nil } }
-                        ), attachmentAnchor: .point(UnitPoint.top), arrowEdge: .top) {
+                        )) {
                             FormSectionContent(wrappedElement: wrappedElement, changeDescriptions: changeDescriptions, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement)
                         }
                     }
-
                     DynamicElementView(wrappedElement: wrappedElement.element)
                 }
                 if changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {

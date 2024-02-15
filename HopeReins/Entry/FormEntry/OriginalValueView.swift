@@ -11,7 +11,6 @@ struct OriginalValueView: View {
     var id: String
     var value: String
     var displayName: String
-    var onTap: () -> Void
 
     var body: some View {
         VStack {
@@ -20,11 +19,9 @@ struct OriginalValueView: View {
                 .font(.caption.bold())
             Text(displayName)
                    .font(.caption2)
-                   .bold(displayName != nil)
 
         }
         .padding(5)
-        .onTapGesture(perform: onTap)
     }
     
 }

@@ -13,20 +13,35 @@ extension MedicalRecordFile {
 
     func addPastChanges(reason: String, changes: [ChangeDescription], author: String, modelContext: ModelContext) {
         let newVersion = Version(date: Date.now, reason: reason, author: author)
-        var newChanges: [PastChange] = []
+        var groupedDescriptions = [String: String]()
+        var actualValues = [String: String]()
+
         for change in changes {
-            newChanges.append(PastChange(fieldID: change.id, type: "String", propertyChange: change.actualValue, displayName: (change.displayName) + " \(change.oldValue)"))
+            let changeDescription = "\(change.displayName): \(change.oldValue)"
+            // Update the description for the change
+            if let existing = groupedDescriptions[change.id] {
+                groupedDescriptions[change.id] = "\(existing)\n\(changeDescription)"
+            } else {
+                groupedDescriptions[change.id] = changeDescription
+            }
+            // Update the actual value for the change
+            actualValues[change.id] = change.actualValue
+        }
+
+        let newChanges = groupedDescriptions.map { id, description in
+            PastChange(fieldID: id, type: "String", propertyChange: actualValues[id] ?? "", displayName: description)
         }
 
         self.versions.append(newVersion)
        
-
         try? modelContext.transaction {
             modelContext.insert(newVersion)
             newVersion.changes = newChanges
             updateProperties(author: author, modelContext: modelContext)
         }
     }
+
+
 
     
     func updateProperties(author: String, modelContext: ModelContext) {

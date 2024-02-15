@@ -139,6 +139,7 @@ struct EntryRowView: View {
                     .foregroundColor(rowData.isPain ? .red : .primary)
             })
             .buttonStyle(.borderless)
+            .disabled(!isEditable)
             
             Text(rowData.label1)
                 .font(.subheadline)

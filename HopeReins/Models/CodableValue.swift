@@ -13,7 +13,7 @@ extension CodableValue {
         case int, string, double, bool, date, data
     }
 }
-enum CodableValue: Codable, Equatable, Hashable {
+public enum CodableValue: Codable, Equatable, Hashable {
     case int(Int)
     case string(String)
     case double(Double)
@@ -23,7 +23,7 @@ enum CodableValue: Codable, Equatable, Hashable {
     
     
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let stringValue = try container.decodeIfPresent(String.self, forKey: .string) {
             self = .string(stringValue)
@@ -39,7 +39,7 @@ enum CodableValue: Codable, Equatable, Hashable {
     }
     
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)
       switch self {
       case .string(let value):
@@ -57,7 +57,7 @@ enum CodableValue: Codable, Equatable, Hashable {
       }
     }
     
-    static func == (lhs: CodableValue, rhs: CodableValue) -> Bool {
+    public static func == (lhs: CodableValue, rhs: CodableValue) -> Bool {
         switch (lhs, rhs) {
         case let (.int(l), .int(r)):
             return l == r

@@ -42,7 +42,7 @@
 		BE5FC7772B7B2ECB00B46891 /* DegreeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7762B7B2ECB00B46891 /* DegreeField.swift */; };
 		BE5FC7792B7B2EDE00B46891 /* RestrictedNumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7782B7B2EDE00B46891 /* RestrictedNumberField.swift */; };
 		BE5FC77B2B7B2EF500B46891 /* DailyNoteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC77A2B7B2EF500B46891 /* DailyNoteTable.swift */; };
-		BE5FC77D2B7B2F0900B46891 /* LeRomTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC77C2B7B2F0900B46891 /* LeRomTable.swift */; };
+		BE5FC77D2B7B2F0900B46891 /* StrengthTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC77C2B7B2F0900B46891 /* StrengthTable.swift */; };
 		BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */; };
 		BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */; };
 		BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6FC4EB2B25267500670F7D /* SideBar.swift */; };
@@ -108,7 +108,7 @@
 		BE5FC7762B7B2ECB00B46891 /* DegreeField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DegreeField.swift; sourceTree = "<group>"; };
 		BE5FC7782B7B2EDE00B46891 /* RestrictedNumberField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedNumberField.swift; sourceTree = "<group>"; };
 		BE5FC77A2B7B2EF500B46891 /* DailyNoteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteTable.swift; sourceTree = "<group>"; };
-		BE5FC77C2B7B2F0900B46891 /* LeRomTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeRomTable.swift; sourceTree = "<group>"; };
+		BE5FC77C2B7B2F0900B46891 /* StrengthTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthTable.swift; sourceTree = "<group>"; };
 		BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSelectionView.swift; sourceTree = "<group>"; };
 		BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
 		BE6FC4EB2B25267500670F7D /* SideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SideBar.swift; path = ../SideBar.swift; sourceTree = "<group>"; };
@@ -319,7 +319,7 @@
 			children = (
 				BE5FC7752B7B2EB400B46891 /* Fields */,
 				BE5FC77A2B7B2EF500B46891 /* DailyNoteTable.swift */,
-				BE5FC77C2B7B2F0900B46891 /* LeRomTable.swift */,
+				BE5FC77C2B7B2F0900B46891 /* StrengthTable.swift */,
 			);
 			name = Tables;
 			sourceTree = "<group>";
@@ -522,7 +522,7 @@
 				BE0F07892ABE53C2004B71D5 /* ProfileView.swift in Sources */,
 				BE5FC7632B7B2CE600B46891 /* DateSelection.swift in Sources */,
 				BE5FC7692B7B2D7F00B46891 /* DailyNoteFillIn.swift in Sources */,
-				BE5FC77D2B7B2F0900B46891 /* LeRomTable.swift in Sources */,
+				BE5FC77D2B7B2F0900B46891 /* StrengthTable.swift in Sources */,
 				BED25E142B7B2508004FC260 /* ParsingInputs.swift in Sources */,
 				BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */,
 				BE5FC7732B7B2E4500B46891 /* SingleSelectLastDescription.swift in Sources */,

@@ -9,32 +9,44 @@ import SwiftUI
 
 struct DynamicElementView: View {
     @State var wrappedElement: DynamicUIElement
+    @State var change: PastChange?
     var body: some View {
-        switch wrappedElement {
-        case .textField(let title, let binding):
-            BasicTextField(title: title, text: binding)
-        case .datePicker(let title, let hourAndMinute, let binding):
-            DateSelection(title: title, hourAndMinute: hourAndMinute, date: binding)
-        case .numberField(let title, let binding):
-            TextField(title, value: binding, formatter: NumberFormatter())
-        case .sectionHeader(let title):
-            SectionHeader(title: title)
-        case .singleSelectDescription(title: let title, titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
-            SingleSelectLastDescription(combinedString: combinedString, lastDescription: isDescription, titles: titles, labels: labels)
-        case .multiSelectWithTitle(combinedString: let combinedString, labels: let labels, title: let title):
-            MultiSelectWithTitle(boolString: combinedString, labels: labels, title: title)
-        case .multiSelectOthers(combinedString: let combinedString, labels: let labels, title: let title):
-            MultiSelectOthers(boolString: combinedString, labels: labels, title: title)
-        case .strengthTable(title: let title, combinedString: let combinedString):
-            StrengthTable(combinedString: combinedString, customLabels: title.contains("LE") ?  defaultLEROMLables : defaultUELabels)
-        case .dailyNoteTable(let title, let combinedString):
-            DailyNoteTable(combinedString: combinedString)
-        case .fileUploadButton(title: let title, dataValue: let dataValue):
-            PropertyHeader(title: title)
-            FileUploadButton(fileData: dataValue)
-        case .physicalTherabyFillIn(title: let title, combinedString: let combinedString):
-            RecommendedPhysicalTherabyFillIn(combinedString: combinedString)
+        VStack(alignment: .leading) {
+            switch wrappedElement {
+            case .textField(let title, let binding):
+                BasicTextField(title: title, text: bindingForChange(type: String.self, originalBinding: binding))
+            case .datePicker(let title, let hourAndMinute, let binding):
+                DateSelection(title: title, hourAndMinute: hourAndMinute, date: bindingForChange(type: Date.self, originalBinding: binding))
+            case .numberField(let title, let binding):
+                TextField(title, value: bindingForChange(type: Int.self, originalBinding: binding), formatter: NumberFormatter())
+            case .sectionHeader(let title):
+                SectionHeader(title: title)
+            case .singleSelectDescription(title: let title, titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
+                SingleSelectLastDescription(combinedString: bindingForChange(type: String.self, originalBinding: combinedString), lastDescription: isDescription, titles: titles, labels: labels)
+            case .multiSelectWithTitle(combinedString: let combinedString, labels: let labels, title: let title):
+                MultiSelectWithTitle(boolString: bindingForChange(type: String.self, originalBinding: combinedString), labels: labels, title: title)
+            case .multiSelectOthers(combinedString: let combinedString, labels: let labels, title: let title):
+                MultiSelectOthers(boolString: bindingForChange(type: String.self, originalBinding: combinedString), labels: labels, title: title)
+            case .strengthTable(title: let title, combinedString: let combinedString):
+                if change != nil {
+                    OriginalValueView(id: change!.fieldID, value: change!.propertyChange, displayName: change!.displayName)
+                } else {
+                    StrengthTable(combinedString: combinedString, customLabels: title.contains("LE") ?  defaultLEROMLables : defaultUELabels)
+                }
+            case .dailyNoteTable(let title, let combinedString):
+                if change != nil {
+                    OriginalValueView(id: change!.fieldID, value: change!.propertyChange, displayName: change!.displayName)
+                } else {
+                    DailyNoteTable(combinedString: combinedString)
+                }
+            case .fileUploadButton(title: let title, dataValue: let dataValue):
+                PropertyHeader(title: title)
+                FileUploadButton(fileData: (change != nil) ? .constant(convertToCodableValue(type: change!.type, propertyChange: change!.propertyChange).dataValue) :  dataValue)
+            case .physicalTherabyFillIn(title: let title, combinedString: let combinedString):
+                RecommendedPhysicalTherabyFillIn(combinedString: bindingForChange(type: String.self, originalBinding: combinedString))
+            }
         }
+        .environment(\.isEditable, (change == nil))
     }
 }
 
@@ -112,5 +124,26 @@ struct DynamicUIElementWrapper: Hashable {
             self.id = title
         }
         self.element = element
+    }
+}
+
+extension DynamicElementView {
+    func bindingForChange<T>(type: T.Type, originalBinding: Binding<T>) -> Binding<T> {
+        guard let change = change else {
+            return originalBinding
+        }
+
+        let convertedValue = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
+
+        switch T.self {
+        case is String.Type:
+            return .constant(convertedValue.stringValue as! T)
+        case is Date.Type:
+            return .constant(convertedValue.dateValue as! T)
+        case is Int.Type:
+            return .constant(convertedValue.intValue as! T)
+        default:
+            return originalBinding
+        }
     }
 }

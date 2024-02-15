@@ -17,16 +17,13 @@ struct FormSectionContent: View {
     
     
     var body: some View {
-        ScrollView {
             VStack {
                 if selectedVersion != nil {
                     ForEach(selectedVersion!.changes.filter { $0.fieldID == wrappedElement.id }, id: \.self) { change in
                         HStack {
-                            OriginalValueView(id: wrappedElement.id, value: change.propertyChange, displayName: change.displayName, onTap: {
-                                selectedFieldChange = wrappedElement.id
-                            })
+                            DynamicElementView(wrappedElement: wrappedElement.element, change: change)
                             Button(action: {
-                                if uiManagement.revertToPastVersion(selectedVersion: selectedVersion!, selectedFieldChange: selectedFieldChange, change: change, modelContext: modelContext) {
+                                if uiManagement.revertToPastVersion(selectedVersion: selectedVersion!, selectedFieldChange: selectedFieldChange, change: change, revertToAll: false, modelContext: modelContext) {
                                     selectedVersion = nil
                                 }
                             }, label: {
@@ -39,8 +36,8 @@ struct FormSectionContent: View {
                     }
                 }
             }
+            .frame(minWidth: 200, maxWidth: .infinity)
             .padding(5)
-        }
     }
 }
 

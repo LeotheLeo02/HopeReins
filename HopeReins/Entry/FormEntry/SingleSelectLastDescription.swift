@@ -35,6 +35,7 @@ struct SingleSelectLastDescription: View {
                         }
                     }
                     .labelsHidden()
+                    .disabled(!isEditable)
 
                     
                     if lastDescription && selections[title] == labels.last {
