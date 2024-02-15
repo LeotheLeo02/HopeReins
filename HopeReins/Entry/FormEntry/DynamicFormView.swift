@@ -14,8 +14,6 @@ struct DynamicFormView: View  {
     @StateObject var uiManagement: UIManagement
     @State var isAdding: Bool
     @State var text: String = ""
-    @State var patient: Patient?
-    var username: String
     var changeDescriptions: [ChangeDescription] {
         return uiManagement.record.compareProperties(with: uiManagement.modifiedProperties)
     }
@@ -72,9 +70,8 @@ struct DynamicFormView: View  {
                             title: Text("Revert To Version \(selectedVersion!.reason)"),
                             message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
                             primaryButton: .destructive(Text("Revert")) {
-                                uiManagement.record.revertToPastChange(fieldId: nil, version: selectedVersion!, revertToAll: true, modelContext: modelContext)
+                                uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
                                 selectedVersion = nil
-                                uiManagement.modifiedProperties = uiManagement.record.properties
                             },
                             secondaryButton: .cancel()
                         )
@@ -90,7 +87,7 @@ struct DynamicFormView: View  {
                     }
                 }
                 .sheet(isPresented: $reviewChanges, content: {
-                    ReviewChangesView(uiManagement: uiManagement, changeDescriptions: changeDescriptions , username: username)
+                    ReviewChangesView(uiManagement: uiManagement, changeDescriptions: changeDescriptions)
                 })
                 .padding()
             }
@@ -114,7 +111,7 @@ struct DynamicFormView: View  {
         if isAdding {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    addFile()
+                    uiManagement.addFile(modelContext: modelContext)
                     dismiss()
                 } label: {
                     HStack {
@@ -177,24 +174,6 @@ struct DynamicFormView: View  {
             return nil
         }
         return changesInSection.reduce(0, +)
-    }
-    
-    func addFile() {
-        let newDigitalSig = DigitalSignature(author: username, modification: FileModification.added.rawValue, dateModified: .now)
-        modelContext.insert(newDigitalSig)
-        uiManagement.record.digitalSignature = newDigitalSig
-        newDigitalSig.created(by: username)
-        uiManagement.record.properties = uiManagement.modifiedProperties
-        print(uiManagement.modifiedProperties)
-        if patient == nil {
-            let newPatient = Patient(personalFile: uiManagement.record)
-            modelContext.insert(newPatient)
-            newPatient.files.append(uiManagement.record)
-        } else {
-            patient!.files.append(uiManagement.record)
-        }
-        modelContext.insert(uiManagement.record)
-       try? modelContext.save()
     }
 
 }

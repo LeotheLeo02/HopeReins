@@ -8,13 +8,16 @@
 import SwiftUI
 import NaturalLanguage
 
-struct LeRomTable: View {
+struct StrengthTable: View {
     @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State var tableData: [TableCellData] = []
+    var customLabels: [String]
 
-    init(combinedString: Binding<String>) {
+    init(combinedString: Binding<String>, customLabels: [String]) {
         self._combinedString = combinedString
+        self.customLabels = customLabels
+        self.tableData = self.createInitialTableData(with: customLabels)
     }
 
     var body: some View {
@@ -55,18 +58,22 @@ struct LeRomTable: View {
         .frame(maxWidth: 600)
         .onAppear {
             if combinedString.isEmpty {
-                self.tableData = self.initialTableData.map { TableCellData(isPain: $0.isPain, label1: $0.label1, value1: $0.value1, value2: $0.value2, value3: $0.value3, value4: $0.value4) }
+                self.tableData = self.createInitialTableData(with: customLabels)
             } else {
                 self.tableData = self.combineTableData(combinedString: self.combinedString)
             }
         }
+        .onChange(of: combinedString) { oldValue, newValue in
+            self.tableData = self.combineTableData(combinedString: self.combinedString)
+        }
+
         
         
         
     }
     private func updateCombinedString() {
         
-        if tableData == initialTableData {
+        if tableData == self.createInitialTableData(with: customLabels) {
             combinedString = ""
         } else {
             combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
@@ -75,11 +82,15 @@ struct LeRomTable: View {
     }
     
     
-    
+    private func createInitialTableData(with labels: [String]) -> [TableCellData] {
+        return labels.enumerated().map { index, label in
+            TableCellData(label1: label, value1: 1, value2: 1, value3: 0, value4: 0)
+        }
+    }
     
     private func combineTableData(combinedString: String) -> [TableCellData] {
         guard !combinedString.isEmpty else {
-            return initialTableData
+            return self.createInitialTableData(with: customLabels)
         }
 
         var tableData: [TableCellData] = []
@@ -108,19 +119,6 @@ struct LeRomTable: View {
 
         return tableData
     }
-
-    let initialTableData: [TableCellData] = [
-        TableCellData(label1: "Knee Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Knee Extension", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Extension", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Abduction", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Hip Internal Rot.", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Hip External Rot.", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Ankle Dorsifl", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Ankle Plantar", value1: 1, value2: 1, value3: 0, value4: 0),
-        TableCellData(label1: "Other", value1: 1, value2: 1, value3: 0, value4: 0)
-    ]
 }
 
 struct EntryRowView: View {

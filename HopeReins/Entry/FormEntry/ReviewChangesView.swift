@@ -13,7 +13,6 @@ struct ReviewChangesView: View {
     @ObservedObject var uiManagement: UIManagement
     @State var changeDescriptions: [ChangeDescription]
     @State var reason: String = ""
-    var username: String
     var body: some View {
         ScrollView {
             VStack {
@@ -57,7 +56,7 @@ struct ReviewChangesView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     uiManagement.record.properties = uiManagement.modifiedProperties
-                    uiManagement.record.addPastChanges(reason: reason, changes: changeDescriptions, author: username, modelContext: modelContext)
+                    uiManagement.record.addPastChanges(reason: reason, changes: changeDescriptions, author: uiManagement.username, modelContext: modelContext)
                     dismiss()
                 }, label: {
                     Text("Apply Changes")

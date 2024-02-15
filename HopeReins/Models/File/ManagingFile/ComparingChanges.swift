@@ -7,6 +7,10 @@
 
 import Foundation
 
+public var defaultLEROMLables: [String] = ["Knee Flexion", "Knee Extension", "Hip Flexion", "Hip Extension", "Hip Abduction", "Hip Internal Rot.", "Hip External Rot", "Ankle Dorsifl.", "Ankle Plantar", "Other"]
+
+public var defaultUELabels: [String] = ["Shoulder Elevation (in scapular pain)", "Shoulder Abduction", "Shoulder Extension", "Shoulder Internal Rotation", "Shoulder External Rotation", "Elbow Flexion", "Elbow Extension", "Wrist Flection", "Wrist Extension", "Wrist Pronation", "Other"]
+
 extension MedicalRecordFile {
     
     
@@ -20,8 +24,8 @@ extension MedicalRecordFile {
                         
                         changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
                     }
-                } else if key.contains("LE") {
-                    for change in compareLETable(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                } else if key.contains("Table") {
+                    for change in compareLETable(tableType: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
                         changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
                     }
                 } else if key.contains("MSO") {
@@ -62,35 +66,31 @@ extension MedicalRecordFile {
     
     
     
-    func createDefaultLETableData() -> [LabelValue] {
-        let initialTableData: [TableCellData] = [
-            TableCellData(label1: "Knee Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Knee Extension", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Hip Flexion", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Hip Extension", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Hip Abduction", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Hip Internal Rot.", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Hip External Rot.", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Ankle Dorsifl", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Ankle Plantar", value1: 1, value2: 1, value3: 0, value4: 0),
-            TableCellData(label1: "Other", value1: 1, value2: 1, value3: 0, value4: 0)
-        ]
-        
+    func createDefaultTable(with labels: [String]) -> [LabelValue] {
         var labelValues = [LabelValue]()
-        
-        for cellData in initialTableData {
-            let valueString = "MMT R = \(cellData.value1), MMT L = \(cellData.value2), A/PROM (R) = \(cellData.value3), A/PROM (L) = \(cellData.value4)"
-            let labelValue = LabelValue(label: cellData.label1, value: valueString)
+
+        // Iterate over each label provided in the array
+        for label in labels {
+            let valueString = "MMT R = 1, MMT L = 1, A/PROM (R) = 0.0, A/PROM (L) = 0.0"
+            let labelValue = LabelValue(label: label, value: valueString)
             labelValues.append(labelValue)
         }
-        
+
         return labelValues
     }
+
     
     
-    func compareLETable(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
-        let oldLabelValues = oldCombinedString.isEmpty ? createDefaultLETableData() : parseLeRomTable(oldCombinedString)
-        let newLabelValues = newCombinedString.isEmpty ? createDefaultLETableData() :  parseLeRomTable(newCombinedString)
+    func compareLETable(tableType: String, oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+        // TODO: Add other as last row
+        var defaultTable: [LabelValue] = []
+        if tableType.contains("LE") {
+            defaultTable = createDefaultTable(with: defaultLEROMLables)
+        } else if tableType.contains("UE") {
+            defaultTable = createDefaultTable(with: defaultUELabels)
+        }
+        let oldLabelValues = oldCombinedString.isEmpty ? defaultTable : parseLeRomTable(oldCombinedString)
+        let newLabelValues = newCombinedString.isEmpty ? defaultTable :  parseLeRomTable(newCombinedString)
         
         var changes = [DetailedChange]()
         

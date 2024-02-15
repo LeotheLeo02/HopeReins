@@ -48,6 +48,7 @@
 		BE6FC4EC2B25267500670F7D /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6FC4EB2B25267500670F7D /* SideBar.swift */; };
 		BE72EDBB2B335719006D227C /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBA2B335719006D227C /* Patient.swift */; };
 		BE72EDC02B335816006D227C /* PastChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE72EDBF2B335816006D227C /* PastChange.swift */; };
+		BE77A5A12B7D4BC300FEF6EC /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE77A5A02B7D4BC300FEF6EC /* Forms.swift */; };
 		BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47632B3FD5230075CEEE /* HomeView.swift */; };
 		BE9357932B3CC2ED0058198E /* ChangeDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357922B3CC2EC0058198E /* ChangeDescription.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
@@ -113,6 +114,7 @@
 		BE6FC4EB2B25267500670F7D /* SideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SideBar.swift; path = ../SideBar.swift; sourceTree = "<group>"; };
 		BE72EDBA2B335719006D227C /* Patient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
 		BE72EDBF2B335816006D227C /* PastChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastChange.swift; sourceTree = "<group>"; };
+		BE77A5A02B7D4BC300FEF6EC /* Forms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forms.swift; sourceTree = "<group>"; };
 		BE8E47632B3FD5230075CEEE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BE9357922B3CC2EC0058198E /* ChangeDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeDescription.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				BE5FC7572B7B2BDF00B46891 /* UIManagement.swift */,
+				BE77A5A02B7D4BC300FEF6EC /* Forms.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				BE4697FD2B6DD678001E2E39 /* PastChangeSelectionView.swift in Sources */,
 				BE5FC74C2B7B2AF700B46891 /* RidingFormType.swift in Sources */,
 				BE5FC7792B7B2EDE00B46891 /* RestrictedNumberField.swift in Sources */,
+				BE77A5A12B7D4BC300FEF6EC /* Forms.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
 				BE31DFB02B40FC47006E4806 /* SetupUsersView.swift in Sources */,
 				BEE545F12B5C6E79001D84A5 /* DynamicFormView.swift in Sources */,

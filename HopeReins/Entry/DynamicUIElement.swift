@@ -25,13 +25,15 @@ struct DynamicElementView: View {
             MultiSelectWithTitle(boolString: combinedString, labels: labels, title: title)
         case .multiSelectOthers(combinedString: let combinedString, labels: let labels, title: let title):
             MultiSelectOthers(boolString: combinedString, labels: labels, title: title)
-        case .leRomTable(title: let title, combinedString: let combinedString):
-            LeRomTable(combinedString: combinedString)
+        case .strengthTable(title: let title, combinedString: let combinedString):
+            StrengthTable(combinedString: combinedString, customLabels: title.contains("LE") ?  defaultLEROMLables : defaultUELabels)
         case .dailyNoteTable(let title, let combinedString):
             DailyNoteTable(combinedString: combinedString)
         case .fileUploadButton(title: let title, dataValue: let dataValue):
             PropertyHeader(title: title)
             FileUploadButton(fileData: dataValue)
+        case .physicalTherabyFillIn(title: let title, combinedString: let combinedString):
+            RecommendedPhysicalTherabyFillIn(combinedString: combinedString)
         }
     }
 }
@@ -41,12 +43,13 @@ enum DynamicUIElement: Hashable {
     case datePicker(title: String, hourAndMinute: Bool, binding: Binding<Date>)
     case numberField(title: String, binding: Binding<Int>)
     case sectionHeader(title: String)
-    case leRomTable(title: String, combinedString: Binding<String>)
+    case strengthTable(title: String, combinedString: Binding<String>)
     case singleSelectDescription(title: String, titles: [String], labels: [String], combinedString: Binding<String>, isDescription: Bool)
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
     case dailyNoteTable(title: String, combinedString: Binding<String>)
     case fileUploadButton(title: String, dataValue: Binding<Data?>)
+    case physicalTherabyFillIn(title: String, combinedString: Binding<String>)
     
     static func == (lhs: DynamicUIElement, rhs: DynamicUIElement) -> Bool {
            switch (lhs, rhs) {
@@ -66,9 +69,10 @@ enum DynamicUIElement: Hashable {
         case .textField(let title, _),
                 .numberField(let title, _),
                 .sectionHeader(let title),
-                .leRomTable(let title, _),
+                .strengthTable(let title, _),
                 .dailyNoteTable(let title, _),
-                .fileUploadButton(let title, _):
+                .fileUploadButton(let title, _),
+                .physicalTherabyFillIn(let title, _):
             hasher.combine(title)
         case .singleSelectDescription(_,let titles, let labels, _, let isDescription):
             hasher.combine(titles)
@@ -100,10 +104,11 @@ struct DynamicUIElementWrapper: Hashable {
              .datePicker(let title, _, _),
              .multiSelectWithTitle(_, _, let title),
              .multiSelectOthers(_, _, let title),
-             .leRomTable(let title, _),
+             .strengthTable(let title, _),
              .dailyNoteTable(let title, _),
              .singleSelectDescription(let title,_, _, _, _),
-             .fileUploadButton(let title, _):
+             .fileUploadButton(let title, _),
+             .physicalTherabyFillIn(let title, _):
             self.id = title
         }
         self.element = element

@@ -102,7 +102,7 @@ struct PatientFilesListView: View {
             }
         })
         .sheet(isPresented: $showPatientInfo, content: {
-            DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile), isAdding: false, username: user.username)
+            DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile, username: user.username, patient: patient), isAdding: false)
                 .environment(\.isEditable, !showDeadFiles)
         })
         .sheet(isPresented: $addFile, content: {

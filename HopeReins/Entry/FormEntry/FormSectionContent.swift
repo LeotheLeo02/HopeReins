@@ -26,14 +26,9 @@ struct FormSectionContent: View {
                                 selectedFieldChange = wrappedElement.id
                             })
                             Button(action: {
-                                if  uiManagement.record.revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: false, modelContext: modelContext) {
-                                    uiManagement.record.versions.removeAll{ $0 == selectedVersion! }
-                                    modelContext.delete(selectedVersion!)
+                                if uiManagement.revertToPastVersion(selectedVersion: selectedVersion!, selectedFieldChange: selectedFieldChange, change: change, modelContext: modelContext) {
                                     selectedVersion = nil
                                 }
-                                print(change.propertyChange)
-                                uiManagement.assignFieldValue(fieldID: selectedFieldChange!, value: CodableValue.string(change.propertyChange))
-                                uiManagement.record.properties[selectedFieldChange!] = CodableValue.string(change.propertyChange)
                             }, label: {
                                 Image(systemName: "arrowshape.turn.up.backward.fill")
                             })
