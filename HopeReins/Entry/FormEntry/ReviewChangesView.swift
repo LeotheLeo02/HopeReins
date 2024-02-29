@@ -32,18 +32,7 @@ struct ReviewChangesView: View {
                 .bold()
                 Divider()
                 ForEach(Array(changeDescriptions.enumerated()), id: \.element.self) { index, changeDescription in
-                    HStack {
-                        Text("\(changeDescription.displayName.isEmpty ? changeDescription.id : changeDescription.displayName)")
-                            .frame(width: 100, alignment: .center)
-                            .padding(.trailing, 8)
-                        Text("\(changeDescription.oldValue.isEmpty ? "Default Value" : changeDescription.oldValue)")
-                            .foregroundStyle(.red)
-                            .frame(width: 100, alignment: .center)
-                            .padding(.trailing, 8)
-                        Text("\(changeDescription.value)")
-                            .foregroundStyle(.green)
-                            .frame(width: 100, alignment: .center)
-                    }
+                    ChangeDescriptionView(changeDescription: changeDescription)
                     if index < changeDescriptions.count - 1 {
                         Divider()
                     }
@@ -73,3 +62,55 @@ struct ReviewChangesView: View {
         }
     }
 }
+
+struct ChangeDescriptionView: View {
+    var changeDescription: ChangeDescription
+    var body: some View {
+        HStack {
+            Text("\(changeDescription.displayName.isEmpty ? changeDescription.id : changeDescription.displayName)")
+                .frame(width: 100, alignment: .center)
+                .padding(.trailing, 8)
+            ChangeFieldView(value: changeDescription.oldValue, isOldChangeLabel: true)
+            ChangeFieldView(value: changeDescription.value, isOldChangeLabel: false)
+        }
+    }
+}
+
+struct ChangeFieldView: View {
+    var value: CodableValue
+    var isOldChangeLabel: Bool
+    
+    var body: some View {
+        switch value {
+        case .int(let int):
+            textView(text: String(int))
+        case .string(let string):
+            textView(text: string)
+        case .double(let double):
+            textView(text: String(double))
+        case .bool(let bool):
+            textView(text: String(bool))
+        case .date(let date):
+            textView(text: formatDate(date: date))
+        case .data(let data):
+            FilePreview(data: data, size: 20)
+                .frame(width: 100, alignment: .center)
+                .padding(.trailing, 8)
+        }
+    }
+
+    private func textView(text: String) -> some View {
+        Text(text.isEmpty ? "Default Value" : text)
+            .foregroundStyle(isOldChangeLabel ? .red : .green)
+            .frame(width: 100, alignment: .center)
+            .padding(.trailing, 8)
+    }
+
+    private func formatDate(date: Date) -> String {
+        // Format your date to string using DateFormatter or similar
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+}
+

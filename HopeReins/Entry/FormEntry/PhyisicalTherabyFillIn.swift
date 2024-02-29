@@ -39,9 +39,14 @@ struct RecommendedPhysicalTherabyFillIn: View {
     }
 
     func updateCombinedString() {
-        combinedString = "\(frequency) /wk x \(duration)"
+        if frequency.isEmpty && duration.isEmpty {
+            combinedString = ""
+        } else {
+            combinedString = "\(frequency) /wk x \(duration)"
+        }
         print(combinedString)
     }
+
 
     func extractComponents() {
         if let frequencyMatch = frequencyRegex.firstMatch(in: combinedString, options: [], range: NSRange(location: 0, length: combinedString.utf16.count)) {

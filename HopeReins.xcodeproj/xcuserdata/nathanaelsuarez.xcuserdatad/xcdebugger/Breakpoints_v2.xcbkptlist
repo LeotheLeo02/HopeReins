@@ -85,33 +85,81 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F59713A3-32A3-458E-9D4B-79FFE6BC0288"
+            uuid = "C5EA9ED1-6403-4B6D-A736-CAD23EAAEC6C"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HopeReins/Models/File/ManagingFile/ComparingChanges.swift"
+            filePath = "HopeReins/Entry/DynamicUIElement.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "compareProperties(with:)"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "bindingForChange(type:originalBinding:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E6A29B9C-5D70-4671-862F-7D01322393B2"
+            uuid = "9F58C519-1A5A-4115-ADBA-EA4BA54541FA"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HopeReins/Models/File/ManagingFile/ComparingChanges.swift"
+            filePath = "HopeReins/Entry/DynamicUIElement.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
-            landmarkName = "compareLETable(tableType:oldCombinedString:newCombinedString:)"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "bindingForChange(type:originalBinding:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "072431BA-2C39-4823-A36D-8351EF26B15A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HopeReins/Models/CodableValue.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "stringValue"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "072431BA-2C39-4823-A36D-8351EF26B15A - b0d205355384243e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HopeReins.CodableValue.stringValue.getter : Swift.String"
+                  moduleName = "HopeReins"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nathanaelsuarez/Documents/HopeReins/HopeReins/Models/CodableValue.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "105"
+                  endingLineNumber = "105"
+                  offsetFromSymbolStart = "552">
+               </Location>
+               <Location
+                  uuid = "072431BA-2C39-4823-A36D-8351EF26B15A - b0d205355384243e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HopeReins.CodableValue.stringValue.getter : Swift.String"
+                  moduleName = "HopeReins"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nathanaelsuarez/Documents/HopeReins/HopeReins/Models/CodableValue.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "105"
+                  endingLineNumber = "105"
+                  offsetFromSymbolStart = "624">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -15,6 +15,10 @@ class UIManagement: ObservableObject {
     @Published var username: String
     @Published var patient: Patient?
     
+    let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotheraby", "Therapeutic Exercise", "Postural Alignment Training"]
+    
+    let problemsLabels: [String] = ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"]
+    
     init(modifiedProperties: [String : CodableValue], record: MedicalRecordFile, username: String, patient: Patient?) {
         self.modifiedProperties = modifiedProperties
         self.record = record
@@ -103,6 +107,8 @@ class UIManagement: ObservableObject {
                 return getEvaluation()
             case .physicalTherabyPlanOfCare:
                 return getPhysicalTherabyPlanOfCare()
+            case .reEvaluation:
+                return getReEvaluation()
             default:
                 return []
             }
@@ -169,7 +175,7 @@ public func convertToCodableValue(type: String, propertyChange: String) -> Codab
     case "String":
         return .string(propertyChange)
     case "Data":
-        guard let data = propertyChange.data(using: .utf8) else { return .string("") }
+        guard let data = Data(base64Encoded: propertyChange) else { return .string("") }
         return .data(data)
     case "Date":
         guard let date = DateFormatter().date(from: propertyChange) else { return .string("") }

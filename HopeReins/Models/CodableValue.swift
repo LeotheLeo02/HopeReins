@@ -13,6 +13,26 @@ extension CodableValue {
         case int, string, double, bool, date, data
     }
 }
+
+extension CodableValue {
+    var typeString: String {
+        switch self {
+        case .int:
+            return "Int"
+        case .string:
+            return "String"
+        case .double:
+            return "Double"
+        case .bool:
+            return "Bool"
+        case .date:
+            return "Date"
+        case .data:
+            return "Data"
+        }
+    }
+}
+
 public enum CodableValue: Codable, Equatable, Hashable {
     case int(Int)
     case string(String)
@@ -82,6 +102,7 @@ extension CodableValue {
         get {
             if case .string(let value) = self { return value }
             if case .date(let date) = self { return date.formatted() }
+            if case .data(let data) = self { return data.base64EncodedString() }
             return ""
         }
         set { self = .string(newValue) }
@@ -98,6 +119,7 @@ extension CodableValue {
     var dataValue: Data {
         get {
             if case .data(let value) = self { return value }
+            if case .string(let string) = self { return string.data(using: .utf8)! }
             return .init()
         }
         set { self = .data(newValue) }

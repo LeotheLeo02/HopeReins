@@ -25,12 +25,14 @@ extension MedicalRecordFile {
                 groupedDescriptions[change.id] = changeDescription
             }
             // Update the actual value for the change
-            actualValues[change.id] = change.actualValue
+            actualValues[change.id] = change.actualValue.stringValue
         }
 
         let newChanges = groupedDescriptions.map { id, description in
-            PastChange(fieldID: id, type: "String", propertyChange: actualValues[id] ?? "", displayName: description)
+            let changeType = changes.first(where: { $0.id == id })?.actualValue.typeString ?? "Unknown"
+            return PastChange(fieldID: id, type: changeType, propertyChange: actualValues[id] ?? "", displayName: description)
         }
+
 
         self.versions.append(newVersion)
        
@@ -40,6 +42,7 @@ extension MedicalRecordFile {
             updateProperties(author: author, modelContext: modelContext)
         }
     }
+    
 
 
 

@@ -44,6 +44,8 @@ struct DynamicElementView: View {
                 FileUploadButton(fileData: (change != nil) ? .constant(convertToCodableValue(type: change!.type, propertyChange: change!.propertyChange).dataValue) :  dataValue)
             case .physicalTherabyFillIn(title: let title, combinedString: let combinedString):
                 RecommendedPhysicalTherabyFillIn(combinedString: bindingForChange(type: String.self, originalBinding: combinedString))
+            case .reEvalFillin(title: let title, combinedString: let combinedString):
+                ReEvalFillInInput(combinedString: combinedString)
             }
         }
         .environment(\.isEditable, (change == nil))
@@ -62,6 +64,7 @@ enum DynamicUIElement: Hashable {
     case dailyNoteTable(title: String, combinedString: Binding<String>)
     case fileUploadButton(title: String, dataValue: Binding<Data?>)
     case physicalTherabyFillIn(title: String, combinedString: Binding<String>)
+    case reEvalFillin(title: String, combinedString: Binding<String>)
     
     static func == (lhs: DynamicUIElement, rhs: DynamicUIElement) -> Bool {
            switch (lhs, rhs) {
@@ -84,7 +87,8 @@ enum DynamicUIElement: Hashable {
                 .strengthTable(let title, _),
                 .dailyNoteTable(let title, _),
                 .fileUploadButton(let title, _),
-                .physicalTherabyFillIn(let title, _):
+                .physicalTherabyFillIn(let title, _),
+                .reEvalFillin(let title, _):
             hasher.combine(title)
         case .singleSelectDescription(_,let titles, let labels, _, let isDescription):
             hasher.combine(titles)
@@ -120,7 +124,8 @@ struct DynamicUIElementWrapper: Hashable {
              .dailyNoteTable(let title, _),
              .singleSelectDescription(let title,_, _, _, _),
              .fileUploadButton(let title, _),
-             .physicalTherabyFillIn(let title, _):
+             .physicalTherabyFillIn(let title, _),
+             .reEvalFillin(let title, _):
             self.id = title
         }
         self.element = element

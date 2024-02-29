@@ -19,25 +19,38 @@ extension MedicalRecordFile {
         
         for (key, oldValue) in self.properties {
             if let newValue = other[key], oldValue != newValue {
-                if key.contains("SS") {
-                    for change in compareSingleSelection(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        
-                        changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
+                switch oldValue {
+                case .string(_):
+                    if key.contains("SS") {
+                        for change in compareSingleSelection(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                            
+                            changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: CodableValue.string(change.oldValue), value: CodableValue.string(change.newValue), actualValue: CodableValue.string(oldValue.stringValue)))
+                        }
+                    } else if key.contains("Table") {
+                        for change in compareLETable(tableType: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: CodableValue.string(change.oldValue), value: CodableValue.string(change.newValue), actualValue: CodableValue.string(oldValue.stringValue)))
+                        }
+                    } else if key.contains("MSO") {
+                        for change in compareMultiSelectOthers(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: CodableValue.string(change.oldValue), value: CodableValue.string(change.newValue), actualValue: CodableValue.string(oldValue.stringValue)))
+                        }
+                    } else if key.contains("MST") {
+                        for change in compareMultiSelectWithTitle(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: CodableValue.string(change.oldValue), value: CodableValue.string(change.newValue), actualValue: CodableValue.string(oldValue.stringValue)))
+                        }
+                    } else {
+                        changes.append(ChangeDescription(displayName: "", id: key, oldValue: CodableValue.string(oldValue.stringValue), value: CodableValue.string(newValue.stringValue), actualValue: CodableValue.string(oldValue.stringValue)))
                     }
-                } else if key.contains("Table") {
-                    for change in compareLETable(tableType: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
-                    }
-                } else if key.contains("MSO") {
-                    for change in compareMultiSelectOthers(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
-                    }
-                } else if key.contains("MST") {
-                    for change in compareMultiSelectWithTitle(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                        changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue, value: change.newValue, actualValue: oldValue.stringValue))
-                    }
-                } else {
-                    changes.append(ChangeDescription(displayName: "", id: key, oldValue: oldValue.stringValue, value: newValue.stringValue, actualValue: oldValue.stringValue))
+                case .data(let data):
+                    changes.append(ChangeDescription(displayName: key, id: key, oldValue: CodableValue.data(oldValue.dataValue), value: CodableValue.data(newValue.dataValue), actualValue: CodableValue.data(oldValue.dataValue)))
+                case .int(_):
+                    print("Int")
+                case .double(_):
+                    print("Double")
+                case .bool(_):
+                    print("Bool")
+                case .date(_):
+                    print("Date")
                 }
             }
         }

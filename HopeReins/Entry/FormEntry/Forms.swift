@@ -163,7 +163,7 @@ extension UIManagement {
                 .textField(title: "Special Testing/Standardized Testing", binding: stringBinding(for: "Special Testing/Standardized Testing"))
             ]),
             FormSection(title: "Primary Problems/Deficits Include", elements: [
-                .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"], title: "MSO Primary Problems/Deficits Include")
+                .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include")
             ]),
             FormSection(title: "Daily Note", elements: [
                 .dailyNoteTable(title: "Daily Note", combinedString: stringBinding(for: "Daily Note"))
@@ -197,7 +197,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Treatment Plan", elements: [
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),
-                .multiSelectOthers(combinedString: stringBinding(for: "MSO Goal Attainment"), labels: ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotheraby", "Therapeutic Exercise", "Postural Alignment Training"], title: "MSO Goal Attainment"),
+                .multiSelectOthers(combinedString: stringBinding(for: "MSO Goal Attainment"), labels: treatmentsLabels, title: "MSO Goal Attainment"),
                 .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "Patient demonstrates"), isDescription: false),
                 .physicalTherabyFillIn(title: "Physical Theraby Fill In", combinedString: stringBinding(for: "Physical Theraby Fill In")),
                 .textField(title: "Discharge Planning", binding: stringBinding(for: "Discharge Planning")),
@@ -210,5 +210,32 @@ extension UIManagement {
         ]
         
         return uiElements
+    }
+    
+    func getReEvaluation() -> [FormSection] {
+        return  [
+            FormSection(title: "Diagnosis", elements: [
+                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
+                .textField(title: "Medical Diagnosis", binding: stringBinding(for: "Medical Diagnosis")),
+                .textField(title: "Theraby Diagnosis", binding: stringBinding(for: "Theraby Diagnosis")),
+                .reEvalFillin(title: "Re Eval Fill in", combinedString: stringBinding(for: "Re Eval Fill in"))
+            ]),
+            FormSection(title: "Treatments Received + Analysis", elements: [
+                .multiSelectOthers(combinedString: stringBinding(for:"MSO Treatments Received"), labels: treatmentsLabels, title: "MSO Treatments Received"),
+                .textField(title: "Subjective", binding: stringBinding(for: "Subjective")),
+                .textField(title: "Objective", binding: stringBinding(for: "Objective")),
+                .textField(title: "Assessment", binding: stringBinding(for: "Assessment"))
+            ]),
+            FormSection(title: "Primary Problems and Treatment Plan", elements: [
+                .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include"),
+                .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates"), isDescription: false),
+                .physicalTherabyFillIn(title: "Recommended Physical Theraby", combinedString: stringBinding(for: "Recommended Physical Theraby")),
+                .multiSelectOthers(combinedString: stringBinding(for: "MSO Treatment Plan"), labels: treatmentsLabels, title: "MSO Treatment Plan"),
+                .textField(title: "Discharge Plan", binding: stringBinding(for: "Discharge Plan"))
+            ]),
+            FormSection(title: "Goal Review", elements: [
+                .textField(title: "Goal Review", binding: stringBinding(for: "Goal Review"))
+            ])
+        ]
     }
 }
