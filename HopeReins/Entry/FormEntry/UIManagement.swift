@@ -15,7 +15,7 @@ class UIManagement: ObservableObject {
     @Published var username: String
     @Published var patient: Patient?
     
-    let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotheraby", "Therapeutic Exercise", "Postural Alignment Training"]
+    let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotherapy", "Therapeutic Exercise", "Postural Alignment Training"]
     
     let problemsLabels: [String] = ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"]
     
@@ -101,14 +101,16 @@ class UIManagement: ObservableObject {
             }
         }
 
-        if let type = PhysicalTherabyFormType(rawValue: record.fileType) {
+        if let type = PhysicalTherapyFormType(rawValue: record.fileType) {
             switch type {
             case .evaluation:
                 return getEvaluation()
-            case .physicalTherabyPlanOfCare:
-                return getPhysicalTherabyPlanOfCare()
+            case .physicalTherapyPlanOfCare:
+                return getPhysicalTherapyPlanOfCare()
             case .reEvaluation:
                 return getReEvaluation()
+            case .dailyNote:
+                return getDailyNote()
             default:
                 return []
             }

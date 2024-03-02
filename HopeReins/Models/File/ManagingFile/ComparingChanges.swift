@@ -38,6 +38,11 @@ extension MedicalRecordFile {
                         for change in compareMultiSelectWithTitle(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
                             changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: CodableValue.string(change.oldValue), value: CodableValue.string(change.newValue), actualValue: CodableValue.string(oldValue.stringValue)))
                         }
+                    } else if key.contains("DAT") {
+                        for change in compareDailyNoteTable(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: CodableValue.string(change.oldValue), value: CodableValue.string(change.newValue), actualValue: CodableValue.string(oldValue.stringValue)))
+                            print(change)
+                        }
                     } else {
                         changes.append(ChangeDescription(displayName: "", id: key, oldValue: CodableValue.string(oldValue.stringValue), value: CodableValue.string(newValue.stringValue), actualValue: CodableValue.string(oldValue.stringValue)))
                     }
@@ -214,5 +219,62 @@ extension MedicalRecordFile {
         
         return changes
     }
+    
+    
+    func compareDailyNoteTable(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+        var oldTableData = decodeDailyNoteTable(oldCombinedString)
+        let newTableData = decodeDailyNoteTable(newCombinedString)
+        
+        let initialTableData: [DailyNoteTableCell] = [
+            DailyNoteTableCell(number: 1, code: "PTNEUR15", cpt: "97112", procedire: "PT NEUROMUSCULAR RE_ED 15 MIN"),
+            DailyNoteTableCell(number: 1, code: "THERA15", cpt: "97530", procedire: "PT_THEREPEUTIC ACTCTY 15 MIN "),
+            DailyNoteTableCell(number: 1, code: "PTGAIT15", cpt: "97116", procedire: "PT GAIT TRAINING 15 MIN"),
+            DailyNoteTableCell(number: 1, code: "THEREX", cpt: "97110", procedire: "PT-THEREAPEUTIC EXERCISE 15 MIN"),
+            DailyNoteTableCell(number: 1, code: "MANUAL", cpt: "97140", procedire: "PT-MANUAL THERAPY")
+        ]
+        
+        var changes: [DetailedChange] = []
+        
+        // Compare the old and new table data and identify changes
+        if oldTableData.isEmpty {
+            oldTableData = initialTableData
+        }
+        for (index, oldEntry) in oldTableData.enumerated() {
+            if index < newTableData.count {
+                let newEntry = newTableData[index]
+                
+                // Check if any field within the table cell has changed
+                if oldEntry.number != newEntry.number {
+                    changes.append(DetailedChange(label: oldEntry.code, oldValue: oldEntry.number.description, newValue: newEntry.number.description))
+                }
+            }
+        }
+        return changes
+    }
+    
+    func decodeDailyNoteTable(_ combinedString: String) -> [DailyNoteTableCell] {
+        var tableData: [DailyNoteTableCell] = []
+        
+        // Define the default initial table data
+        let initialTableData: [DailyNoteTableCell] = [
+            DailyNoteTableCell(number: 1, code: "PTNEUR15", cpt: "97112", procedire: "PT NEUROMUSCULAR RE_ED 15 MIN"),
+            DailyNoteTableCell(number: 1, code: "THERA15", cpt: "97530", procedire: "PT_THEREPEUTIC ACTCTY 15 MIN "),
+            DailyNoteTableCell(number: 1, code: "PTGAIT15", cpt: "97116", procedire: "PT GAIT TRAINING 15 MIN"),
+            DailyNoteTableCell(number: 1, code: "THEREX", cpt: "97110", procedire: "PT-THEREAPEUTIC EXERCISE 15 MIN"),
+            DailyNoteTableCell(number: 1, code: "MANUAL", cpt: "97140", procedire: "PT-MANUAL THERAPY")
+        ]
+        
+        // Split the combined string into the number components using the delimiter "//"
+        let numbers = combinedString.split(separator: "//").compactMap { Int($0) }
+        
+        for  (index, number) in numbers.enumerated()  {
+            var currentTableData = initialTableData[index]
+            currentTableData.number = number
+            tableData.append(currentTableData)
+        }
+        
+        return tableData
+    }
+
     
 }

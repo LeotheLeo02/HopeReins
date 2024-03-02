@@ -18,7 +18,7 @@ extension PatientFilesListView {
                 
                 // Check if the file name matches
                 if let name = criteria.name {
-                    matches = matches && file.properties["File Name"]!.stringValue.localizedCaseInsensitiveContains(name)
+                   matches = matches && file.properties["File Name"]!.stringValue.localizedCaseInsensitiveContains(name)
                 }
                 // Check if the file date matches
                 if let date = criteria.date {
@@ -36,7 +36,7 @@ extension PatientFilesListView {
     private func parseSearchText(_ searchText: String) -> SearchCriteria {
         var criteria = SearchCriteria()
 
-        let physicalTherapyTypes = PhysicalTherabyFormType.allCases.map { $0.rawValue.lowercased() }
+        let physicalTherapyTypes = PhysicalTherapyFormType.allCases.map { $0.rawValue.lowercased() }
         let ridingTypes = RidingFormType.allCases.map { $0.rawValue.lowercased() }
 
         let dateFormatter = DateFormatter()

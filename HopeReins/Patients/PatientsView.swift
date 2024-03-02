@@ -69,7 +69,7 @@ struct PatientsView: View {
                             .resizable()
                             .frame(width: 75, height: 75)
                             .foregroundStyle(Color(.primary))
-                        Text(patient.personalFile.properties["Name"]!.stringValue)
+                        Text(patient.personalFile.properties["File Name"]!.stringValue)
                     }
                     .font(.title2)
                     .foregroundStyle(.primary)

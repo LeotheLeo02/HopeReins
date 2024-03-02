@@ -29,7 +29,7 @@ struct FormEditView: View {
     private func determineFormType(from file: MedicalRecordFile) -> FormType? {
         if let ridingType = RidingFormType(rawValue: file.fileType) {
             return .riding(ridingType)
-        } else if let physicalType = PhysicalTherabyFormType(rawValue: file.fileType) {
+        } else if let physicalType = PhysicalTherapyFormType(rawValue: file.fileType) {
             return .physicalTherapy(physicalType)
         }
         else {

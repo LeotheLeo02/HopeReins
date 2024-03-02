@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import NaturalLanguage
 
 struct StrengthTable: View {
     @Environment(\.isEditable) var isEditable: Bool
@@ -21,32 +20,30 @@ struct StrengthTable: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("* = pain")
-                    .frame(width: 100, alignment: .leading)
-                Spacer()
-                Text("MMT R")
-                    .frame(width: 100, alignment: .center)
-                Divider()
-                Spacer()
-                Text("MMT L")
-                    .frame(width: 100, alignment: .center)
-                Divider()
-                Spacer()
-                Text("A/PROM (R)")
-                    .frame(width: 100, alignment: .center)
-                Divider()
-                Spacer()
-                Text("A/PROM (L)")
-                    .frame(width: 100, alignment: .center)
-            }
-
-            ForEach(tableData, id: \.id) { rowData in
-                EntryRowView(rowData: rowData, combinedString: $combinedString, tableData: $tableData) {
-                    updateCombinedString()
+        VStack(alignment: .center) {
+            Grid(alignment: .center)  {
+                GridRow {
+                        Text("* = pain")
+                        .frame(minWidth: 100, maxWidth: 200)
+                        Text("MMT R")
+                        .frame(minWidth: 100, maxWidth: 200)
+                        Text("MMT L")
+                        .frame(minWidth: 100, maxWidth: 200)
+                        Text("A/PROM (R)")
+                        .frame(minWidth: 100, maxWidth: 200)
+                        Text("A/PROM (L)")
+                        .frame(minWidth: 100, maxWidth: 200)
                 }
-                .environment(\.isEditable, isEditable)
+                Divider()
+                ForEach(tableData, id: \.id) { rowData in
+                    GridRow(alignment: .center) {
+                        EntryRowView(rowData: rowData, combinedString: $combinedString, tableData: $tableData) {
+                            updateCombinedString()
+                        }
+                        .gridCellColumns(5)
+                        .environment(\.isEditable, isEditable)
+                    }
+                }
             }
         }
         .padding()
@@ -55,7 +52,7 @@ struct StrengthTable: View {
                 .foregroundStyle(.windowBackground)
                 .shadow(radius: 3)
         )
-        .frame(maxWidth: 600)
+        .frame(minWidth: 500, maxWidth: 1000)
         .onAppear {
             if combinedString.isEmpty {
                 self.tableData = self.createInitialTableData(with: customLabels)
@@ -84,7 +81,7 @@ struct StrengthTable: View {
     
     private func createInitialTableData(with labels: [String]) -> [TableCellData] {
         return labels.enumerated().map { index, label in
-            TableCellData(label1: label, value1: 1, value2: 1, value3: 0, value4: 0)
+            TableCellData(label1: label, value1: "", value2: "", value3: "", value4: "")
         }
     }
     
@@ -98,23 +95,17 @@ struct StrengthTable: View {
 
         var index = 0
         while index < entries.count {
-            let isPain = entries[index] == "true"
-            let label = entries[index + 1]
+            let label = entries[index]
+            let value1 = entries[index + 1]
+            let value2 = entries[index + 2]
+            let isPainValue3 = Bool(entries[index + 3]) ?? false
+            let value3 = entries[index + 4]
+            let isPainValue4 = Bool(entries[index + 5]) ?? false
+            let value4 = entries[index + 6]
             
-            if isPain {
-                let cellData = TableCellData(isPain: true, label1: label, value1: 0, value2: 0, value3: 0.0, value4: 0.0)
-                tableData.append(cellData)
-                index += 2
-            } else {
-                let value1 = Int(entries[index + 2]) ?? 1
-                let value2 = Int(entries[index + 3]) ?? 1
-                let value3 = Double(entries[index + 4]) ?? 0.0
-                let value4 = Double(entries[index + 5]) ?? 0.0
-                
-                let cellData = TableCellData(isPain: false, label1: label, value1: value1, value2: value2, value3: value3, value4: value4)
-                tableData.append(cellData)
-                index += 6
-            }
+            let cellData = TableCellData(label1: label, value1: value1, value2: value2, isPainValue3: isPainValue3, value3: value3, isPainValue4: isPainValue4, value4: value4)
+            tableData.append(cellData)
+            index += 7
         }
 
         return tableData
@@ -129,44 +120,57 @@ struct EntryRowView: View {
     let updateParentCombinedString: () -> Void
     var range: ClosedRange<Int> = 1...5
     var body: some View {
-        HStack {
-            Button(action: {
-                rowData.isPain.toggle()
-                updateParentCombinedString()
-            }, label: {
-                Text("*")
-                    .font(.largeTitle)
-                    .foregroundColor(rowData.isPain ? .red : .primary)
-            })
-            .buttonStyle(.borderless)
-            .disabled(!isEditable)
-            
-            Text(rowData.label1)
-                .font(.subheadline)
-                .frame(width: 100, alignment: .leading)
-            
-            RestrictedNumberField(range: range, number: $rowData.value1)
-                .disabled(rowData.isPain || !isEditable)
-            RestrictedNumberField(range: range, number: $rowData.value2)
-                .disabled(rowData.isPain || !isEditable)
-            DegreeField(degree: $rowData.value3)
-                .disabled(rowData.isPain || !isEditable)
-            DegreeField(degree: $rowData.value4)
-                .disabled(rowData.isPain || !isEditable)
-                .onChange(of: rowData.value1) { oldValue, newValue in
-                    updateParentCombinedString()
+            HStack {
+                HStack(alignment: .center) {
+                    Text(rowData.label1)
+                        .font(.subheadline)
                 }
-                .onChange(of: rowData.value2) { oldValue, newValue in
-                    updateParentCombinedString()
+                .frame(minWidth: 100, maxWidth: 200)
+                
+                StrengthPickerView(value: $rowData.value1)
+                    .disabled(!isEditable)
+                StrengthPickerView(value: $rowData.value2)
+                    .disabled(!isEditable)
+                HStack {
+                    TextField("", text: $rowData.value3)
+                    Button(action: {
+                        rowData.isPainValue3.toggle()
+                        updateParentCombinedString()
+                    }, label: {
+                        Text("*")
+                            .font(.title)
+                            .foregroundColor(rowData.isPainValue3 ? .red : .primary)
+                    })
+                    .buttonStyle(.borderless)
                 }
-                .onChange(of: rowData.value3) { oldValue, newValue in
-                    updateParentCombinedString()
+                .disabled(!isEditable)
+                HStack {
+                    TextField("", text: $rowData.value4)
+                    Button(action: {
+                        rowData.isPainValue4.toggle()
+                        updateParentCombinedString()
+                    }, label: {
+                        Text("*")
+                            .font(.title)
+                            .foregroundColor(rowData.isPainValue4 ? .red : .primary)
+                    })
+                    .buttonStyle(.borderless)
                 }
-                .onChange(of: rowData.value4) { oldValue, newValue in
-                    updateParentCombinedString()
-                }
-        }
-        .padding(.pi)
+                .disabled(!isEditable)
+                    .onChange(of: rowData.value1) { oldValue, newValue in
+                        updateParentCombinedString()
+                    }
+                    .onChange(of: rowData.value2) { oldValue, newValue in
+                        updateParentCombinedString()
+                    }
+                    .onChange(of: rowData.value3) { oldValue, newValue in
+                        updateParentCombinedString()
+                    }
+                    .onChange(of: rowData.value4) { oldValue, newValue in
+                        updateParentCombinedString()
+                    }
+            }
+            .padding(.pi)
     }
 
 
@@ -176,40 +180,35 @@ struct EntryRowView: View {
 
 class TableCellData: Identifiable, ObservableObject, Equatable {
     static func == (lhs: TableCellData, rhs: TableCellData) -> Bool {
-        return lhs.isPain == rhs.isPain &&
-               lhs.label1 == rhs.label1 &&
+        return lhs.label1 == rhs.label1 &&
                lhs.value1 == rhs.value1 &&
                lhs.value2 == rhs.value2 &&
-               lhs.value3 == rhs.value3 &&
-               lhs.value4 == rhs.value4
+               lhs.isPainValue3 == rhs.isPainValue3 &&
+               lhs.isPainValue4 == rhs.isPainValue4
     }
     
     let id = UUID()
     var label1: String
-    @Published var isPain: Bool
-    @Published var value1: Int
-    @Published var value2: Int
-    @Published var value3: Double
-    @Published var value4: Double
+    @Published var value1: String
+    @Published var value2: String
+    @Published var isPainValue3: Bool
+    @Published var value3: String
+    @Published var isPainValue4: Bool
+    @Published var value4: String
 
-    init(isPain: Bool = false, label1: String, value1: Int, value2: Int, value3: Double, value4: Double) {
-        self.isPain = isPain
+    init(label1: String, value1: String, value2: String, isPainValue3: Bool = false, value3: String, isPainValue4: Bool = false, value4: String) {
         self.label1 = label1
         self.value1 = value1
         self.value2 = value2
+        self.isPainValue3 = isPainValue3
         self.value3 = value3
+        self.isPainValue4 = isPainValue4
         self.value4 = value4
     }
     
-    
     var combinedStringRepresentation: String {
-        if isPain {
-            // When isPain is true, we only store the label and the pain indicator
-            return "\(isPain)//\(label1)"
-        } else {
-            // When isPain is false, we store all information
-            return "\(isPain)//\(label1)//\(value1)//\(value2)//\(value3)//\(value4)"
-        }
+        // Encode isPainValue3 and isPainValue4 as "true" or "false"
+        return "\(label1)//\(value1)//\(value2)//\(isPainValue3)//\(value3)//\(isPainValue4)//\(value4)"
     }
 }
 

@@ -14,13 +14,13 @@ struct SearchCriteria {
     var fileType: String?
 }
 enum FormType: Hashable {
-    case physicalTherapy(PhysicalTherabyFormType)
+    case physicalTherapy(PhysicalTherapyFormType)
     case riding(RidingFormType)
 
     
     static var allCases: [FormType] {
         // Combine all cases from both subtypes
-        return PhysicalTherabyFormType.allCases.map(FormType.physicalTherapy) +
+        return PhysicalTherapyFormType.allCases.map(FormType.physicalTherapy) +
         RidingFormType.allCases.map(FormType.riding)
     }
     
@@ -41,7 +41,7 @@ enum FormType: Hashable {
 
         switch typePart {
         case "physicalTherapy":
-            if let type = PhysicalTherabyFormType(rawValue: valuePart) {
+            if let type = PhysicalTherapyFormType(rawValue: valuePart) {
                 return .physicalTherapy(type)
             }
         case "riding":
@@ -122,7 +122,7 @@ struct PatientFilesListView: View {
         HStack {
             Image(systemName:  showDeadFiles ? "trash.fill" : "person.circle")
                 .foregroundStyle(showDeadFiles ? .red : .primary)
-            Text(showDeadFiles ? "Deleted Files" : patient.personalFile.properties["Name"]?.stringValue ?? "")
+            Text(showDeadFiles ? "Deleted Files" : patient.personalFile.properties["File Name"]?.stringValue ?? "")
                 .bold()
         }
         .font(.largeTitle)
@@ -175,7 +175,7 @@ struct PatientFilesListView: View {
             }
             
             Section(header: Text("Physical Therapy").bold().underline()) {
-                ForEach(PhysicalTherabyFormType.allCases, id: \.self) { physicalForm in
+                ForEach(PhysicalTherapyFormType.allCases, id: \.self) { physicalForm in
                     Button {
                         selectedSpecificForm = .physicalTherapy(physicalForm)
                         addFile.toggle()

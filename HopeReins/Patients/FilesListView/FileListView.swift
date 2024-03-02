@@ -106,7 +106,7 @@ struct FileListView: View {
     private func cases(for formType: FormType) -> [String] {
         switch formType {
         case .physicalTherapy(_):
-            return PhysicalTherabyFormType.allCases.map { $0.rawValue }
+            return PhysicalTherapyFormType.allCases.map { $0.rawValue }
         case .riding(_):
             return RidingFormType.allCases.map { $0.rawValue }
         }

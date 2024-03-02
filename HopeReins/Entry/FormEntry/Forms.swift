@@ -15,7 +15,7 @@ extension UIManagement {
         // TODO: ensure that date is working properly
         let uiElements: [FormSection] = [
             FormSection(title: "Personal Info", elements: [
-                .textField(title: "Name", binding: stringBinding(for: "Name")),
+                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
                 .datePicker(title: "Date of Birth", hourAndMinute: false, binding: dateBinding(for: "Date of Birth")),
                 .textField(title: "Address", binding: stringBinding(for: "Address")),
                 .textField(title: "City", binding: stringBinding(for: "City")),
@@ -95,10 +95,6 @@ extension UIManagement {
                 .textField(title: "Speech/Communications", binding: stringBinding(for: "Speech Communications")),
                 .textField(title: "Seizures", binding: stringBinding(for: "Seizures")),
             ]),
-            FormSection(title: "A/Prom", elements: [
-                .textField(title: "A Upper Extremity", binding: stringBinding(for: "A Upper Extremity")),
-                .textField(title: "A Lower Extremity", binding: stringBinding(for: "A Lower Extremity")),
-            ]),
             FormSection(title: "Strength", elements: [
                 .textField(title: "S Upper Extremities", binding: stringBinding(for: "S Upper Extremity")),
                 .textField(title: "S Lower Extremities", binding: stringBinding(for: "S Lower Extremity")),
@@ -175,12 +171,12 @@ extension UIManagement {
     }
     
     //MARK: - Physical Therapy Plan of Care
-    func getPhysicalTherabyPlanOfCare() -> [FormSection] {
+    func getPhysicalTherapyPlanOfCare() -> [FormSection] {
         let uiElements: [FormSection] = [
             FormSection(title: "Diagnosis", elements: [
                 .textField(title: "File Name", binding: stringBinding(for: "File Name")),
                 .textField(title: "Medical Diagnosis", binding: stringBinding(for: "Medical Diagnosis")),
-                .textField(title: "Theraby Diagnosis", binding: stringBinding(for: "Theraby Diagnosis")),
+                .textField(title: "Therapy Diagnosis", binding: stringBinding(for: "Therapy Diagnosis")),
                 .textField(title: "Assessment Summary", binding: stringBinding(for: "Assessment Summary"))
             ]),
             FormSection(title: "Goals", elements: [
@@ -199,7 +195,7 @@ extension UIManagement {
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Goal Attainment"), labels: treatmentsLabels, title: "MSO Goal Attainment"),
                 .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "Patient demonstrates"), isDescription: false),
-                .physicalTherabyFillIn(title: "Physical Theraby Fill In", combinedString: stringBinding(for: "Physical Theraby Fill In")),
+                .physicalTherapyFillIn(title: "Physical Therapy Fill In", combinedString: stringBinding(for: "Physical Therapy Fill In")),
                 .textField(title: "Discharge Planning", binding: stringBinding(for: "Discharge Planning")),
                 .textField(title: "Therapist Signature", binding: stringBinding(for: "Therapist Signature")),
                 .datePicker(title: "Therapist Signature Date", hourAndMinute: false, binding: dateBinding(for: "Therapist Signature Date"))
@@ -217,7 +213,7 @@ extension UIManagement {
             FormSection(title: "Diagnosis", elements: [
                 .textField(title: "File Name", binding: stringBinding(for: "File Name")),
                 .textField(title: "Medical Diagnosis", binding: stringBinding(for: "Medical Diagnosis")),
-                .textField(title: "Theraby Diagnosis", binding: stringBinding(for: "Theraby Diagnosis")),
+                .textField(title: "Therapy Diagnosis", binding: stringBinding(for: "Therapy Diagnosis")),
                 .reEvalFillin(title: "Re Eval Fill in", combinedString: stringBinding(for: "Re Eval Fill in"))
             ]),
             FormSection(title: "Treatments Received + Analysis", elements: [
@@ -229,12 +225,28 @@ extension UIManagement {
             FormSection(title: "Primary Problems and Treatment Plan", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include"),
                 .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates"), isDescription: false),
-                .physicalTherabyFillIn(title: "Recommended Physical Theraby", combinedString: stringBinding(for: "Recommended Physical Theraby")),
+                .physicalTherapyFillIn(title: "Recommended Physical Therapy", combinedString: stringBinding(for: "Recommended Physical Therapy")),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Treatment Plan"), labels: treatmentsLabels, title: "MSO Treatment Plan"),
                 .textField(title: "Discharge Plan", binding: stringBinding(for: "Discharge Plan"))
             ]),
             FormSection(title: "Goal Review", elements: [
                 .textField(title: "Goal Review", binding: stringBinding(for: "Goal Review"))
+            ])
+        ]
+    }
+    
+    func getDailyNote() -> [FormSection] {
+        return [
+            FormSection(title: "Progress Timeline + SOAP", elements: [
+                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
+                .dailyNoteFillin(title: "Progress Timeline", combinedString: stringBinding(for: "Progress Timeline")),
+                .textField(title: "S:", binding: stringBinding(for: "S:")),
+                .textField(title: "O:", binding: stringBinding(for: "O:")),
+                .textField(title: "A:", binding: stringBinding(for: "A:")),
+                .textField(title: "P:", binding: stringBinding(for: "P:"))
+            ]),
+            FormSection(title: "Daily Note Table", elements: [
+                .dailyNoteTable(title: "DAT Daily Note", combinedString: stringBinding(for: "DAT Daily Note"))
             ])
         ]
     }

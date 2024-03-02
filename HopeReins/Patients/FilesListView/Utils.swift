@@ -64,7 +64,9 @@ public func isUploadFile(fileType: String) -> Bool {
         RidingFormType.releaseStatement.rawValue,
         RidingFormType.coverLetter.rawValue,
         RidingFormType.updateCoverLetter.rawValue,
-        PhysicalTherabyFormType.referral.rawValue
+        PhysicalTherapyFormType.referral.rawValue,
+        PhysicalTherapyFormType.medicalForm.rawValue,
+        PhysicalTherapyFormType.missedVisit.rawValue
     ]
 
     return specificFileTypes.contains(fileType)

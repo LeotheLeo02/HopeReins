@@ -1,8 +1,8 @@
 //
-//  RestrictedNumberField'.swift
+//  RestrictedNumberField.swift
 //  HopeReins
 //
-//  Created by Nathanael Suarez on 12/27/23.
+//  Created by Nathanael Suarez on 3/2/24.
 //
 
 import SwiftUI

@@ -15,32 +15,31 @@ struct ReviewChangesView: View {
     @State var reason: String = ""
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .center) {
                 BasicTextField(title: "Title For Change(s)", text: $reason)
-                HStack {
-                    Text("Property")
-                        .frame(width: 100, alignment: .center)
+                Grid(alignment: .center) {
+                    GridRow(alignment: .center) {
+                        Text("Property")
+                            .frame(minWidth: 100, maxWidth: 200)
+                        Text("Original Value")
+                            .frame(minWidth: 100, maxWidth: 200)
+                        Text("New Value")
+                            .frame(minWidth: 100, maxWidth: 200)
+                    }
+                    .fontWeight(.medium)
                     Divider()
-                    Spacer()
-                    Text("Original Value")
-                        .frame(width: 100, alignment: .center)
-                    Divider()
-                    Spacer()
-                    Text("New Value")
-                        .frame(width: 100, alignment: .center)
-                }
-                .bold()
-                Divider()
-                ForEach(Array(changeDescriptions.enumerated()), id: \.element.self) { index, changeDescription in
-                    ChangeDescriptionView(changeDescription: changeDescription)
-                    if index < changeDescriptions.count - 1 {
-                        Divider()
+                    ForEach(Array(changeDescriptions.enumerated()), id: \.element.self) { index, changeDescription in
+                        GridRow(alignment: .center) {
+                            ChangeDescriptionView(changeDescription: changeDescription)
+                                .gridCellColumns(3)
+                        }
                     }
                 }
+                
             }
             .padding()
-            .frame(maxWidth: 375)
         }
+        .frame(minWidth: 300, maxWidth: 600, minHeight: 400)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
@@ -66,12 +65,17 @@ struct ReviewChangesView: View {
 struct ChangeDescriptionView: View {
     var changeDescription: ChangeDescription
     var body: some View {
-        HStack {
-            Text("\(changeDescription.displayName.isEmpty ? changeDescription.id : changeDescription.displayName)")
-                .frame(width: 100, alignment: .center)
-                .padding(.trailing, 8)
-            ChangeFieldView(value: changeDescription.oldValue, isOldChangeLabel: true)
-            ChangeFieldView(value: changeDescription.value, isOldChangeLabel: false)
+        VStack {
+            HStack {
+                Text("\(changeDescription.displayName.isEmpty ? changeDescription.id : changeDescription.displayName)")
+                    .frame(minWidth: 100, maxWidth: 200)
+                    .bold()
+                ChangeFieldView(value: changeDescription.oldValue, isOldChangeLabel: true)
+                    .frame(minWidth: 100, maxWidth: 200)
+                ChangeFieldView(value: changeDescription.value, isOldChangeLabel: false)
+                    .frame(minWidth: 100, maxWidth: 200)
+            }
+            Divider()
         }
     }
 }
@@ -100,10 +104,8 @@ struct ChangeFieldView: View {
     }
 
     private func textView(text: String) -> some View {
-        Text(text.isEmpty ? "Default Value" : text)
-            .foregroundStyle(isOldChangeLabel ? .red : .green)
-            .frame(width: 100, alignment: .center)
-            .padding(.trailing, 8)
+            Text(text.isEmpty ? "Default Value" : text)
+                .foregroundStyle(isOldChangeLabel ? .red : .green)
     }
 
     private func formatDate(date: Date) -> String {

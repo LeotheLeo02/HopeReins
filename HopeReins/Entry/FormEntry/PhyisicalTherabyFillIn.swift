@@ -7,7 +7,7 @@
 import SwiftUI
 
 
-struct RecommendedPhysicalTherabyFillIn: View {
+struct RecommendedPhysicalTherapyFillIn: View {
     @Environment(\.isEditable) var isEditable: Bool
     @Binding var combinedString: String
     @State private var frequency: String = ""
@@ -18,7 +18,7 @@ struct RecommendedPhysicalTherabyFillIn: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            PropertyHeader(title: "Recommended Physical Theraby")
+            PropertyHeader(title: "Recommended Physical Therapy")
             HStack {
                 TextField("Frequency", text: $frequency)
                     .disabled(!isEditable)

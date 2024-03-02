@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum PhysicalTherabyFormType: String, CaseIterable, Hashable {
+enum PhysicalTherapyFormType: String, CaseIterable, Hashable {
     case evaluation = "Evaluation"
-    case physicalTherabyPlanOfCare = "Physical Theraby Plan of Care"
+    case physicalTherapyPlanOfCare = "Physical Therapy Plan of Care"
     case dailyNote = "Daily Note"
     case reEvaluation = "Re-Evaluation"
     case medicalForm = "Medical Form"

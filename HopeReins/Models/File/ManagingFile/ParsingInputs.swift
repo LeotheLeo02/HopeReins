@@ -96,28 +96,30 @@ extension MedicalRecordFile {
 
         var index = 0
         while index < entries.count {
-            let isPain = entries[index] == "true"
-            let label = entries[index + 1]
-
+            let label = entries[index]
             var valueString = ""
-            if isPain {
-                valueString = "Pain detected"
-                index += 2
-            } else {
-                let value1 = entries[index + 2]
-                let value2 = entries[index + 3]
-                let value3 = entries[index + 4]
-                let value4 = entries[index + 5]
-                valueString = "MMT R = \(value1), MMT L = \(value2), A/PROM (R) = \(value3), A/PROM (L) = \(value4)"
-                index += 6
-            }
-
+            let value1 = entries[index + 1]
+            let value2 = entries[index + 2]
+            let isPain1 = entries[index + 3]
+            let value4 = entries[index + 4]
+            let isPain2 = entries[index + 5]
+            let value6 = entries[index + 6]
+            valueString = "MMT R = \(value1), MMT L = \(value2), A/PROM (R) (exists pain = \(isPain1)) = \(value4), A/PROM (L) (exists pain = \(isPain2)) = \(value6)"
+            index += 7
+            
             let labelValue = LabelValue(label: label, value: valueString)
             labelValues.append(labelValue)
         }
-
+        
         return labelValues
     }
 
+    // Helper extension to safely access array elements
 
+
+}
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
 }

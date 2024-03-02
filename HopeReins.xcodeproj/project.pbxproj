@@ -25,8 +25,9 @@
 		BE4698012B6DD6D4001E2E39 /* InstructorsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4698002B6DD6D4001E2E39 /* InstructorsMenu.swift */; };
 		BE4698032B6DD723001E2E39 /* DynamicUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4698022B6DD723001E2E39 /* DynamicUIElement.swift */; };
 		BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */; };
+		BE53F57B2B93EA87008CA27F /* RestrictedNumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE53F57A2B93EA87008CA27F /* RestrictedNumberField.swift */; };
 		BE5FC74C2B7B2AF700B46891 /* RidingFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC74B2B7B2AF700B46891 /* RidingFormType.swift */; };
-		BE5FC74E2B7B2B1400B46891 /* PhysicalTherabyFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC74D2B7B2B1400B46891 /* PhysicalTherabyFormType.swift */; };
+		BE5FC74E2B7B2B1400B46891 /* PhysicalTherapyFormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC74D2B7B2B1400B46891 /* PhysicalTherapyFormType.swift */; };
 		BE5FC7502B7B2B6D00B46891 /* FileModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC74F2B7B2B6D00B46891 /* FileModification.swift */; };
 		BE5FC7522B7B2B8A00B46891 /* FormSectionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7512B7B2B8A00B46891 /* FormSectionContent.swift */; };
 		BE5FC7542B7B2BA200B46891 /* OriginalValueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7532B7B2BA200B46891 /* OriginalValueView.swift */; };
@@ -40,7 +41,7 @@
 		BE5FC7712B7B2E2500B46891 /* MultiSelectWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7702B7B2E2500B46891 /* MultiSelectWithTitle.swift */; };
 		BE5FC7732B7B2E4500B46891 /* SingleSelectLastDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7722B7B2E4500B46891 /* SingleSelectLastDescription.swift */; };
 		BE5FC7772B7B2ECB00B46891 /* DegreeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7762B7B2ECB00B46891 /* DegreeField.swift */; };
-		BE5FC7792B7B2EDE00B46891 /* RestrictedNumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7782B7B2EDE00B46891 /* RestrictedNumberField.swift */; };
+		BE5FC7792B7B2EDE00B46891 /* StrengthPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC7782B7B2EDE00B46891 /* StrengthPickerView.swift */; };
 		BE5FC77B2B7B2EF500B46891 /* DailyNoteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC77A2B7B2EF500B46891 /* DailyNoteTable.swift */; };
 		BE5FC77D2B7B2F0900B46891 /* StrengthTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5FC77C2B7B2F0900B46891 /* StrengthTable.swift */; };
 		BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */; };
@@ -91,8 +92,9 @@
 		BE4698002B6DD6D4001E2E39 /* InstructorsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructorsMenu.swift; sourceTree = "<group>"; };
 		BE4698022B6DD723001E2E39 /* DynamicUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicUIElement.swift; sourceTree = "<group>"; };
 		BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsView.swift; sourceTree = "<group>"; };
+		BE53F57A2B93EA87008CA27F /* RestrictedNumberField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedNumberField.swift; sourceTree = "<group>"; };
 		BE5FC74B2B7B2AF700B46891 /* RidingFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RidingFormType.swift; sourceTree = "<group>"; };
-		BE5FC74D2B7B2B1400B46891 /* PhysicalTherabyFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherabyFormType.swift; sourceTree = "<group>"; };
+		BE5FC74D2B7B2B1400B46891 /* PhysicalTherapyFormType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalTherapyFormType.swift; sourceTree = "<group>"; };
 		BE5FC74F2B7B2B6D00B46891 /* FileModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileModification.swift; sourceTree = "<group>"; };
 		BE5FC7512B7B2B8A00B46891 /* FormSectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionContent.swift; sourceTree = "<group>"; };
 		BE5FC7532B7B2BA200B46891 /* OriginalValueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginalValueView.swift; sourceTree = "<group>"; };
@@ -106,7 +108,7 @@
 		BE5FC7702B7B2E2500B46891 /* MultiSelectWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectWithTitle.swift; sourceTree = "<group>"; };
 		BE5FC7722B7B2E4500B46891 /* SingleSelectLastDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectLastDescription.swift; sourceTree = "<group>"; };
 		BE5FC7762B7B2ECB00B46891 /* DegreeField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DegreeField.swift; sourceTree = "<group>"; };
-		BE5FC7782B7B2EDE00B46891 /* RestrictedNumberField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedNumberField.swift; sourceTree = "<group>"; };
+		BE5FC7782B7B2EDE00B46891 /* StrengthPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthPickerView.swift; sourceTree = "<group>"; };
 		BE5FC77A2B7B2EF500B46891 /* DailyNoteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNoteTable.swift; sourceTree = "<group>"; };
 		BE5FC77C2B7B2F0900B46891 /* StrengthTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthTable.swift; sourceTree = "<group>"; };
 		BE676A4A2AD63E2D00E8ADD7 /* PatientSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientSelectionView.swift; sourceTree = "<group>"; };
@@ -230,7 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				BE5FC74B2B7B2AF700B46891 /* RidingFormType.swift */,
-				BE5FC74D2B7B2B1400B46891 /* PhysicalTherabyFormType.swift */,
+				BE5FC74D2B7B2B1400B46891 /* PhysicalTherapyFormType.swift */,
 			);
 			path = FileEnums;
 			sourceTree = "<group>";
@@ -328,7 +330,8 @@
 			isa = PBXGroup;
 			children = (
 				BE5FC7762B7B2ECB00B46891 /* DegreeField.swift */,
-				BE5FC7782B7B2EDE00B46891 /* RestrictedNumberField.swift */,
+				BE5FC7782B7B2EDE00B46891 /* StrengthPickerView.swift */,
+				BE53F57A2B93EA87008CA27F /* RestrictedNumberField.swift */,
 			);
 			name = Fields;
 			sourceTree = "<group>";
@@ -537,7 +540,8 @@
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
 				BE4697FD2B6DD678001E2E39 /* PastChangeSelectionView.swift in Sources */,
 				BE5FC74C2B7B2AF700B46891 /* RidingFormType.swift in Sources */,
-				BE5FC7792B7B2EDE00B46891 /* RestrictedNumberField.swift in Sources */,
+				BE5FC7792B7B2EDE00B46891 /* StrengthPickerView.swift in Sources */,
+				BE53F57B2B93EA87008CA27F /* RestrictedNumberField.swift in Sources */,
 				BE77A5A12B7D4BC300FEF6EC /* Forms.swift in Sources */,
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
 				BE31DFB02B40FC47006E4806 /* SetupUsersView.swift in Sources */,
@@ -575,7 +579,7 @@
 				BE5FC77B2B7B2EF500B46891 /* DailyNoteTable.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
 				BE9357932B3CC2ED0058198E /* ChangeDescription.swift in Sources */,
-				BE5FC74E2B7B2B1400B46891 /* PhysicalTherabyFormType.swift in Sources */,
+				BE5FC74E2B7B2B1400B46891 /* PhysicalTherapyFormType.swift in Sources */,
 				BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
