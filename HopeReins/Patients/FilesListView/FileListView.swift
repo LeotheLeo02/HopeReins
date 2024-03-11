@@ -75,7 +75,11 @@ struct FileListView: View {
         }
         .contextMenu {
             if user.isAdmin {
-                deleteFileButton(file)
+                if file.isDead {
+                    recoverFileButton(file)
+                } else {
+                    deleteFileButton(file)
+                }
             }
         }
         .alert(isPresented: $showDeletionConfirmation) {
@@ -83,6 +87,14 @@ struct FileListView: View {
         }
     }
 
+    private func recoverFileButton(_ file: MedicalRecordFile) -> some View {
+        Button(action: {
+            file.isDead = false
+        }, label: {
+            Text("Recover File")
+        })
+    }
+    
     private func deleteFileButton(_ file: MedicalRecordFile) -> some View {
         Button {
             showDeletionConfirmation.toggle()

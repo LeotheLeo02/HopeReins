@@ -177,3 +177,69 @@ struct DynamicFormView: View  {
     }
 
 }
+
+
+// MARK: - Printing Functionality to be implemented
+
+struct PrintingView: View {
+    
+    var body: some View {
+        VStack {
+            Button("Print", action: self.onPrint )
+            Divider()
+            Print_Preview()
+        }
+    }
+    
+    private func onPrint() {
+        let pi = NSPrintInfo.shared
+        pi.topMargin = 0.0
+        pi.bottomMargin = 0.0
+        pi.leftMargin = 0.0
+        pi.rightMargin = 0.0
+        pi.orientation = .landscape
+        pi.isHorizontallyCentered = false
+        pi.isVerticallyCentered = false
+        pi.scalingFactor = 1.0
+                
+        let rootView = Print_Preview()
+        let view = NSHostingView(rootView: rootView)
+        view.frame.size = CGSize(width: 300, height: 300)
+        let po = NSPrintOperation(view: view, printInfo: pi)
+        po.printInfo.orientation = .landscape
+        po.showsPrintPanel = true
+        po.showsProgressPanel = true
+        
+        po.printPanel.options.insert(NSPrintPanel.Options.showsPaperSize)
+        po.printPanel.options.insert(NSPrintPanel.Options.showsOrientation)
+        
+        if po.run() {
+            print("In Print completion")
+        }
+    }
+    
+    struct Print_Preview: View {
+        var body: some View {
+            VStack(alignment: .leading) {
+                Text("Bordered Text Above Bordered Image")
+                    .font(.system(size: 8))
+                    .padding(5)
+                    .border(Color.black, width: 2)
+                Image(systemName: "printer")
+                    .resizable()
+                    .padding(5)
+                    .border(Color.black, width: 2)
+                    .frame(width: 100, height: 100)
+                Text("Bordered Text Below Bordered Image")
+                    .font(.system(size: 8))
+                    .padding(5)
+                    .border(Color.black, width: 2)
+            }
+            .padding()
+            .foregroundColor(Color.black)
+            .background(Color.white)
+            .frame(width: 200, height: 200)
+        }
+    }
+
+}
