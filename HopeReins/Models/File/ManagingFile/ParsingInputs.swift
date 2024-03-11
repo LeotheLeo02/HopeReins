@@ -7,6 +7,18 @@
 
 import Foundation
 
+extension String {
+    var codableValue: CodableValue {
+        return CodableValue.string(self)
+    }
+}
+extension Data {
+    var codableValue: CodableValue {
+        return CodableValue.data(self)
+    }
+}
+
+
 extension MedicalRecordFile {
     public func singleSelectionParse(combinedString: String) -> [LabelValue] {
         var labelValues = [LabelValue]()

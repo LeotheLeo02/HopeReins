@@ -97,7 +97,7 @@ struct ChangeFieldView: View {
         case .date(let date):
             textView(text: formatDate(date: date))
         case .data(let data):
-            FilePreview(data: data, size: 20)
+            FilePreview(data: data, size: 30)
                 .frame(width: 100, alignment: .center)
                 .padding(.trailing, 8)
         }

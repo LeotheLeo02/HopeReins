@@ -66,7 +66,7 @@
 		BED25E1A2B7B25BF004FC260 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED25E192B7B25BF004FC260 /* SectionHeader.swift */; };
 		BED25E1F2B7B2815004FC260 /* DetailChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED25E1E2B7B2815004FC260 /* DetailChange.swift */; };
 		BED25E212B7B2846004FC260 /* LabelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED25E202B7B2846004FC260 /* LabelValue.swift */; };
-		BEDFE4C82B364D8A002D75FE /* FormAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFE4C72B364D8A002D75FE /* FormAddView.swift */; };
+		BED821DD2B93EC30008DE043 /* FormAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED821DC2B93EC30008DE043 /* FormAddView.swift */; };
 		BEE545F12B5C6E79001D84A5 /* DynamicFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE545F02B5C6E79001D84A5 /* DynamicFormView.swift */; };
 		BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFCBB992B06A5E6007DB23C /* FormEditView.swift */; };
 /* End PBXBuildFile section */
@@ -133,7 +133,7 @@
 		BED25E192B7B25BF004FC260 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		BED25E1E2B7B2815004FC260 /* DetailChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailChange.swift; sourceTree = "<group>"; };
 		BED25E202B7B2846004FC260 /* LabelValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelValue.swift; sourceTree = "<group>"; };
-		BEDFE4C72B364D8A002D75FE /* FormAddView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormAddView.swift; sourceTree = "<group>"; };
+		BED821DC2B93EC30008DE043 /* FormAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FormAddView.swift; path = ../../../../FormAddView.swift; sourceTree = "<group>"; };
 		BEE545F02B5C6E79001D84A5 /* DynamicFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicFormView.swift; sourceTree = "<group>"; };
 		BEFCBB992B06A5E6007DB23C /* FormEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormEditView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -170,7 +170,7 @@
 		BE0F28A72AECA517006285C5 /* Add */ = {
 			isa = PBXGroup;
 			children = (
-				BEDFE4C72B364D8A002D75FE /* FormAddView.swift */,
+				BED821DC2B93EC30008DE043 /* FormAddView.swift */,
 			);
 			path = Add;
 			sourceTree = "<group>";
@@ -529,6 +529,7 @@
 				BED25E142B7B2508004FC260 /* ParsingInputs.swift in Sources */,
 				BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */,
 				BE5FC7732B7B2E4500B46891 /* SingleSelectLastDescription.swift in Sources */,
+				BED821DD2B93EC30008DE043 /* FormAddView.swift in Sources */,
 				BE4698012B6DD6D4001E2E39 /* InstructorsMenu.swift in Sources */,
 				BE5FC7652B7B2D2600B46891 /* PhyisicalTherabyFillIn.swift in Sources */,
 				BE31DFAB2B40F9E3006E4806 /* ProfileLoginView.swift in Sources */,
@@ -546,7 +547,6 @@
 				BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */,
 				BE31DFB02B40FC47006E4806 /* SetupUsersView.swift in Sources */,
 				BEE545F12B5C6E79001D84A5 /* DynamicFormView.swift in Sources */,
-				BEDFE4C82B364D8A002D75FE /* FormAddView.swift in Sources */,
 				BEB662BA2B335B000090BD87 /* User.swift in Sources */,
 				BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */,
 				BE5FC7522B7B2B8A00B46891 /* FormSectionContent.swift in Sources */,

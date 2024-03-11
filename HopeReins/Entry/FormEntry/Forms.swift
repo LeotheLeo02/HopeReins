@@ -83,7 +83,7 @@ extension UIManagement {
             FormSection(title: "File Name", elements: [
                 .textField(title: "File Name", binding: stringBinding(for: "File Name"))
             ]),
-            FormSection(title: "Personal Info", elements: [
+            FormSection(title: "Medical/Functional Information", elements: [
                 .textField(title: "Education Level", binding: stringBinding(for: "Education Level")),
                 .textField(title: "Extracurricular", binding: stringBinding(for: "Extracurricular")),
                 .textField(title: "Home Barrier", binding: stringBinding(for: "Home Barrier")),
@@ -95,31 +95,35 @@ extension UIManagement {
                 .textField(title: "Speech/Communications", binding: stringBinding(for: "Speech Communications")),
                 .textField(title: "Seizures", binding: stringBinding(for: "Seizures")),
             ]),
-            FormSection(title: "Strength", elements: [
+            FormSection(title: "Strength & A/PROM", elements: [
                 .textField(title: "S Upper Extremities", binding: stringBinding(for: "S Upper Extremity")),
                 .textField(title: "S Lower Extremities", binding: stringBinding(for: "S Lower Extremity")),
                 .textField(title: "Trunk Musculature", binding: stringBinding(for: "Trunk Musculature")),
+                .sectionHeader(title: "Upper Extremity Strength"),
+                .strengthTable(title: "UE Arm Strength Table", combinedString: stringBinding(for: "UE Arm Strength Table")),
+                .sectionHeader(title: "Lower Extremity Strength"),
                 .strengthTable(title: "LE Strength and ROM Table", combinedString: stringBinding(for: "LE Strength and ROM Table")),
-                .singleSelectDescription(title: "SS Pain", titles: ["Pain"], labels: ["No", "Yes"], combinedString: stringBinding(for: "SS Pain"), isDescription: true)
+            ]),
+            FormSection(title: "Pain", elements: [
+                .singleSelectDescription(title: "SS Pain", titles: ["Pain"], labels: ["No", "Yes"], combinedString: stringBinding(for: "SS Pain"))
             ]),
             FormSection(title: "Neurological Functioning", elements: [
-                .singleSelectDescription(title: "SS Tone", titles: ["Tone"], labels: ["WNL", "Hypotonic", "Fluctuating", "NT"], combinedString: stringBinding(for: "SS Tone"), isDescription: true),
-                .singleSelectDescription(title: "SS Sensation", titles: ["Sensation"], labels: ["WNL", "Hyposensitive", "Hypersensitive", "Absent", "NT"], combinedString: stringBinding(for: "SS Sensation"), isDescription: true),
-                .singleSelectDescription(title: "SS Reflexes", titles: ["Reflexes"], labels: ["WNL", "Hyporesponse", "Hyperresponse", "Deficits", "NT"], combinedString: stringBinding(for: "SS Reflexes"), isDescription: true),
-                .singleSelectDescription(title: "SS Protective to Praxis", titles: ["Protective Extension", "Righting", "Equilibrium", "Praxis"], labels: ["WNL", "Deficient", "Emerging", "Absent", "NT"], combinedString: stringBinding(for: "SS Protective to Praxis"), isDescription: true),
+                .singleSelectDescription(title: "SS Tone", titles: ["Tone"], labels: ["WNL", "Hypotonic", "Hypertonic", "Fluctuating", "NT"], combinedString: stringBinding(for: "SS Tone")),
+                .singleSelectDescription(title: "SS Sensation", titles: ["Sensation"], labels: ["WNL", "Hyposensitive", "Hypersensitive", "Absent", "NT"], combinedString: stringBinding(for: "SS Sensation")),
+                .singleSelectDescription(title: "SS Reflexes", titles: ["Reflexes"], labels: ["WNL", "Hyporesponse", "Hyperresponse", "Deficits", "NT"], combinedString: stringBinding(for: "SS Reflexes")),
+                .singleSelectDescription(title: "SS Protective to Praxis", titles: ["Protective Extension", "Righting", "Equilibrium", "Praxis"], labels: ["WNL", "Deficient", "Emerging", "Absent", "NT"], combinedString: stringBinding(for: "SS Protective to Praxis")),
                 .textField(title: "Neurological Notes", binding: stringBinding(for: "Neurological Notes")),
                 .textField(title: "Toileting", binding: stringBinding(for: "Toileting")),
             ]),
             FormSection(title: "Coordination", elements: [
-                .singleSelectDescription(title: "SS Coordination Extremities", titles: ["Upper Extremities", "Lower Extremities"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Coordination Extremities"), isDescription: true),
+                .singleSelectDescription(title: "SS Coordination Extremities", titles: ["Upper Extremities", "Lower Extremities"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Coordination Extremities")),
                 .textField(title: "Coordination Notes", binding: stringBinding(for: "Coordination Notes")),
-                .singleSelectDescription(title: "SS Endurance", titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Endurance"), isDescription: true)
             ]),
             FormSection(title: "Endurance", elements: [
-                .singleSelectDescription(title: "SS Endurance", titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Endurance"), isDescription: true)
+                .singleSelectDescription(title: "SS Endurance", titles: ["Endurance"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Endurance"))
             ]),
             FormSection(title: "Balance", elements: [
-                .singleSelectDescription(title: "SS Balance", titles: ["Sit Static", "Sit Dynamic", "Stance Static", "Stance Dynamic"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Balance"), isDescription: true),
+                .singleSelectDescription(title: "SS Balance", titles: ["Sit Static", "Sit Dynamic", "Stance Static", "Stance Dynamic"], labels: ["Normal", "Good", "Fair", "Poor", "NT"], combinedString: stringBinding(for: "SS Balance")),
                 .textField(title: "Balance Notes", binding: stringBinding(for: "Balance Notes"))
             ]),
             FormSection(title: "Current Equipment", elements: [
@@ -128,11 +132,11 @@ extension UIManagement {
             FormSection(title: "Mobility", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Locomotion"), labels: ["Ambulation", "Non-Mobile", "Wheel Chair"], title: "MSO Locomotion"),
                 .multiSelectWithTitle(combinedString: stringBinding(for: "MST Assistance & Distance"), labels: ["Independent", "Supervision for safety", "Minimal", "Maximal", "SBA", "CGA", "Moderate", "Dependent"], title: "MST Assistance & Distance"),
-                .singleSelectDescription(title: "SS Surfaces", titles: ["Level", "Ramp", "Curb", "Stairs", "Uneven terrain"], labels: ["Independent", "SBA", "CGA", "Min", "Mod", "Max"], combinedString: stringBinding(for: "SS Surfaces"), isDescription: true),
+                .singleSelectDescription(title: "SS Surfaces", titles: ["Level", "Ramp", "Curb", "Stairs", "Uneven terrain"], labels: ["Independent", "SBA", "CGA", "Min", "Mod", "Max"], combinedString: stringBinding(for: "SS Surfaces")),
                 .textField(title: "Gait Deviations", binding: stringBinding(for: "Gait Deviations")),
                 .textField(title: "Wheelchair Skills", binding: stringBinding(for: "Wheelchair Skills"))
             ]),
-            FormSection(title: "Transfers", elements: [
+            FormSection(title: "Transfers & ADL Functions", elements: [
                 .textField(title: "Supine to Sit", binding: stringBinding(for: "Supine to Sit")),
                 .textField(title: "Sit to Stand", binding: stringBinding(for: "Sit to Stand")),
                 .textField(title: "Stand pivot", binding: stringBinding(for: "Stand pivot")),
@@ -141,7 +145,7 @@ extension UIManagement {
                 .textField(title: "Army Crawling", binding: stringBinding(for: "Army Crawling")),
                 .textField(title: "Creeping", binding: stringBinding(for: "Creeping"))
             ]),
-            FormSection(title: "Transitions", elements: [
+            FormSection(title: "Transitions & Milestones", elements: [
                 .textField(title: "Supine/prone", binding: stringBinding(for: "Supined/prone")),
                 .textField(title: "Quadruped", binding: stringBinding(for: "Quadruped")),
                 .textField(title: "Tall kneel", binding: stringBinding(for: "Tall kneel")),
@@ -151,7 +155,7 @@ extension UIManagement {
                 .textField(title: "Other", binding: stringBinding(for: "Transitions Other"))
             ]),
             FormSection(title: "Posture/Body Mechanics/Ergonomics", elements: [
-                .singleSelectDescription(title: "SS Posture/Body Mechanics/Ergonomics", titles: ["Posture/Body Mechanics/Ergonomics"], labels: ["WNL", "Patient demonstrated the following deviations"], combinedString: stringBinding(for: "SS Posture/Body Mechanics/Ergonomics"), isDescription: true)
+                .singleSelectDescription(title: "SS Posture/Body Mechanics/Ergonomics", titles: ["Posture/Body Mechanics/Ergonomics"], labels: ["WNL", "Patient demonstrated the following deviations"], combinedString: stringBinding(for: "SS Posture/Body Mechanics/Ergonomics"))
             ]),
             FormSection(title: "Gross Motor Developmental Status", elements: [
                 .textField(title: "Chronological Age", binding: stringBinding(for: "Chronological Age")),
@@ -160,11 +164,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Primary Problems/Deficits Include", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include")
-            ]),
-            FormSection(title: "Daily Note", elements: [
-                .dailyNoteTable(title: "Daily Note", combinedString: stringBinding(for: "Daily Note"))
             ])
-
         ]
 
         return uiElements
@@ -194,7 +194,7 @@ extension UIManagement {
             FormSection(title: "Treatment Plan", elements: [
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Goal Attainment"), labels: treatmentsLabels, title: "MSO Goal Attainment"),
-                .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "Patient demonstrates"), isDescription: false),
+                .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "Patient demonstrates")),
                 .physicalTherapyFillIn(title: "Physical Therapy Fill In", combinedString: stringBinding(for: "Physical Therapy Fill In")),
                 .textField(title: "Discharge Planning", binding: stringBinding(for: "Discharge Planning")),
                 .textField(title: "Therapist Signature", binding: stringBinding(for: "Therapist Signature")),
@@ -224,7 +224,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Primary Problems and Treatment Plan", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include"),
-                .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates"), isDescription: false),
+                .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates")),
                 .physicalTherapyFillIn(title: "Recommended Physical Therapy", combinedString: stringBinding(for: "Recommended Physical Therapy")),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Treatment Plan"), labels: treatmentsLabels, title: "MSO Treatment Plan"),
                 .textField(title: "Discharge Plan", binding: stringBinding(for: "Discharge Plan"))
@@ -245,7 +245,7 @@ extension UIManagement {
                 .textField(title: "A:", binding: stringBinding(for: "A:")),
                 .textField(title: "P:", binding: stringBinding(for: "P:"))
             ]),
-            FormSection(title: "Daily Note Table", elements: [
+            FormSection(title: "Treatment Codes", elements: [
                 .dailyNoteTable(title: "DAT Daily Note", combinedString: stringBinding(for: "DAT Daily Note"))
             ])
         ]

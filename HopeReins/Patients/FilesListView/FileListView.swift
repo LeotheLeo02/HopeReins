@@ -114,6 +114,10 @@ struct FileListView: View {
 
 
     private func filesForForm(formTypeRaw: String) -> [MedicalRecordFile] {
-        files.filter { $0.fileType == formTypeRaw }
+        let filteredFiles = files.filter { $0.fileType == formTypeRaw }
+        let sortedFiles = filteredFiles.sorted { $0.digitalSignature!.dateModified > $1.digitalSignature!.dateModified }
+
+        return sortedFiles
     }
+
 }

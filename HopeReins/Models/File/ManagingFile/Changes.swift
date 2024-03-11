@@ -17,7 +17,7 @@ extension MedicalRecordFile {
         var actualValues = [String: String]()
 
         for change in changes {
-            let changeDescription = "\(change.displayName): \(change.oldValue)"
+            let changeDescription = "\(change.displayName): \(change.oldValue.stringValue)"
             // Update the description for the change
             if let existing = groupedDescriptions[change.id] {
                 groupedDescriptions[change.id] = "\(existing)\n\(changeDescription)"

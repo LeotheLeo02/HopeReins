@@ -21,8 +21,8 @@ struct DynamicElementView: View {
                 TextField(title, value: bindingForChange(type: Int.self, originalBinding: binding), formatter: NumberFormatter())
             case .sectionHeader(let title):
                 SectionHeader(title: title)
-            case .singleSelectDescription(title: let title, titles: let titles, labels: let labels, combinedString: let combinedString, isDescription: let isDescription):
-                SingleSelectLastDescription(combinedString: bindingForChange(type: String.self, originalBinding: combinedString), lastDescription: isDescription, titles: titles, labels: labels)
+            case .singleSelectDescription(title: let title, titles: let titles, labels: let labels, combinedString: let combinedString):
+                SingleSelectLastDescription(combinedString: bindingForChange(type: String.self, originalBinding: combinedString), titles: titles, labels: labels)
             case .multiSelectWithTitle(combinedString: let combinedString, labels: let labels, title: let title):
                 MultiSelectWithTitle(boolString: bindingForChange(type: String.self, originalBinding: combinedString), labels: labels, title: title)
             case .multiSelectOthers(combinedString: let combinedString, labels: let labels, title: let title):
@@ -61,7 +61,7 @@ enum DynamicUIElement: Hashable {
     case numberField(title: String, binding: Binding<Int>)
     case sectionHeader(title: String)
     case strengthTable(title: String, combinedString: Binding<String>)
-    case singleSelectDescription(title: String, titles: [String], labels: [String], combinedString: Binding<String>, isDescription: Bool)
+    case singleSelectDescription(title: String, titles: [String], labels: [String], combinedString: Binding<String>)
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
     case dailyNoteTable(title: String, combinedString: Binding<String>)
@@ -95,10 +95,9 @@ enum DynamicUIElement: Hashable {
                 .reEvalFillin(let title, _),
                 .dailyNoteFillin(let title, _):
             hasher.combine(title)
-        case .singleSelectDescription(_,let titles, let labels, _, let isDescription):
+        case .singleSelectDescription(_,let titles, let labels, _):
             hasher.combine(titles)
             hasher.combine(labels)
-            hasher.combine(isDescription)
         case .datePicker(title: let title, _, _):
             hasher.combine(title)
         case .multiSelectWithTitle(_, let labels, let title):
@@ -127,7 +126,7 @@ struct DynamicUIElementWrapper: Hashable {
              .multiSelectOthers(_, _, let title),
              .strengthTable(let title, _),
              .dailyNoteTable(let title, _),
-             .singleSelectDescription(let title,_, _, _, _),
+             .singleSelectDescription(let title,_, _, _),
              .fileUploadButton(let title, _),
              .physicalTherapyFillIn(let title, _),
              .reEvalFillin(let title, _),

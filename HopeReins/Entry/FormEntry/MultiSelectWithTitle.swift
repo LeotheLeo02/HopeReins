@@ -61,14 +61,12 @@ struct MultiSelectWithTitle: View {
     
     func updateString() {
         DispatchQueue.main.async {
-            let nonDefaultElements = toggleElements.filter { !$0.description.isEmpty }
+            let selectedElements = toggleElements.filter { $0.isToggled || !$0.description.isEmpty }
             
-            if nonDefaultElements.isEmpty {
-                // If all elements are at their default (i.e., descriptions are empty), set boolString to empty
+            if selectedElements.isEmpty {
                 boolString = ""
             } else {
-                // Construct the boolString only with elements that are not at their default state
-                boolString = nonDefaultElements.map { "\($0.title): \($0.description)" }.joined(separator: "\\")
+                boolString = selectedElements.map { "\($0.title): \($0.description)" }.joined(separator: "\\")
                 print(boolString)
             }
         }
@@ -79,20 +77,19 @@ struct MultiSelectWithTitle: View {
         let elements = boolString.components(separatedBy: "\\")
         
         var separatedElements: [ToggleWithTitle] = []
-
+        
         for label in labels {
             if let element = elements.first(where: { $0.hasPrefix("\(label):") }) {
                 let components = element.components(separatedBy: ":")
                 let description = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
-                separatedElements.append(ToggleWithTitle(title: label, description: description, originalString: element))
+                separatedElements.append(ToggleWithTitle(title: label, description: description, originalString: element, isToggled: true, buttonClicked: true))
             } else {
-                separatedElements.append(ToggleWithTitle(title: label, description: "", originalString: "\(label): "))
+                separatedElements.append(ToggleWithTitle(title: label, description: "", originalString: "\(label): ", isToggled: false, buttonClicked: false))
             }
         }
         
         return separatedElements
     }
-
     
     class Coordinator: NSObject {
         var parent: MultiSelectWithTitle
@@ -107,14 +104,14 @@ struct MultiSelectWithTitle: View {
     }
 }
 
-struct ToggleWithTitle: Identifiable, Equatable{
+struct ToggleWithTitle: Identifiable, Equatable {
     let id = UUID()
     var title: String
     var description: String
     var originalString: String
+    var isToggled: Bool
+    var buttonClicked: Bool // Add this property
 }
-
-
 
 struct DescriptionView: View {
     @Environment(\.isEditable) var isEditable: Bool
@@ -126,13 +123,13 @@ struct DescriptionView: View {
     var body: some View {
         HStack {
             Button(action: {
+                toggleElement.isToggled.toggle()
                 if isTrueToggle() {
-                    toggleElement.description = ""
-                    coordinator.updateString(index: index, newValue: "")
-                    print(boolString)
+                    toggleElement.buttonClicked = true
                 } else {
-                    toggleElement.description = "Say something..."
+                    toggleElement.buttonClicked = false
                 }
+                coordinator.updateString(index: index, newValue: toggleElement.description)
             }, label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)
@@ -151,10 +148,14 @@ struct DescriptionView: View {
             Text(toggleElement.title)
             TextField("Description", text: $toggleElement.description, axis: .vertical)
                 .disabled(!isEditable)
+                .onChange(of: toggleElement.description) { newValue in
+                    toggleElement.isToggled = !newValue.isEmpty || toggleElement.buttonClicked // Update isToggled based on description and buttonClicked
+                    coordinator.updateString(index: index, newValue: newValue)
+                }
         }
     }
-
+    
     func isTrueToggle() -> Bool {
-        return !toggleElement.description.isEmpty
+        return toggleElement.isToggled
     }
 }

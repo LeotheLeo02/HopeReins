@@ -12,9 +12,6 @@ struct SingleSelectLastDescription: View {
     @Binding var combinedString: String
     @State private var selections: [String: String] = [:]
     @State private var descriptions: [String: String] = [:]
-    
-
-    var lastDescription: Bool
     var titles: [String]
     var labels: [String]
     
@@ -24,7 +21,7 @@ struct SingleSelectLastDescription: View {
                 VStack(alignment: .leading) {
                     PropertyHeader(title: title)
                     Picker(title, selection: Binding(
-                        get: { self.selections[title] ?? self.labels.first! },
+                        get: { self.selections[title] ?? "Not Indicated" },
                         set: { newValue in
                             self.selections[title] = newValue
                             self.updateCombinedString()
@@ -36,9 +33,8 @@ struct SingleSelectLastDescription: View {
                     }
                     .labelsHidden()
                     .disabled(!isEditable)
-
                     
-                    if lastDescription && selections[title] == labels.last {
+                    if self.selections[title] != "Not Indicated" {
                         TextField("Description...", text: Binding(
                             get: { self.descriptions[title] ?? "" },
                             set: { newValue in
@@ -64,46 +60,34 @@ struct SingleSelectLastDescription: View {
     
     private func updateCombinedString() {
         var components: [String] = []
-
         for title in titles {
             guard let selection = selections[title] else { continue }
             var component = "\(title)::\(selection)"
-
-            if selection == labels.last, let description = descriptions[title], !description.isEmpty {
+            if let description = descriptions[title] {
                 component += "~~\(description)"
             } else if selection == "Not Indicated" {
-                // Skip adding "Not Indicated" to combinedString if it's not meant to be explicitly saved
                 continue
             }
-
             components.append(component)
         }
-
         combinedString = components.joined(separator: ", ")
     }
-
-
-
+    
     private func parseCombinedString() {
         let titleComponents = combinedString.isEmpty ? [] : combinedString.components(separatedBy: ", ")
         selections.removeAll()
         descriptions.removeAll()
-
         titles.forEach { title in
-            selections[title] = "Not Indicated" // Default to "Not Indicated"
+            selections[title] = "Not Indicated"
         }
-
         for component in titleComponents {
             let titleAndRest = component.split(separator: "::", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
             if titleAndRest.count == 2, let title = titles.first(where: { titleAndRest[0].contains($0) }) {
                 let selectionAndDescription = titleAndRest[1].split(separator: "~~", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
                 let selection = selectionAndDescription[0]
-                
-                // Only update the selection if it's a valid label
                 if labels.contains(selection) {
                     selections[title] = selection
                 }
-                
                 if selectionAndDescription.count > 1 {
                     let description = selectionAndDescription[1]
                     descriptions[title] = description
@@ -111,5 +95,4 @@ struct SingleSelectLastDescription: View {
             }
         }
     }
-
 }
