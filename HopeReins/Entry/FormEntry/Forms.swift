@@ -194,7 +194,7 @@ extension UIManagement {
             FormSection(title: "Treatment Plan", elements: [
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Goal Attainment"), labels: treatmentsLabels, title: "MSO Goal Attainment"),
-                .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "Patient demonstrates")),
+                .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor", "Rehab potential"], combinedString: stringBinding(for: "Patient demonstrates")),
                 .physicalTherapyFillIn(title: "Physical Therapy Fill In", combinedString: stringBinding(for: "Physical Therapy Fill In")),
                 .textField(title: "Discharge Planning", binding: stringBinding(for: "Discharge Planning")),
                 .textField(title: "Therapist Signature", binding: stringBinding(for: "Therapist Signature")),
@@ -224,7 +224,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Primary Problems and Treatment Plan", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include"),
-                .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor - rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates")),
+                .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor", "Rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates")),
                 .physicalTherapyFillIn(title: "Recommended Physical Therapy", combinedString: stringBinding(for: "Recommended Physical Therapy")),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Treatment Plan"), labels: treatmentsLabels, title: "MSO Treatment Plan"),
                 .textField(title: "Discharge Plan", binding: stringBinding(for: "Discharge Plan"))
