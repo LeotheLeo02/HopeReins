@@ -12,6 +12,7 @@ class UIManagement: ObservableObject {
     @Published var modifiedProperties: [String : CodableValue]
     @Published var dynamicUIElements: [FormSection] = []
     @Published var record: MedicalRecordFile
+    @Published var isIncrementalFileType: PhysicalTherapyFormType?
     @Published var username: String
     @Published var patient: Patient?
     
@@ -32,6 +33,9 @@ class UIManagement: ObservableObject {
         modelContext.insert(newDigitalSig)
         record.digitalSignature = newDigitalSig
         newDigitalSig.created(by: username)
+        if isIncrementalFileType != nil {
+            setIncrementalFileName(modelContext: modelContext)
+        }
         record.properties = modifiedProperties
         if patient == nil {
             let newPatient = Patient(personalFile: record)
@@ -83,6 +87,14 @@ class UIManagement: ObservableObject {
         return false
     }
     
+    func setIncrementalFileName(modelContext: ModelContext) {
+        if let incrementalRawValue = isIncrementalFileType?.rawValue {
+            let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.fileType == incrementalRawValue })
+            let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+            modifiedProperties["File Name"] = "\(incrementalRawValue) \(count)".codableValue
+        }
+    }
+    
     
     func getUIElements() -> [FormSection] {
         if isUploadFile(fileType: record.fileType) {
@@ -106,10 +118,12 @@ class UIManagement: ObservableObject {
             case .evaluation:
                 return getEvaluation()
             case .physicalTherapyPlanOfCare:
+                isIncrementalFileType = .physicalTherapyPlanOfCare
                 return getPhysicalTherapyPlanOfCare()
             case .reEvaluation:
                 return getReEvaluation()
             case .dailyNote:
+                isIncrementalFileType = .dailyNote
                 return getDailyNote()
             default:
                 return []

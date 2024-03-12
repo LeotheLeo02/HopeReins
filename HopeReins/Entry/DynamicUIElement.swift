@@ -48,7 +48,8 @@ struct DynamicElementView: View {
                 ReEvalFillInInput(combinedString: bindingForChange(type: String.self, originalBinding: combinedString))
             case .dailyNoteFillin(title: let title, combinedString: let combinedString):
                 DailyNoteFillIn(combinedString: bindingForChange(type: String.self, originalBinding: combinedString))
-                
+            case .textEntries(title: let title, combinedString: let combinedString):
+                TextEntries(combinedString: bindingForChange(type: String.self, originalBinding: combinedString), title: title)
             }
         }
         .environment(\.isEditable, (change == nil))
@@ -69,6 +70,7 @@ enum DynamicUIElement: Hashable {
     case physicalTherapyFillIn(title: String, combinedString: Binding<String>)
     case reEvalFillin(title: String, combinedString: Binding<String>)
     case dailyNoteFillin(title: String, combinedString: Binding<String>)
+    case textEntries(title: String, combinedString: Binding<String>)
     
     static func == (lhs: DynamicUIElement, rhs: DynamicUIElement) -> Bool {
            switch (lhs, rhs) {
@@ -93,7 +95,8 @@ enum DynamicUIElement: Hashable {
                 .fileUploadButton(let title, _),
                 .physicalTherapyFillIn(let title, _),
                 .reEvalFillin(let title, _),
-                .dailyNoteFillin(let title, _):
+                .dailyNoteFillin(let title, _),
+                .textEntries(title: let title, _):
             hasher.combine(title)
         case .singleSelectDescription(_,let titles, let labels, _):
             hasher.combine(titles)
@@ -130,7 +133,8 @@ struct DynamicUIElementWrapper: Hashable {
              .fileUploadButton(let title, _),
              .physicalTherapyFillIn(let title, _),
              .reEvalFillin(let title, _),
-             .dailyNoteFillin(let title, _):
+             .dailyNoteFillin(let title, _),
+             .textEntries(let title, _):
             self.id = title
         }
         self.element = element

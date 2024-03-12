@@ -25,6 +25,10 @@ extension MedicalRecordFile {
                         for change in compareSingleSelection(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
                             changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
                         }
+                    } else if key.contains("TE") {
+                        for change in compareTextEntries(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
+                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
+                        }
                     } else if key.contains("Table") {
                         for change in compareLETable(tableType: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
                             changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
@@ -187,6 +191,37 @@ extension MedicalRecordFile {
         }
         
         // Optionally, handle labels that were removed in the new data
+        for oldLabelValue in oldData {
+            if newDataDict[oldLabelValue.label] == nil {
+                // If a label in old data does not exist in new data
+                changes.append(DetailedChange(label: oldLabelValue.label, oldValue: oldLabelValue.value, newValue: ""))
+            }
+        }
+        
+        return changes
+    }
+    
+    func compareTextEntries(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+        let oldData = textEntriesParse(combinedString: oldCombinedString)
+        let newData = textEntriesParse(combinedString: newCombinedString)
+        
+        var changes = [DetailedChange]()
+        
+        // Create dictionaries for quick lookup
+        let oldDataDict = Dictionary(uniqueKeysWithValues: oldData.map { ($0.label, $0.value) })
+        let newDataDict = Dictionary(uniqueKeysWithValues: newData.map { ($0.label, $0.value) })
+        
+        for newLabelValue in newData {
+            let oldValue = oldDataDict[newLabelValue.label]
+            let newValue = newLabelValue.value
+            
+            if oldValue != newValue {
+                // If the value has changed or the label is new
+                changes.append(DetailedChange(label: newLabelValue.label, oldValue: oldValue ?? "", newValue: newValue))
+            }
+        }
+        
+        // Handle labels that were removed in the new data
         for oldLabelValue in oldData {
             if newDataDict[oldLabelValue.label] == nil {
                 // If a label in old data does not exist in new data

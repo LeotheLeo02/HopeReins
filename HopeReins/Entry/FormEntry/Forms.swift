@@ -174,22 +174,13 @@ extension UIManagement {
     func getPhysicalTherapyPlanOfCare() -> [FormSection] {
         let uiElements: [FormSection] = [
             FormSection(title: "Diagnosis", elements: [
-                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
                 .textField(title: "Medical Diagnosis", binding: stringBinding(for: "Medical Diagnosis")),
                 .textField(title: "Therapy Diagnosis", binding: stringBinding(for: "Therapy Diagnosis")),
                 .textField(title: "Assessment Summary", binding: stringBinding(for: "Assessment Summary"))
             ]),
             FormSection(title: "Goals", elements: [
-                .sectionHeader(title: "Short Term"),
-                .textField(title: "Short Term Goal 1", binding: stringBinding(for: "Short Term Goal 1")),
-                .textField(title: "Short Term Goal 2", binding: stringBinding(for: "Short Term Goal 2")),
-                .textField(title: "Short Term Goal 3", binding: stringBinding(for: "Short Term Goal 3")),
-                .textField(title: "Short Term Goal 4", binding: stringBinding(for: "Short Term Goal 4")),
-                .sectionHeader(title: "Long Term"),
-                .textField(title: "Long Term Goal 1", binding: stringBinding(for: "Long Term Goal 1")),
-                .textField(title: "Long Term Goal 2", binding: stringBinding(for: "Long Term Goal 2")),
-                .textField(title: "Long Term Goal 3", binding: stringBinding(for: "Long Term Goal 3")),
-                .textField(title: "Long Term Goal 4", binding: stringBinding(for: "Long Term Goal 4"))
+                .textEntries(title: "TE Short Term Goals", combinedString: stringBinding(for: "TE Short Term Goals")),
+//                .textEntries(title: "TE Long Term Goals", combinedString: stringBinding(for: "TE Long Term Goals"))
             ]),
             FormSection(title: "Treatment Plan", elements: [
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),
@@ -238,7 +229,6 @@ extension UIManagement {
     func getDailyNote() -> [FormSection] {
         return [
             FormSection(title: "Progress Timeline + SOAP", elements: [
-                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
                 .dailyNoteFillin(title: "Progress Timeline", combinedString: stringBinding(for: "Progress Timeline")),
                 .textField(title: "S:", binding: stringBinding(for: "S:")),
                 .textField(title: "O:", binding: stringBinding(for: "O:")),

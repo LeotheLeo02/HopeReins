@@ -45,6 +45,23 @@ extension MedicalRecordFile {
 
         return labelValues
     }
+    
+    public func textEntriesParse(combinedString: String) -> [LabelValue] {
+        var labelValues = [LabelValue]()
+        let components = combinedString.components(separatedBy: "|")
+        
+        for component in components {
+            let parts = component.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
+            guard parts.count == 2 else { continue }
+            
+            let label = parts[0].trimmingCharacters(in: .whitespaces)
+            let value = parts[1].trimmingCharacters(in: .whitespaces)
+            
+            labelValues.append(LabelValue(label: label, value: value))
+        }
+        
+        return labelValues
+    }
 
     public func decodeMultiSelectWithTitle(boolString: String) -> [LabelValue] {
         let entries = boolString.components(separatedBy: "\\") // Split into entries by "\"

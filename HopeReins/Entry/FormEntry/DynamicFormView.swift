@@ -109,7 +109,7 @@ struct DynamicFormView: View  {
     @ToolbarContentBuilder
     func toolbarContent() -> some ToolbarContent {
         if isAdding {
-            ToolbarItem(placement: .confirmationAction) {
+            ToolbarItem(placement: .automatic) {
                 Button {
                     uiManagement.addFile(modelContext: modelContext)
                     dismiss()
@@ -119,9 +119,10 @@ struct DynamicFormView: View  {
                         Image(systemName: "doc.badge.plus")
                     }
                 }
+                .buttonStyle(.borderedProminent)
             }
         } else if !changeDescriptions.isEmpty {
-            ToolbarItem(placement: .confirmationAction) {
+            ToolbarItem(placement: .automatic) {
                 Button {
                     reviewChanges.toggle()
                 } label: {
@@ -134,7 +135,7 @@ struct DynamicFormView: View  {
             }
         }
         if selectedVersion != nil {
-            ToolbarItem(placement: .destructiveAction) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button {
                     isRevertingVersion = true
                     showRevertAlert.toggle()

@@ -52,6 +52,7 @@
 		BE77A5A12B7D4BC300FEF6EC /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE77A5A02B7D4BC300FEF6EC /* Forms.swift */; };
 		BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47632B3FD5230075CEEE /* HomeView.swift */; };
 		BE9357932B3CC2ED0058198E /* ChangeDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357922B3CC2EC0058198E /* ChangeDescription.swift */; };
+		BE991FD22BA0CA20004B9144 /* TextEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE991FD12BA0CA20004B9144 /* TextEntries.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
 		BEA6A9C92B6560B50050FB77 /* CodableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA6A9C82B6560B50050FB77 /* CodableValue.swift */; };
@@ -120,6 +121,7 @@
 		BE8E47632B3FD5230075CEEE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BE9098812B9F9E3300033AD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BE9357922B3CC2EC0058198E /* ChangeDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeDescription.swift; sourceTree = "<group>"; };
+		BE991FD12BA0CA20004B9144 /* TextEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntries.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BEA6A9C82B6560B50050FB77 /* CodableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableValue.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 				BE5FC76C2B7B2DC600B46891 /* BasicFields */,
 				BE4698002B6DD6D4001E2E39 /* InstructorsMenu.swift */,
 				BE06844D2AE0D01F004CABE7 /* FileUploadButton.swift */,
+				BE991FD12BA0CA20004B9144 /* TextEntries.swift */,
 			);
 			name = UIElements;
 			sourceTree = "<group>";
@@ -541,6 +544,7 @@
 				BED25E122B7B2489004FC260 /* ComparingChanges.swift in Sources */,
 				BED25E1A2B7B25BF004FC260 /* SectionHeader.swift in Sources */,
 				BE4D901B2AD2EE3000948BA3 /* PatientsView.swift in Sources */,
+				BE991FD22BA0CA20004B9144 /* TextEntries.swift in Sources */,
 				BE4697FD2B6DD678001E2E39 /* PastChangeSelectionView.swift in Sources */,
 				BE5FC74C2B7B2AF700B46891 /* RidingFormType.swift in Sources */,
 				BE5FC7792B7B2EDE00B46891 /* StrengthPickerView.swift in Sources */,
