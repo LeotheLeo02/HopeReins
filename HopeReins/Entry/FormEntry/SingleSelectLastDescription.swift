@@ -15,6 +15,13 @@ struct SingleSelectLastDescription: View {
     var titles: [String]
     var labels: [String]
     
+    init(combinedString: Binding<String>, titles: [String], labels: [String]) {
+        self._combinedString = combinedString
+        self.titles = titles
+        self.labels = labels
+        parseCombinedString()
+        
+    }
     var body: some View {
         VStack {
             ForEach(titles, id: \.self) { title in
@@ -46,9 +53,6 @@ struct SingleSelectLastDescription: View {
                     }
                 }
             }
-        }
-        .onAppear {
-            self.parseCombinedString()
         }
         .padding()
         .background(

@@ -21,6 +21,11 @@ struct TextEntries: View {
     @Binding var combinedString: String
     var title: String
     
+    init(combinedString: Binding<String>, title: String) {
+        self._combinedString = combinedString
+        self.title = title
+        self.entries = self.decodeString(combinedString.wrappedValue)
+    }
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -29,21 +34,7 @@ struct TextEntries: View {
                     .padding(.top)
                 Spacer()
                 if isEditable {
-                    Button(action: {
-                        addEntry()
-                    }, label: {
-                        Image(systemName: "plus.circle.fill")
-                            .foregroundStyle(.gray)
-                    })
-                    .buttonStyle(.borderless)
-                    Button(action: {
-                        deleteEntry()
-                    }, label: {
-                        Image(systemName: "minus.circle.fill")
-                            .foregroundStyle(.gray)
-                    })
-                    .buttonStyle(.borderless)
-                    .disabled(entries.isEmpty)
+                    plusMinusButtons()
                 }
             }
             .foregroundStyle(.gray)
@@ -61,9 +52,6 @@ struct TextEntries: View {
                     }
                 }
             }
-        }
-        .onAppear {
-            self.entries = self.decodeString(combinedString)
         }
         .onChange(of: combinedString) { newValue in
             self.entries = self.decodeString(newValue)
@@ -96,6 +84,25 @@ struct TextEntries: View {
                 return Entry(title: parts[0], value: parts.count > 1 ? parts[1] : "")
             }
         }
+    }
+    
+    @ViewBuilder
+    private func plusMinusButtons() -> some View {
+        Button(action: {
+            addEntry()
+        }, label: {
+            Image(systemName: "plus.circle.fill")
+                .foregroundStyle(.gray)
+        })
+        .buttonStyle(.borderless)
+        Button(action: {
+            deleteEntry()
+        }, label: {
+            Image(systemName: "minus.circle.fill")
+                .foregroundStyle(.gray)
+        })
+        .buttonStyle(.borderless)
+        .disabled(entries.isEmpty)
     }
 }
 

@@ -23,6 +23,11 @@ struct DailyNoteFillIn: View {
     private let onDateRegex = try! NSRegularExpression(pattern: "On (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2})")
 
     private let dateRangeRegex = try! NSRegularExpression(pattern: "from (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2}) to (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2})")
+    
+    init(combinedString: Binding<String>) {
+        self._combinedString = combinedString
+        extractComponents()
+    }
 
     var body: some View {
         HStack {
@@ -51,9 +56,6 @@ struct DailyNoteFillIn: View {
         }
         .onChange(of: extractedToDate) { _ in
             updateCombinedString()
-        }
-        .onAppear {
-            extractComponents()
         }
     }
 
@@ -88,3 +90,21 @@ struct ContentView_Previews: PreviewProvider {
         DailyNoteFillIn(combinedString: .constant("on 2023-12-11 2:30 PM from 2023-12-11 2:30 PM to 2023-12-11 5:30 PM"))
     }
 }
+
+struct DynamicDatePicker: View {
+    @Environment(\.isEditable) var isEditable
+    @State var showHourAndMinute: Bool
+    @Binding var date: Date
+    var body: some View {
+        if isEditable {
+            Text(date.description)
+        } else {
+            if showHourAndMinute {
+                DatePicker("", selection: $date, displayedComponents: .hourAndMinute)
+            } else {
+                DatePicker("", selection: $date)
+            }
+        }
+    }
+}
+

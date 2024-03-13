@@ -93,6 +93,41 @@ class UIManagement: ObservableObject {
             let count = (try? modelContext.fetchCount(descriptor)) ?? 0
             modifiedProperties["File Name"] = "\(incrementalRawValue) \(count)".codableValue
         }
+        
+        for dynamicUIElement in dynamicUIElements {
+//            for element in dynamicUIElement.elements {
+//                switch element {
+//                case .textField(let title, let binding):
+//                    <#code#>
+//                case .datePicker(let title, let hourAndMinute, let binding):
+//                    <#code#>
+//                case .numberField(let title, let binding):
+//                    <#code#>
+//                case .sectionHeader(let title):
+//                    <#code#>
+//                case .strengthTable(let title, let combinedString):
+//                    <#code#>
+//                case .singleSelectDescription(let title, let titles, let labels, let combinedString):
+//                    <#code#>
+//                case .multiSelectWithTitle(let combinedString, let labels, let title):
+//                    <#code#>
+//                case .multiSelectOthers(let combinedString, let labels, let title):
+//                    <#code#>
+//                case .dailyNoteTable(let title, let combinedString):
+//                    <#code#>
+//                case .fileUploadButton(let title, let dataValue):
+//                    <#code#>
+//                case .physicalTherapyFillIn(let title, let combinedString):
+//                    <#code#>
+//                case .reEvalFillin(let title, let combinedString):
+//                    <#code#>
+//                case .dailyNoteFillin(let title, let combinedString):
+//                    <#code#>
+//                case .textEntries(let title, let combinedString):
+//                    <#code#>
+//                }
+//            }
+        }
     }
     
     

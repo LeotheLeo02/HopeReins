@@ -16,7 +16,12 @@ struct StrengthTable: View {
     init(combinedString: Binding<String>, customLabels: [String]) {
         self._combinedString = combinedString
         self.customLabels = customLabels
-        self.tableData = self.createInitialTableData(with: customLabels)
+        if combinedString.wrappedValue.isEmpty {
+            self._tableData = State(initialValue: self.createInitialTableData(with: customLabels))
+        } else {
+            self._tableData = State(initialValue: self.combineTableData(combinedString: self.combinedString))
+        }
+       
     }
 
     var body: some View {
@@ -74,13 +79,6 @@ struct StrengthTable: View {
                 .shadow(radius: 3)
         )
         .frame(minWidth: 500, maxWidth: 1000)
-        .onAppear {
-            if combinedString.isEmpty {
-                self.tableData = self.createInitialTableData(with: customLabels)
-            } else {
-                self.tableData = self.combineTableData(combinedString: self.combinedString)
-            }
-        }
         .onChange(of: combinedString) { oldValue, newValue in
             self.tableData = self.combineTableData(combinedString: self.combinedString)
         }

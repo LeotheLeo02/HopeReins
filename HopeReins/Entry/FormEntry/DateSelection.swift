@@ -15,14 +15,16 @@ struct DateSelection: View {
     var body: some View {
         Section {
             VStack {
-                if hourAndMinute {
-                    DatePicker("", selection: $date)
-                        .labelsHidden()
-                        .disabled(!isEditable)
+                if isEditable {
+                    Text(date.description)
                 } else {
-                    DatePicker("", selection: $date, displayedComponents: .date)
-                        .labelsHidden()
-                        .disabled(!isEditable)
+                    if hourAndMinute {
+                        DatePicker("", selection: $date)
+                            .labelsHidden()
+                    } else {
+                        DatePicker("", selection: $date, displayedComponents: .date)
+                            .labelsHidden()
+                    }
                 }
             }
             .padding(.bottom)

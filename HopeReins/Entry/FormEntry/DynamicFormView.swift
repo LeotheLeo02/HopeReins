@@ -23,12 +23,15 @@ struct DynamicFormView: View  {
     @State var reviewChanges: Bool = false
     @State var isRevertingVersion: Bool = false
     @State var showRevertAlert: Bool = false
-    
+    @State var showPrintingView: Bool = false
     
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading) {
+                    Button("Print") {
+                        self.onPrint()
+                    }
                     if !isAdding {
                         HStack {
                             Spacer()
@@ -89,6 +92,9 @@ struct DynamicFormView: View  {
                 .sheet(isPresented: $reviewChanges, content: {
                     ReviewChangesView(uiManagement: uiManagement, changeDescriptions: changeDescriptions)
                 })
+                .sheet(isPresented: $showPrintingView) {
+                    Print_Preview(uiManagement: uiManagement)
+                }
                 .padding()
             }
         }
@@ -176,21 +182,6 @@ struct DynamicFormView: View  {
         }
         return changesInSection.reduce(0, +)
     }
-
-}
-
-
-// MARK: - Printing Functionality to be implemented
-
-struct PrintingView: View {
-    
-    var body: some View {
-        VStack {
-            Button("Print", action: self.onPrint )
-            Divider()
-            Print_Preview()
-        }
-    }
     
     private func onPrint() {
         let pi = NSPrintInfo.shared
@@ -198,16 +189,15 @@ struct PrintingView: View {
         pi.bottomMargin = 0.0
         pi.leftMargin = 0.0
         pi.rightMargin = 0.0
-        pi.orientation = .landscape
-        pi.isHorizontallyCentered = false
-        pi.isVerticallyCentered = false
-        pi.scalingFactor = 1.0
+        pi.orientation = .portrait
+        pi.horizontalPagination = .fit
+        pi.verticalPagination = .automatic
                 
-        let rootView = Print_Preview()
+        let rootView = Print_Preview(uiManagement: uiManagement)
         let view = NSHostingView(rootView: rootView)
-        view.frame.size = CGSize(width: 300, height: 300)
+        view.frame.size = CGSize(width: 650, height: 7000)
         let po = NSPrintOperation(view: view, printInfo: pi)
-        po.printInfo.orientation = .landscape
+        po.printInfo.orientation = .portrait
         po.showsPrintPanel = true
         po.showsProgressPanel = true
         
@@ -219,28 +209,26 @@ struct PrintingView: View {
         }
     }
     
-    struct Print_Preview: View {
-        var body: some View {
-            VStack(alignment: .leading) {
-                Text("Bordered Text Above Bordered Image")
-                    .font(.system(size: 8))
-                    .padding(5)
-                    .border(Color.black, width: 2)
-                Image(systemName: "printer")
-                    .resizable()
-                    .padding(5)
-                    .border(Color.black, width: 2)
-                    .frame(width: 100, height: 100)
-                Text("Bordered Text Below Bordered Image")
-                    .font(.system(size: 8))
-                    .padding(5)
-                    .border(Color.black, width: 2)
+
+}
+
+
+struct Print_Preview: View {
+    @ObservedObject var uiManagement: UIManagement
+    
+    var body: some View {
+        VStack {
+            ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
+                sectionContent(section: section)
             }
-            .padding()
-            .foregroundColor(Color.black)
-            .background(Color.white)
-            .frame(width: 200, height: 200)
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    func sectionContent(section: FormSection) -> some View {
+        ForEach(section.elements.map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
+            DynamicElementView(wrappedElement: wrappedElement.element)
         }
     }
-
 }

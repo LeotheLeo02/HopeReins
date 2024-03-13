@@ -23,6 +23,13 @@ struct ReEvalFillInInput: View {
     private let totalTreatmentsRegex = try! NSRegularExpression(pattern: "(\\d+) total treatments")
     private let dateRangeRegex = try! NSRegularExpression(pattern: "from (\\d{4}-\\d{2}-\\d{2}) to (\\d{4}-\\d{2}-\\d{2})")
     private let missedTreatmentsRegex = try! NSRegularExpression(pattern: "Treatments missed: (\\d+)")
+    
+    
+    init(combinedString: Binding<String>) {
+        self._combinedString = combinedString
+        extractComponents()
+        
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -58,9 +65,6 @@ struct ReEvalFillInInput: View {
         .onChange(of: missedTreatments) { newValue in
             updateCombinedString()
         }
-        .onAppear {
-            extractComponents()
-        }
     }
 
     func updateCombinedString() {
@@ -90,3 +94,4 @@ struct ReEvalFillInInput: View {
         }
     }
 }
+

@@ -180,7 +180,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Goals", elements: [
                 .textEntries(title: "TE Short Term Goals", combinedString: stringBinding(for: "TE Short Term Goals")),
-//                .textEntries(title: "TE Long Term Goals", combinedString: stringBinding(for: "TE Long Term Goals"))
+                .textEntries(title: "TE Long Term Goals", combinedString: stringBinding(for: "TE Long Term Goals"))
             ]),
             FormSection(title: "Treatment Plan", elements: [
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),

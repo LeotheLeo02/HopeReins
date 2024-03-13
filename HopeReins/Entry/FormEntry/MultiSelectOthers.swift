@@ -19,7 +19,6 @@ struct MultiSelectOthers: View {
         GridItem(.adaptive(minimum: 200))
     ]
     var body: some View {
-        ScrollView {
             Text(title)
                 .bold()
             LazyVGrid(columns: columns, content: {
@@ -82,7 +81,6 @@ struct MultiSelectOthers: View {
                     .disabled(!isEditable)
                 }
             })
-        }
         .onChange(of: boolString) { oldValue, newValue in
             checkAndUpdateBoolString()
         }
