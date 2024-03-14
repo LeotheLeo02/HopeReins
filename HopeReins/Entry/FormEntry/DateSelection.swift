@@ -15,7 +15,7 @@ struct DateSelection: View {
     var body: some View {
         Section {
             VStack {
-                if isEditable {
+                if !isEditable {
                     Text(date.description)
                 } else {
                     if hourAndMinute {

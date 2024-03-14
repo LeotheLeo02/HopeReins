@@ -18,7 +18,7 @@ extension DynamicFormView {
         pi.orientation = .portrait
         pi.horizontalPagination = .fit
         pi.verticalPagination = .automatic
-        
+
         let rootView = Print_Preview(uiManagement: uiManagement)
         let view = NSHostingView(rootView: rootView)
         view.frame.size.width = 650

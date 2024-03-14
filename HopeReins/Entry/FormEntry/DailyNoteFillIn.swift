@@ -96,7 +96,7 @@ struct DynamicDatePicker: View {
     @State var showHourAndMinute: Bool
     @Binding var date: Date
     var body: some View {
-        if isEditable {
+        if !isEditable {
             Text(date.description)
         } else {
             if showHourAndMinute {

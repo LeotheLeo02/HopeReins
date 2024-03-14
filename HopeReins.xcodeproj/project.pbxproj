@@ -69,8 +69,8 @@
 		BED25E1A2B7B25BF004FC260 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED25E192B7B25BF004FC260 /* SectionHeader.swift */; };
 		BED25E1F2B7B2815004FC260 /* DetailChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED25E1E2B7B2815004FC260 /* DetailChange.swift */; };
 		BED25E212B7B2846004FC260 /* LabelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED25E202B7B2846004FC260 /* LabelValue.swift */; };
-		BED821DD2B93EC30008DE043 /* FormAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED821DC2B93EC30008DE043 /* FormAddView.swift */; };
 		BEE545F12B5C6E79001D84A5 /* DynamicFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE545F02B5C6E79001D84A5 /* DynamicFormView.swift */; };
+		BEF79E5D2BA3906000D9BA50 /* FormAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF79E5C2BA3906000D9BA50 /* FormAddView.swift */; };
 		BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFCBB992B06A5E6007DB23C /* FormEditView.swift */; };
 /* End PBXBuildFile section */
 
@@ -140,8 +140,8 @@
 		BED25E192B7B25BF004FC260 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		BED25E1E2B7B2815004FC260 /* DetailChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailChange.swift; sourceTree = "<group>"; };
 		BED25E202B7B2846004FC260 /* LabelValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelValue.swift; sourceTree = "<group>"; };
-		BED821DC2B93EC30008DE043 /* FormAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FormAddView.swift; path = ../../../../FormAddView.swift; sourceTree = "<group>"; };
 		BEE545F02B5C6E79001D84A5 /* DynamicFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicFormView.swift; sourceTree = "<group>"; };
+		BEF79E5C2BA3906000D9BA50 /* FormAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormAddView.swift; sourceTree = "<group>"; };
 		BEFCBB992B06A5E6007DB23C /* FormEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormEditView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -172,14 +172,6 @@
 				BE16E2082AAEB20B004052B8 /* CopyPathsView.swift */,
 			);
 			path = CoreDataManagement;
-			sourceTree = "<group>";
-		};
-		BE0F28A72AECA517006285C5 /* Add */ = {
-			isa = PBXGroup;
-			children = (
-				BED821DC2B93EC30008DE043 /* FormAddView.swift */,
-			);
-			path = Add;
 			sourceTree = "<group>";
 		};
 		BE16E1FA2AAEB20B004052B8 = {
@@ -352,7 +344,6 @@
 				BE676A4C2AD63EB800E8ADD7 /* AddPatientView.swift */,
 				BE4D901A2AD2EE3000948BA3 /* PatientsView.swift */,
 				BE3D070D2B0A700B00953754 /* PatientSearch.swift */,
-				BE0F28A72AECA517006285C5 /* Add */,
 			);
 			path = Patients;
 			sourceTree = "<group>";
@@ -422,6 +413,7 @@
 		BECF5D772B092BFA0008459C /* FilesListView */ = {
 			isa = PBXGroup;
 			children = (
+				BEF79E5B2BA3904D00D9BA50 /* AddView */,
 				BE0BF44A2B437ABF006FCD4F /* FileListView.swift */,
 				BE3D070B2B0A6A0F00953754 /* PatientFilesSearch.swift */,
 				BE06844B2AE0CEF1004CABE7 /* PatientFilesListView.swift */,
@@ -468,6 +460,14 @@
 				BEFCBB992B06A5E6007DB23C /* FormEditView.swift */,
 			);
 			path = EditView;
+			sourceTree = "<group>";
+		};
+		BEF79E5B2BA3904D00D9BA50 /* AddView */ = {
+			isa = PBXGroup;
+			children = (
+				BEF79E5C2BA3906000D9BA50 /* FormAddView.swift */,
+			);
+			path = AddView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -548,7 +548,6 @@
 				BED25E142B7B2508004FC260 /* ParsingInputs.swift in Sources */,
 				BE3D070C2B0A6A0F00953754 /* PatientFilesSearch.swift in Sources */,
 				BE5FC7732B7B2E4500B46891 /* SingleSelectLastDescription.swift in Sources */,
-				BED821DD2B93EC30008DE043 /* FormAddView.swift in Sources */,
 				BE4698012B6DD6D4001E2E39 /* InstructorsMenu.swift in Sources */,
 				BE5FC7652B7B2D2600B46891 /* PhyisicalTherabyFillIn.swift in Sources */,
 				BE94F8292BA3567F004F0E66 /* Printing_View.swift in Sources */,
@@ -600,6 +599,7 @@
 				BE5FC7712B7B2E2500B46891 /* MultiSelectWithTitle.swift in Sources */,
 				BE5FC77B2B7B2EF500B46891 /* DailyNoteTable.swift in Sources */,
 				BEB662B82B335A750090BD87 /* MedicalRecordFile.swift in Sources */,
+				BEF79E5D2BA3906000D9BA50 /* FormAddView.swift in Sources */,
 				BE9357932B3CC2ED0058198E /* ChangeDescription.swift in Sources */,
 				BE5FC74E2B7B2B1400B46891 /* PhysicalTherapyFormType.swift in Sources */,
 				BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */,
