@@ -14,11 +14,12 @@ struct FormEditView: View {
     @Binding var file: MedicalRecordFile?
     @State var isEditable: Bool
     var user: User
+    var patient: Patient
     
     var body: some View {
         VStack {
             if let file = file {
-                DynamicFormView(uiManagement: UIManagement(modifiedProperties: file.properties, record: file, username: user.username, patient: nil), isAdding: false)
+                DynamicFormView(uiManagement: UIManagement(modifiedProperties: file.properties, record: file, username: user.username, patient: patient), isAdding: false)
             }
         }
         .navigationTitle(file?.properties["File Name"]?.stringValue ?? "")

@@ -16,6 +16,7 @@ struct FileListView: View {
     var user: User
     var formType: FormType
     var isEditable: Bool
+    var patient: Patient
 
     private var fileGroups: [(String, [MedicalRecordFile])] {
         cases(for: formType).map { formTypeRaw in
@@ -32,7 +33,7 @@ struct FileListView: View {
             }
         }
         .sheet(isPresented: $showEditSheet, content: {
-            FormEditView(file: $selectedFile, isEditable: isEditable, user: user)
+            FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient)
         })
     }
 

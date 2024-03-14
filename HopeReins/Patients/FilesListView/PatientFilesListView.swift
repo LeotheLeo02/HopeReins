@@ -151,12 +151,12 @@ struct PatientFilesListView: View {
             if searchText.isEmpty {
                 switch selectedFormType {
                 case .physicalTherapy(_):
-                    FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles)
+                    FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles, patient: patient)
                 case .riding(_):
-                    FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles)
+                    FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles, patient: patient)
                 }
             } else {
-                FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles)
+                FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles, patient: patient)
             }
         }
     }
@@ -199,6 +199,7 @@ struct FilteredFilesList: View {
     var user: User
     var filteredFiles: [MedicalRecordFile]
     var isEditable: Bool
+    var patient: Patient
     var body: some View {
         VStack {
             ForEach(filteredFiles, id: \.self) { file in
@@ -211,7 +212,7 @@ struct FilteredFilesList: View {
             }
         }
         .sheet(isPresented: $showEditSheet, content: {
-            FormEditView(file: $selectedFile, isEditable: isEditable, user: user)
+            FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient)
         })
         
     }

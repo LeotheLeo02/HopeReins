@@ -52,6 +52,8 @@
 		BE77A5A12B7D4BC300FEF6EC /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE77A5A02B7D4BC300FEF6EC /* Forms.swift */; };
 		BE8E47642B3FD5230075CEEE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8E47632B3FD5230075CEEE /* HomeView.swift */; };
 		BE9357932B3CC2ED0058198E /* ChangeDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9357922B3CC2EC0058198E /* ChangeDescription.swift */; };
+		BE94F8292BA3567F004F0E66 /* Printing_View.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE94F8282BA3567F004F0E66 /* Printing_View.swift */; };
+		BE94F82B2BA35766004F0E66 /* Printing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE94F82A2BA35766004F0E66 /* Printing.swift */; };
 		BE991FD22BA0CA20004B9144 /* TextEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE991FD12BA0CA20004B9144 /* TextEntries.swift */; };
 		BE9EEDFC2AB6954600A0AE7D /* CopyPathsView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */; };
 		BE9EEE002AB69A1800A0AE7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */; };
@@ -121,6 +123,8 @@
 		BE8E47632B3FD5230075CEEE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BE9098812B9F9E3300033AD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BE9357922B3CC2EC0058198E /* ChangeDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeDescription.swift; sourceTree = "<group>"; };
+		BE94F8282BA3567F004F0E66 /* Printing_View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Printing_View.swift; sourceTree = "<group>"; };
+		BE94F82A2BA35766004F0E66 /* Printing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Printing.swift; sourceTree = "<group>"; };
 		BE991FD12BA0CA20004B9144 /* TextEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntries.swift; sourceTree = "<group>"; };
 		BE9EEDFB2AB6954600A0AE7D /* CopyPathsView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CopyPathsView+Extension.swift"; sourceTree = "<group>"; };
 		BE9EEDFF2AB69A1800A0AE7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -392,9 +396,19 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
+		BE94F8272BA35664004F0E66 /* Printing */ = {
+			isa = PBXGroup;
+			children = (
+				BE94F8282BA3567F004F0E66 /* Printing_View.swift */,
+				BE94F82A2BA35766004F0E66 /* Printing.swift */,
+			);
+			name = Printing;
+			sourceTree = "<group>";
+		};
 		BE981CF22B5836B1003B9B77 /* FormEntry */ = {
 			isa = PBXGroup;
 			children = (
+				BE94F8272BA35664004F0E66 /* Printing */,
 				BE5FC75E2B7B2C5F00B46891 /* UIFoundation */,
 				BE5FC75D2B7B2C3900B46891 /* Section */,
 				BE5FC75A2B7B2C0E00B46891 /* ViewChanges */,
@@ -537,6 +551,7 @@
 				BED821DD2B93EC30008DE043 /* FormAddView.swift in Sources */,
 				BE4698012B6DD6D4001E2E39 /* InstructorsMenu.swift in Sources */,
 				BE5FC7652B7B2D2600B46891 /* PhyisicalTherabyFillIn.swift in Sources */,
+				BE94F8292BA3567F004F0E66 /* Printing_View.swift in Sources */,
 				BE31DFAB2B40F9E3006E4806 /* ProfileLoginView.swift in Sources */,
 				BE676A4B2AD63E2D00E8ADD7 /* PatientSelectionView.swift in Sources */,
 				BE72EDBB2B335719006D227C /* Patient.swift in Sources */,
@@ -555,6 +570,7 @@
 				BEE545F12B5C6E79001D84A5 /* DynamicFormView.swift in Sources */,
 				BEB662BA2B335B000090BD87 /* User.swift in Sources */,
 				BE676A4D2AD63EB800E8ADD7 /* AddPatientView.swift in Sources */,
+				BE94F82B2BA35766004F0E66 /* Printing.swift in Sources */,
 				BE5FC7522B7B2B8A00B46891 /* FormSectionContent.swift in Sources */,
 				BEFCBB9A2B06A5E6007DB23C /* FormEditView.swift in Sources */,
 				BE5FC7672B7B2D4600B46891 /* RevalFillIn.swift in Sources */,

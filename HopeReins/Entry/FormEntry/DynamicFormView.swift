@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct DynamicFormView: View  {
+    
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @StateObject var uiManagement: UIManagement
@@ -23,79 +24,83 @@ struct DynamicFormView: View  {
     @State var reviewChanges: Bool = false
     @State var isRevertingVersion: Bool = false
     @State var showRevertAlert: Bool = false
-    @State var showPrintingView: Bool = false
     
     var body: some View {
         ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading) {
-                    Button("Print") {
+            VStack(alignment: .leading) {
+                HStack {
+                    Button(action: {
                         self.onPrint()
-                    }
-                    if !isAdding {
+                    }, label: {
                         HStack {
-                            Spacer()
-                            PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
+                            Text("Print")
+                            Image(systemName: "printer.fill")
                         }
+                    })
+                    Spacer()
+                    if !isAdding {
+                        PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
                     }
-                    ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
-                        if uiManagement.dynamicUIElements.count == 1 {
-                            sectionContent(section: section)
-                        } else {
-                            DisclosureGroup(
-                                content: {
-                                    sectionContent(section: section)
-                                        .onAppear {
-                                            proxy.scrollTo(section.title)
-                                        }
-                                },
-                                label: {
-                                    HStack {
-                                        SectionHeader(title: section.title)
-                                        let changesCount = countChangesInSection(section)
-                                        if changesCount > 0 {
-                                            Text("\(changesCount) changes")
-                                                .font(.subheadline)
-                                                .foregroundColor(.red)
+                }
+                .padding([.top, .horizontal])
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
+                            if uiManagement.dynamicUIElements.count == 1 {
+                                sectionContent(section: section)
+                            } else {
+                                DisclosureGroup(
+                                    content: {
+                                        sectionContent(section: section)
+                                            .onAppear {
+                                                proxy.scrollTo(section.title)
+                                            }
+                                    },
+                                    label: {
+                                        HStack {
+                                            SectionHeader(title: section.title)
+                                            let changesCount = countChangesInSection(section)
+                                            if changesCount > 0 {
+                                                Text("\(changesCount) changes")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.red)
+                                            }
                                         }
                                     }
-                                }
+                                )
+                                .id(section.title)
+                                
+                            }
+                        }
+                        
+                    }
+                    .alert(isPresented: $showRevertAlert) {
+                        if isRevertingVersion {
+                            Alert(
+                                title: Text("Revert To Version \(selectedVersion!.reason)"),
+                                message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
+                                primaryButton: .destructive(Text("Revert")) {
+                                    uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
+                                    selectedVersion = nil
+                                },
+                                secondaryButton: .cancel()
                             )
-                            .id(section.title)
-
+                        } else {
+                            Alert(
+                                title: Text("Revert Changes"),
+                                message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
+                                primaryButton: .destructive(Text("Undo")) {
+                                    dismiss()
+                                },
+                                secondaryButton: .cancel()
+                            )
                         }
                     }
-                    
+                    .sheet(isPresented: $reviewChanges, content: {
+                        ReviewChangesView(uiManagement: uiManagement, changeDescriptions: changeDescriptions)
+                    })
+                    .padding()
                 }
-                .alert(isPresented: $showRevertAlert) {
-                    if isRevertingVersion {
-                        Alert(
-                            title: Text("Revert To Version \(selectedVersion!.reason)"),
-                            message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
-                            primaryButton: .destructive(Text("Revert")) {
-                                uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
-                                selectedVersion = nil
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    } else {
-                        Alert(
-                            title: Text("Revert Changes"),
-                            message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
-                            primaryButton: .destructive(Text("Undo")) {
-                                dismiss()
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-                }
-                .sheet(isPresented: $reviewChanges, content: {
-                    ReviewChangesView(uiManagement: uiManagement, changeDescriptions: changeDescriptions)
-                })
-                .sheet(isPresented: $showPrintingView) {
-                    Print_Preview(uiManagement: uiManagement)
-                }
-                .padding()
             }
         }
         .frame(minWidth: 650, minHeight: 600)
@@ -182,53 +187,5 @@ struct DynamicFormView: View  {
         }
         return changesInSection.reduce(0, +)
     }
-    
-    private func onPrint() {
-        let pi = NSPrintInfo.shared
-        pi.topMargin = 0.0
-        pi.bottomMargin = 0.0
-        pi.leftMargin = 0.0
-        pi.rightMargin = 0.0
-        pi.orientation = .portrait
-        pi.horizontalPagination = .fit
-        pi.verticalPagination = .automatic
-                
-        let rootView = Print_Preview(uiManagement: uiManagement)
-        let view = NSHostingView(rootView: rootView)
-        view.frame.size = CGSize(width: 650, height: 7000)
-        let po = NSPrintOperation(view: view, printInfo: pi)
-        po.printInfo.orientation = .portrait
-        po.showsPrintPanel = true
-        po.showsProgressPanel = true
-        
-        po.printPanel.options.insert(NSPrintPanel.Options.showsPaperSize)
-        po.printPanel.options.insert(NSPrintPanel.Options.showsOrientation)
-        
-        if po.run() {
-            print("In Print completion")
-        }
-    }
-    
 
-}
-
-
-struct Print_Preview: View {
-    @ObservedObject var uiManagement: UIManagement
-    
-    var body: some View {
-        VStack {
-            ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
-                sectionContent(section: section)
-            }
-        }
-        .padding()
-    }
-    
-    @ViewBuilder
-    func sectionContent(section: FormSection) -> some View {
-        ForEach(section.elements.map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
-            DynamicElementView(wrappedElement: wrappedElement.element)
-        }
-    }
 }

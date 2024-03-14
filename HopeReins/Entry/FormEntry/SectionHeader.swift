@@ -15,6 +15,6 @@ struct SectionHeader: View {
                 .font(.title2.bold())
                 .foregroundStyle(.gray)
         }
-        .padding(.vertical, 5)
+        .padding(.vertical, .pi)
     }
 }
