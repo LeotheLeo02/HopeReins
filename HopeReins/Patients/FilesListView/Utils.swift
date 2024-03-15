@@ -38,7 +38,7 @@ struct ListItemLabel: View {
             }
             Text(file.properties["File Name"]?.stringValue ?? "None")
             Spacer()
-            Text("\(file.digitalSignature?.modification ?? "") By: \(file.digitalSignature?.author ?? "") \(file.digitalSignature?.dateModified.formatted() ?? "")")
+            Text("\(file.digitalSignature?.modification.rawValue ?? "") By: \(file.digitalSignature?.author ?? "") \(file.digitalSignature?.dateModified.formatted() ?? "")")
                 .font(.caption2.italic())
         }
         .font(.subheadline.bold())

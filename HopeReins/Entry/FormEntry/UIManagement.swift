@@ -53,10 +53,7 @@ class UIManagement: ObservableObject {
     }
     
     func addFile(modelContext: ModelContext) {
-        let newDigitalSig = DigitalSignature(author: username, modification: FileModification.added.rawValue, dateModified: .now)
-        modelContext.insert(newDigitalSig)
-        record.digitalSignature = newDigitalSig
-        newDigitalSig.created(by: username)
+        record.setUpSignature(addedBy: username, modelContext: modelContext)
         if isIncrementalFileType != nil {
             setIncrementalFileName(modelContext: modelContext)
         }

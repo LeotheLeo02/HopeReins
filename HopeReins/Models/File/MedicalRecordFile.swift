@@ -19,42 +19,40 @@ extension HopeReinsSchemaV2 {
         var patient: Patient?
         var fileType: String
         var digitalSignature: DigitalSignature?
+        var addedSignature: DigitalSignature?
         var isDead: Bool = false
         
         init(id: UUID = UUID(), fileType: String) {
             self.id = id
             self.fileType = fileType
-            self.digitalSignature = digitalSignature
         }
         
-        init(file: MedicalRecordFile) {
-            self.id = file.id
-            self.fileType = file.fileType
-            self.digitalSignature = file.digitalSignature
+        func setUpSignature(addedBy username: String, modelContext: ModelContext) {
+            let modificationSig = DigitalSignature(author: username)
+            let addedSig = DigitalSignature(author: username)
+            modelContext.insert(modificationSig)
+            modelContext.insert(addedSig)
+            self.digitalSignature = modificationSig
+            self.addedSignature = addedSig
         }
     }
     
     
     @Model class DigitalSignature {
         var author: String
-        var modification: String
-        var dateModified: Date
+        var modification: FileModification = FileModification.added
+        var dateModified: Date = Date.now
         
-        init(author: String, modification: String, dateModified: Date) {
+        init(author: String) {
             self.author = author
-            self.modification = modification
-            self.dateModified = dateModified
+            dateModified = .now
         }
         
         func modified(by _: String) {
-            modification = FileModification.edited.rawValue
+            modification = .edited
             dateModified = .now
         }
         
-        func created(by _: String) {
-            modification = FileModification.added.rawValue
-            dateModified = .now
-        }
     }
 }
 

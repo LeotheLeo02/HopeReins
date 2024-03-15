@@ -149,7 +149,7 @@ struct FileListView: View {
         }
         
         let sortedFiles = filteredFiles.sorted {
-            $0.digitalSignature!.dateModified > $1.digitalSignature!.dateModified
+            $0.addedSignature!.dateModified > $1.addedSignature!.dateModified
         }
 
         return sortedFiles

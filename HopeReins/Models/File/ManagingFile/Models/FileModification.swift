@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum FileModification: String {
+enum FileModification: String, Codable {
     case added = "Created"
     case edited = "Modified"
     case deleted = "Deleted"
