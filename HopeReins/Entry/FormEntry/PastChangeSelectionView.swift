@@ -11,7 +11,7 @@ struct PastChangeSelectionView: View {
     @Binding var showPastChanges: Bool
     @Binding var selectedVersion: Version?
     var pastVersions: [Version]
-
+    
     var body: some View {
         Button {
             showPastChanges.toggle()
@@ -27,7 +27,7 @@ struct PastChangeSelectionView: View {
             ScrollView {
                 VStack {
                     currentVersionButton
-                    ForEach(pastVersions) { pastVersion in
+                    ForEach(pastVersions.sorted { $0.date > $1.date }) { pastVersion in
                         pastChangeButton(pastVersion: pastVersion)
                     }
                 }

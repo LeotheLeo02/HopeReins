@@ -117,20 +117,43 @@ struct FileListView: View {
 
 
     private func cases(for formType: FormType) -> [String] {
+        var formTypes: [String]
         switch formType {
         case .physicalTherapy(_):
-            return PhysicalTherapyFormType.allCases.map { $0.rawValue }
+            formTypes = PhysicalTherapyFormType.allCases.map { $0.rawValue }
+            // Replace "Plan of Care" and "Re-Evaluation" with "POC Summary and Revaluation"
+            if let pocIndex = formTypes.firstIndex(of: PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue) {
+                formTypes[pocIndex] = "POC Summary and Revaluation"
+            }
+            if let reEvalIndex = formTypes.firstIndex(of: PhysicalTherapyFormType.reEvaluation.rawValue) {
+                formTypes.remove(at: reEvalIndex)
+            }
         case .riding(_):
-            return RidingFormType.allCases.map { $0.rawValue }
+            formTypes = RidingFormType.allCases.map { $0.rawValue }
         }
+        return formTypes
     }
+
 
 
     private func filesForForm(formTypeRaw: String) -> [MedicalRecordFile] {
-        let filteredFiles = files.filter { $0.fileType == formTypeRaw }
-        let sortedFiles = filteredFiles.sorted { $0.digitalSignature!.dateModified > $1.digitalSignature!.dateModified }
+        let filteredFiles: [MedicalRecordFile]
+        if formTypeRaw == "POC Summary and Revaluation" {
+            // Include both "Plan of Care" and "Re-Evaluation" files in this group
+            filteredFiles = files.filter {
+                $0.fileType == PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue ||
+                $0.fileType == PhysicalTherapyFormType.reEvaluation.rawValue
+            }
+        } else {
+            filteredFiles = files.filter { $0.fileType == formTypeRaw }
+        }
+        
+        let sortedFiles = filteredFiles.sorted {
+            $0.digitalSignature!.dateModified > $1.digitalSignature!.dateModified
+        }
 
         return sortedFiles
     }
+
 
 }

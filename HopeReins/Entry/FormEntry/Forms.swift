@@ -220,8 +220,9 @@ extension UIManagement {
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Treatment Plan"), labels: treatmentsLabels, title: "MSO Treatment Plan"),
                 .textField(title: "Discharge Plan", binding: stringBinding(for: "Discharge Plan"))
             ]),
-            FormSection(title: "Goal Review", elements: [
-                .textField(title: "Goal Review", binding: stringBinding(for: "Goal Review"))
+            FormSection(title: "Goals", elements: [
+                .textEntries(title: "TE Short Term Goals", combinedString: stringBinding(for: "TE Short Term Goals")),
+                .textEntries(title: "TE Long Term Goals", combinedString: stringBinding(for: "TE Long Term Goals"))
             ])
         ]
     }

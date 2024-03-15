@@ -13,19 +13,43 @@ class UIManagement: ObservableObject {
     @Published var dynamicUIElements: [FormSection] = []
     @Published var record: MedicalRecordFile
     @Published var isIncrementalFileType: PhysicalTherapyFormType?
+    @Published var isRevaluation: Bool = false
     @Published var username: String
     @Published var patient: Patient?
+    @Published var isAdding: Bool
     
     let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotherapy", "Therapeutic Exercise", "Postural Alignment Training"]
     
     let problemsLabels: [String] = ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"]
     
-    init(modifiedProperties: [String : CodableValue], record: MedicalRecordFile, username: String, patient: Patient?) {
+    init(modifiedProperties: [String : CodableValue], record: MedicalRecordFile, username: String, patient: Patient?, isAdding: Bool, modelContext: ModelContext) {
         self.modifiedProperties = modifiedProperties
         self.record = record
         self.username = username
         self.patient = patient
+        self.isAdding = isAdding
         self.dynamicUIElements = getUIElements()
+        if isRevaluation {
+            self.updateGoalsFromLatestRecord(modelContext: modelContext)
+        }
+    }
+    
+    func updateGoalsFromLatestRecord(modelContext: ModelContext) {
+        let reEvaluationRawValue = PhysicalTherapyFormType.reEvaluation.rawValue
+        let pocRawValue = PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue
+        
+        var fetchRequest = FetchDescriptor<MedicalRecordFile>(
+            predicate: #Predicate { record in
+                (record.fileType == reEvaluationRawValue) || (record.fileType == pocRawValue)
+            },
+            sortBy: [SortDescriptor(\.digitalSignature?.dateModified, order: .reverse)]
+        )
+        fetchRequest.fetchLimit = 1
+        
+        if let latestRecord = try? modelContext.fetch(fetchRequest).first {
+            modifiedProperties["TE Short Term Goals"] = latestRecord.properties["TE Short Term Goals"]
+            modifiedProperties["TE Long Term Goals"] = latestRecord.properties["TE Long Term Goals"]
+        }
     }
     
     func addFile(modelContext: ModelContext) {
@@ -94,40 +118,6 @@ class UIManagement: ObservableObject {
             modifiedProperties["File Name"] = "\(incrementalRawValue) \(count)".codableValue
         }
         
-        for dynamicUIElement in dynamicUIElements {
-//            for element in dynamicUIElement.elements {
-//                switch element {
-//                case .textField(let title, let binding):
-//                    <#code#>
-//                case .datePicker(let title, let hourAndMinute, let binding):
-//                    <#code#>
-//                case .numberField(let title, let binding):
-//                    <#code#>
-//                case .sectionHeader(let title):
-//                    <#code#>
-//                case .strengthTable(let title, let combinedString):
-//                    <#code#>
-//                case .singleSelectDescription(let title, let titles, let labels, let combinedString):
-//                    <#code#>
-//                case .multiSelectWithTitle(let combinedString, let labels, let title):
-//                    <#code#>
-//                case .multiSelectOthers(let combinedString, let labels, let title):
-//                    <#code#>
-//                case .dailyNoteTable(let title, let combinedString):
-//                    <#code#>
-//                case .fileUploadButton(let title, let dataValue):
-//                    <#code#>
-//                case .physicalTherapyFillIn(let title, let combinedString):
-//                    <#code#>
-//                case .reEvalFillin(let title, let combinedString):
-//                    <#code#>
-//                case .dailyNoteFillin(let title, let combinedString):
-//                    <#code#>
-//                case .textEntries(let title, let combinedString):
-//                    <#code#>
-//                }
-//            }
-        }
     }
     
     
@@ -156,6 +146,7 @@ class UIManagement: ObservableObject {
                 isIncrementalFileType = .physicalTherapyPlanOfCare
                 return getPhysicalTherapyPlanOfCare()
             case .reEvaluation:
+                isRevaluation = true
                 return getReEvaluation()
             case .dailyNote:
                 isIncrementalFileType = .dailyNote

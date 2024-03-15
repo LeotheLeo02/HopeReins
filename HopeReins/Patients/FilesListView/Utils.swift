@@ -63,7 +63,6 @@ public func isUploadFile(fileType: String) -> Bool {
     let specificFileTypes = [
         RidingFormType.releaseStatement.rawValue,
         RidingFormType.coverLetter.rawValue,
-        RidingFormType.updateCoverLetter.rawValue,
         PhysicalTherapyFormType.referral.rawValue,
         PhysicalTherapyFormType.medicalForm.rawValue,
         PhysicalTherapyFormType.missedVisit.rawValue

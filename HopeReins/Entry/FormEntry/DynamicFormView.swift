@@ -13,7 +13,6 @@ struct DynamicFormView: View  {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @StateObject var uiManagement: UIManagement
-    @State var isAdding: Bool
     @State var text: String = ""
     var changeDescriptions: [ChangeDescription] {
         return uiManagement.record.compareProperties(with: uiManagement.modifiedProperties)
@@ -28,21 +27,30 @@ struct DynamicFormView: View  {
     var body: some View {
         ScrollViewReader { proxy in
             VStack(alignment: .leading) {
-                HStack {
-                    Button(action: {
-                        self.onPrint()
-                    }, label: {
-                        HStack {
-                            Text("Print")
-                            Image(systemName: "printer.fill")
-                        }
-                    })
-                    Spacer()
-                    if !isAdding {
+                if !uiManagement.isAdding {
+                    HStack {
+                        Button(action: {
+                            self.onPrint()
+                        }, label: {
+                            HStack {
+                                Text("Print")
+                                Image(systemName: "printer.fill")
+                            }
+                        })
+                        Spacer()
                         PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "macwindow.badge.plus")
+                                .font(.title2)
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Open another file")
+
                     }
+                    .padding([.top, .horizontal])
                 }
-                .padding([.top, .horizontal])
                 ScrollView {
                     VStack(alignment: .leading) {
                         ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
@@ -119,7 +127,7 @@ struct DynamicFormView: View  {
     
     @ToolbarContentBuilder
     func toolbarContent() -> some ToolbarContent {
-        if isAdding {
+        if uiManagement.isAdding {
             ToolbarItem(placement: .automatic) {
                 Button {
                     uiManagement.addFile(modelContext: modelContext)

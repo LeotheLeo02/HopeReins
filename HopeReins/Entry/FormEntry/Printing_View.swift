@@ -32,6 +32,8 @@ struct Print_Preview: View {
             }
         }
         .padding()
+        .foregroundStyle(.black)
+        
     }
     
     @ViewBuilder

@@ -24,7 +24,7 @@ struct TextEntries: View {
     init(combinedString: Binding<String>, title: String) {
         self._combinedString = combinedString
         self.title = title
-        self.entries = self.decodeString(combinedString.wrappedValue)
+        self._entries = State(initialValue: self.decodeString(combinedString.wrappedValue))
     }
     var body: some View {
         VStack(alignment: .leading) {
@@ -55,6 +55,10 @@ struct TextEntries: View {
         }
         .onChange(of: combinedString) { newValue in
             self.entries = self.decodeString(newValue)
+        }
+        .onAppear() {
+            print(combinedString)
+            self.entries = self.decodeString(combinedString)
         }
     }
     

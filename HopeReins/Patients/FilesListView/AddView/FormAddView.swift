@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct FormAddView: View {
+    @Environment(\.modelContext) var modelContext
     @Binding var selectedSpecificForm: FormType?
     var patient: Patient
     var user: User
@@ -32,6 +33,6 @@ struct FormAddView: View {
         
         let record = MedicalRecordFile(fileType: fileType)
         
-        return DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: patient), isAdding: true)
+        return DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: patient, isAdding: true, modelContext: modelContext))
     }
 }

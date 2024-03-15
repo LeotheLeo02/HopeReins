@@ -10,6 +10,5 @@ import Foundation
 enum RidingFormType: String, CaseIterable, Hashable {
     case releaseStatement = "Release Statement"
     case coverLetter = "Cover Letter"
-    case updateCoverLetter = "Update Cover Letter"
     case ridingLessonPlan = "Riding Lesson Plan"
 }
