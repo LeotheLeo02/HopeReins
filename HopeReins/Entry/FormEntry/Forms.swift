@@ -215,7 +215,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Primary Problems and Treatment Plan", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Primary Problems/Deficits Include"), labels: problemsLabels, title: "MSO Primary Problems/Deficits Include"),
-                .singleSelectDescription(title: "SS The patient demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor", "Rehab potential"], combinedString: stringBinding(for: "The Patient Demonstrates")),
+                .singleSelectDescription(title: "SS The Patient Demonstrates", titles: ["The Patient Demonstrates"], labels: ["Good", "Fair", "Poor", "Rehab potential"], combinedString: stringBinding(for: "SS The Patient Demonstrates")),
                 .physicalTherapyFillIn(title: "Recommended Physical Therapy", combinedString: stringBinding(for: "Recommended Physical Therapy")),
                 .multiSelectOthers(combinedString: stringBinding(for: "MSO Treatment Plan"), labels: treatmentsLabels, title: "MSO Treatment Plan"),
                 .textField(title: "Discharge Plan", binding: stringBinding(for: "Discharge Plan"))

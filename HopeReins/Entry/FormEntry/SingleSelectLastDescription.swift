@@ -56,6 +56,10 @@ struct SingleSelectLastDescription: View {
         .onChange(of: selectionsDescriptions) { newValue in
             updateCombinedString()
         }
+        
+        .onChange(of: combinedString) { oldValue, newValue in
+            self.selectionsDescriptions = self.parseCombinedString(combinedString, titles: titles)
+        }
     }
     
     func parseCombinedString(_ combinedString: String, titles: [String]) -> [SelectionDescription] {

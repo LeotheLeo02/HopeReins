@@ -26,7 +26,11 @@ struct DailyNoteFillIn: View {
     
     init(combinedString: Binding<String>) {
         self._combinedString = combinedString
-        extractComponents()
+        
+        let components = self.extractComponents(from: combinedString.wrappedValue, dateFormatter: dateFormatter)
+        self._extractedOnDate = State(initialValue: components.onDate)
+        self._extractedFromDate = State(initialValue: components.fromDate)
+        self._extractedToDate = State(initialValue: components.toDate)
     }
 
     var body: some View {
@@ -62,25 +66,28 @@ struct DailyNoteFillIn: View {
     func updateCombinedString() {
         combinedString = "on \(dateFormatter.string(from: extractedOnDate)) from \(dateFormatter.string(from: extractedFromDate)) to \(dateFormatter.string(from: extractedToDate))"
     }
-
-    func extractComponents() {
-        if let totalTreatmentsMatch = onDateRegex.firstMatch(in: combinedString, options: [], range: NSRange(location: 0, length: combinedString.utf16.count)) {
-            let onDateString = String(combinedString[Range(totalTreatmentsMatch.range(at: 1), in: combinedString)!])
-            if let onDate = dateFormatter.date(from: onDateString) {
-                extractedOnDate = onDate
-            }
+    
+    func extractComponents(from string: String, dateFormatter: DateFormatter) -> (onDate: Date, fromDate: Date, toDate: Date) {
+        let onDateRegex = try! NSRegularExpression(pattern: "On (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2})")
+        let dateRangeRegex = try! NSRegularExpression(pattern: "from (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2}) to (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2})")
+        
+        var onDate = Date()
+        var fromDate = Date()
+        var toDate = Date()
+        
+        if let onDateMatch = onDateRegex.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count)) {
+            let onDateString = String(string[Range(onDateMatch.range(at: 1), in: string)!])
+            onDate = dateFormatter.date(from: onDateString) ?? Date()
         }
-        if let dateRangeMatch = dateRangeRegex.firstMatch(in: combinedString, options: [], range: NSRange(location: 0, length: combinedString.utf16.count)) {
-            let fromDateString = String(combinedString[Range(dateRangeMatch.range(at: 1), in: combinedString)!])
-            let toDateString = String(combinedString[Range(dateRangeMatch.range(at: 2), in: combinedString)!])
-
-            if let fromDate = dateFormatter.date(from: fromDateString) {
-                extractedFromDate = fromDate
-            }
-            if let toDate = dateFormatter.date(from: toDateString) {
-                extractedToDate = toDate
-            }
+        
+        if let dateRangeMatch = dateRangeRegex.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count)) {
+            let fromDateString = String(string[Range(dateRangeMatch.range(at: 1), in: string)!])
+            let toDateString = String(string[Range(dateRangeMatch.range(at: 2), in: string)!])
+            fromDate = dateFormatter.date(from: fromDateString) ?? Date()
+            toDate = dateFormatter.date(from: toDateString) ?? Date()
         }
+        
+        return (onDate, fromDate, toDate)
     }
 }
 

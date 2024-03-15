@@ -29,7 +29,7 @@ class UIManagement: ObservableObject {
         self.patient = patient
         self.isAdding = isAdding
         self.dynamicUIElements = getUIElements()
-        if isRevaluation {
+        if isRevaluation && isAdding {
             self.updateGoalsFromLatestRecord(modelContext: modelContext)
         }
     }

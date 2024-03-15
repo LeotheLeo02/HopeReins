@@ -57,7 +57,6 @@ struct TextEntries: View {
             self.entries = self.decodeString(newValue)
         }
         .onAppear() {
-            print(combinedString)
             self.entries = self.decodeString(combinedString)
         }
     }

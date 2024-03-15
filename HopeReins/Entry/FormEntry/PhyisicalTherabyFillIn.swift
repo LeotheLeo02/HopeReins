@@ -15,7 +15,10 @@ struct RecommendedPhysicalTherapyFillIn: View {
     
     init(combinedString: Binding<String>) {
         self._combinedString = combinedString
-        extractComponents()
+        
+        let components = self.extractComponents(from: combinedString.wrappedValue)
+        self._frequency = State(initialValue: components.frequency)
+        self._duration = State(initialValue: components.duration)
     }
     
     private let frequencyRegex = try! NSRegularExpression(pattern: "(\\w+) /wk")
@@ -48,14 +51,22 @@ struct RecommendedPhysicalTherapyFillIn: View {
         print(combinedString)
     }
     
-    func extractComponents() {
-        if let frequencyMatch = frequencyRegex.firstMatch(in: combinedString, options: [], range: NSRange(location: 0, length: combinedString.utf16.count)) {
-            frequency = String(combinedString[Range(frequencyMatch.range(at: 1), in: combinedString)!])
+    func extractComponents(from string: String) -> (frequency: String, duration: String) {
+        let frequencyRegex = try! NSRegularExpression(pattern: "(\\w+) /wk")
+        let durationRegex = try! NSRegularExpression(pattern: " x (\\w+)")
+        
+        var frequency = ""
+        var duration = ""
+        
+        if let frequencyMatch = frequencyRegex.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count)) {
+            frequency = String(string[Range(frequencyMatch.range(at: 1), in: string)!])
         }
         
-        if let durationMatch = durationRegex.firstMatch(in: combinedString, options: [], range: NSRange(location: 0, length: combinedString.utf16.count)) {
-            duration = String(combinedString[Range(durationMatch.range(at: 1), in: combinedString)!])
+        if let durationMatch = durationRegex.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count)) {
+            duration = String(string[Range(durationMatch.range(at: 1), in: string)!])
         }
+        
+        return (frequency, duration)
     }
 }
 
@@ -65,7 +76,7 @@ struct DynamicTextField: View {
     @Binding var text: String
     var label: String
     var body: some View {
-        if isEditable {
+        if !isEditable {
             Text(text)
         } else {
             TextField(label, text: $text)
