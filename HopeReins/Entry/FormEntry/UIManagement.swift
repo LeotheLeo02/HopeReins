@@ -88,19 +88,16 @@ class UIManagement: ObservableObject {
     }
     
     
-    //TODO: Fix Inconvienence of showing different changes that are all the same via combined string...
     func revertToPastChange(fieldId: String?, version: Version, revertToAll: Bool, modelContext: ModelContext) -> Bool {
         if revertToAll {
             version.changes.forEach { change in
                 self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
             }
-        } else if let fieldId = fieldId {
-            for change in version.changes where change.fieldID == fieldId {
-                self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
-                version.changes.removeAll { $0 == change }
-                modelContext.delete(change)
-            }
-            
+        } else if let fieldId = fieldId, let change = version.changes.first(where: { $0.fieldID == fieldId }) {
+            self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
+            version.changes.removeAll { $0 == change }
+            modelContext.delete(change)
+            try? modelContext.save()
             return version.changes.isEmpty
         }
         
@@ -119,41 +116,27 @@ class UIManagement: ObservableObject {
     
     
     func getUIElements() -> [FormSection] {
-        if isUploadFile(fileType: record.fileType) {
+        switch record.fileType {
+        case _ where isUploadFile(fileType: record.fileType):
             return getUploadFile()
-        }
-        if record.fileType == "Patient" {
+        case "Patient":
             return getPatientFile()
+        case RidingFormType.ridingLessonPlan.rawValue:
+            return getRidingLessonPlan()
+        case PhysicalTherapyFormType.evaluation.rawValue:
+            return getEvaluation()
+        case PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue:
+            isIncrementalFileType = .physicalTherapyPlanOfCare
+            return getPhysicalTherapyPlanOfCare()
+        case PhysicalTherapyFormType.reEvaluation.rawValue:
+            isRevaluation = true
+            return getReEvaluation()
+        case PhysicalTherapyFormType.dailyNote.rawValue:
+            isIncrementalFileType = .dailyNote
+            return getDailyNote()
+        default:
+            return []
         }
-
-        if let type = RidingFormType(rawValue: record.fileType) {
-            switch type {
-            case .ridingLessonPlan:
-                return getRidingLessonPlan()
-            default:
-                return []
-            }
-        }
-
-        if let type = PhysicalTherapyFormType(rawValue: record.fileType) {
-            switch type {
-            case .evaluation:
-                return getEvaluation()
-            case .physicalTherapyPlanOfCare:
-                isIncrementalFileType = .physicalTherapyPlanOfCare
-                return getPhysicalTherapyPlanOfCare()
-            case .reEvaluation:
-                isRevaluation = true
-                return getReEvaluation()
-            case .dailyNote:
-                isIncrementalFileType = .dailyNote
-                return getDailyNote()
-            default:
-                return []
-            }
-        }
-
-        return []
     }
     
     func stringBinding(for key: String, defaultValue: String = "") -> Binding<String> {
@@ -214,11 +197,9 @@ public func convertToCodableValue(type: String, propertyChange: String) -> Codab
     case "String":
         return .string(propertyChange)
     case "Data":
-        guard let data = Data(base64Encoded: propertyChange) else { return .string("") }
-        return .data(data)
+        return .data(Data(base64Encoded: propertyChange) ?? .init())
     case "Date":
-        guard let date = DateFormatter().date(from: propertyChange) else { return .string("") }
-        return .date(date)
+        return .date(DateFormatter().date(from: propertyChange) ?? .now)
     default:
         return .string("")
     }

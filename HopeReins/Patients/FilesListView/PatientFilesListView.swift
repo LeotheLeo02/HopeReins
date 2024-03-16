@@ -89,8 +89,12 @@ struct PatientFilesListView: View {
             VStack(alignment: .leading) {
                 listHeader()
                 Divider()
-                formTypePicker
-                formTypeContent
+                if searchText.isEmpty {
+                    formTypePicker
+                    formTypeContent
+                } else {
+                    FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles, patient: patient)
+                }
             }
             .padding()
         }
@@ -148,19 +152,15 @@ struct PatientFilesListView: View {
     
     private var formTypeContent: some View {
         Group {
-            if searchText.isEmpty {
-                switch selectedFormType {
-                case .physicalTherapy(_):
-                    FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles, patient: patient)
-                case .riding(_):
-                    FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles, patient: patient)
-                }
-            } else {
-                FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles, patient: patient)
+            switch selectedFormType {
+            case .physicalTherapy(_):
+                FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles, patient: patient)
+            case .riding(_):
+                FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles, patient: patient)
             }
         }
     }
-
+    
     private var toolbarMenu: some View {
         Menu {
             Section(header: Text("Adaptive Riding").bold().underline()) {

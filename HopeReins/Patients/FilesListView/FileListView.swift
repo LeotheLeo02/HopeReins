@@ -36,7 +36,7 @@ struct FileListView: View {
             FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient)
         })
     }
-
+    
     private var fileGroupsView: some View {
         ForEach(fileGroups, id: \.0) { group in
             if !group.1.isEmpty {
@@ -44,7 +44,8 @@ struct FileListView: View {
             }
         }
     }
-
+    
+    
     private var emptyStateView: some View {
         HStack {
             Spacer()

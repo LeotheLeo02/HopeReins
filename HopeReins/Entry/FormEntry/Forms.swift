@@ -16,6 +16,7 @@ extension UIManagement {
         let uiElements: [FormSection] = [
             FormSection(title: "Personal Info", elements: [
                 .textField(title: "File Name", binding: stringBinding(for: "File Name")),
+                .textField(title: "MRN Number", binding: stringBinding(for: "MRN Number")),
                 .datePicker(title: "Date of Birth", hourAndMinute: false, binding: dateBinding(for: "Date of Birth")),
                 .textField(title: "Address", binding: stringBinding(for: "Address")),
                 .textField(title: "City", binding: stringBinding(for: "City")),

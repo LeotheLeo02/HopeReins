@@ -58,7 +58,7 @@ extension MedicalRecordFile {
         case "String":
             return .string(propertyChange)
         case "Data":
-            guard let data = propertyChange.data(using: .utf8) else { return .string("") }
+            guard let data = Data(base64Encoded: propertyChange) else { return .string("") }
             return .data(data)
         case "Date":
             guard let date = DateFormatter().date(from: propertyChange) else { return .string("") }
@@ -70,22 +70,22 @@ extension MedicalRecordFile {
     
     
     func revertToPastChange(fieldId: String?, version: Version, revertToAll: Bool, modelContext: ModelContext) -> Bool {
-        if revertToAll {
+        guard !revertToAll, let fieldId = fieldId else {
             version.changes.forEach { change in
                 self.properties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
             }
-        } else if let fieldId = fieldId {
-            for change in version.changes where change.fieldID == fieldId {
-                self.properties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
-                version.changes.removeAll { $0 == change }
-                modelContext.delete(change)
-            }
-            
-            return version.changes.isEmpty
+            try? modelContext.save()
+            return false
+        }
+        
+        for change in version.changes where change.fieldID == fieldId {
+            self.properties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
+            version.changes.removeAll { $0 == change }
+            modelContext.delete(change)
         }
         
         try? modelContext.save()
-        return false
+        return version.changes.isEmpty
     }
     
     

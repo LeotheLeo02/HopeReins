@@ -22,11 +22,11 @@ extension PatientsView {
                 var matches = true
 
                 if let name = criteria.name {
-                    matches = matches && patient.personalFile.properties["Name"]!.stringValue.localizedCaseInsensitiveContains(name)
+                    matches = matches && patient.personalFile.properties["File Name"]!.stringValue.localizedCaseInsensitiveContains(name)
                 }
 
                 if let mrn = criteria.mrn {
-                    matches = matches && patient.personalFile.properties["MRN"]!.stringValue.description.contains("\(mrn)")
+                    matches = matches && patient.personalFile.properties["MRN Number"]!.stringValue.description.contains("\(mrn)")
                 }
 
                 return matches
