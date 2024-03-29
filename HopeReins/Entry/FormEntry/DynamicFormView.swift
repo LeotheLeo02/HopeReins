@@ -14,9 +14,6 @@ struct DynamicFormView: View  {
     @Environment(\.modelContext) var modelContext
     @StateObject var uiManagement: UIManagement
     @State var text: String = ""
-    var changeDescriptions: [ChangeDescription] {
-        return uiManagement.record.compareProperties(with: uiManagement.modifiedProperties)
-    }
     @State var showPastChanges: Bool = false
     @State var selectedVersion: Version?
     @State var selectedFieldChange: String?
@@ -77,7 +74,6 @@ struct DynamicFormView: View  {
                                     }
                                 )
                                 .id(section.title)
-                                
                             }
                         }
                         
@@ -105,7 +101,7 @@ struct DynamicFormView: View  {
                         }
                     }
                     .sheet(isPresented: $reviewChanges, content: {
-                        ReviewChangesView(uiManagement: uiManagement, changeDescriptions: changeDescriptions)
+                        ReviewChangesView(uiManagement: uiManagement, changeDescriptions: uiManagement.changeDescriptions)
                     })
                     .padding()
                 }
@@ -115,12 +111,15 @@ struct DynamicFormView: View  {
         .toolbar {
             toolbarContent()
         }
+        .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
+            uiManagement.refreshUI()
+        }
     }
     
     @ViewBuilder
     func sectionContent(section: FormSection) -> some View {
         ForEach(section.elements.map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
-            SectionElement(wrappedElement: wrappedElement, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement, changeDescriptions: changeDescriptions)
+            SectionElement(wrappedElement: wrappedElement, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement)
         }
         .padding(3)
     }
@@ -140,7 +139,7 @@ struct DynamicFormView: View  {
                 }
                 .buttonStyle(.borderedProminent)
             }
-        } else if !changeDescriptions.isEmpty {
+        } else if !uiManagement.changeDescriptions.isEmpty {
             ToolbarItem(placement: .automatic) {
                 Button {
                     reviewChanges.toggle()
@@ -154,7 +153,7 @@ struct DynamicFormView: View  {
             }
         }
         if selectedVersion != nil {
-            ToolbarItem(placement: .cancellationAction) {
+            ToolbarItem(placement: .automatic) {
                 Button {
                     isRevertingVersion = true
                     showRevertAlert.toggle()
@@ -169,7 +168,7 @@ struct DynamicFormView: View  {
         }
         ToolbarItem(placement: .cancellationAction) {
             Button {
-                if !changeDescriptions.isEmpty {
+                if !uiManagement.changeDescriptions.isEmpty {
                     isRevertingVersion = false
                     showRevertAlert.toggle()
                 } else {

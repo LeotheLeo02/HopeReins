@@ -17,6 +17,12 @@ class UIManagement: ObservableObject {
     @Published var username: String
     @Published var patient: Patient?
     @Published var isAdding: Bool
+    var changeDescriptions: [DetailedChange] {
+        if !isAdding {
+            return self.compareStringValues()
+        }
+        return []
+    }
     
     let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotherapy", "Therapeutic Exercise", "Postural Alignment Training"]
     
@@ -33,19 +39,22 @@ class UIManagement: ObservableObject {
             self.updateGoalsFromLatestRecord(modelContext: modelContext)
         }
     }
-    
+    func refreshUI() {
+        self.dynamicUIElements = getUIElements()
+    }
     func updateGoalsFromLatestRecord(modelContext: ModelContext) {
         let reEvaluationRawValue = PhysicalTherapyFormType.reEvaluation.rawValue
         let pocRawValue = PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue
         
         var fetchRequest = FetchDescriptor<MedicalRecordFile>(
             predicate: #Predicate { record in
-                (record.fileType == reEvaluationRawValue) || (record.fileType == pocRawValue)
+                (record.fileType == reEvaluationRawValue) || (record.fileType == pocRawValue) && (record.isDead == false)
             },
-            sortBy: [SortDescriptor(\.digitalSignature?.dateModified, order: .reverse)]
+            sortBy: [SortDescriptor(\.addedSignature?.dateModified, order: .reverse)]
         )
         fetchRequest.fetchLimit = 1
         
+    
         if let latestRecord = try? modelContext.fetch(fetchRequest).first {
             modifiedProperties["TE Short Term Goals"] = latestRecord.properties["TE Short Term Goals"]
             modifiedProperties["TE Long Term Goals"] = latestRecord.properties["TE Long Term Goals"]
@@ -129,6 +138,7 @@ class UIManagement: ObservableObject {
             isIncrementalFileType = .physicalTherapyPlanOfCare
             return getPhysicalTherapyPlanOfCare()
         case PhysicalTherapyFormType.reEvaluation.rawValue:
+            isIncrementalFileType = .reEvaluation
             isRevaluation = true
             return getReEvaluation()
         case PhysicalTherapyFormType.dailyNote.rawValue:
@@ -202,5 +212,32 @@ public func convertToCodableValue(type: String, propertyChange: String) -> Codab
         return .date(DateFormatter().date(from: propertyChange) ?? .now)
     default:
         return .string("")
+    }
+}
+
+
+extension UIManagement {
+    private func compareStringValues() -> [DetailedChange] {
+        var changes = [DetailedChange]()
+        
+        for (key, oldValue) in self.record.properties {
+            if let newValue = modifiedProperties[key], oldValue != newValue {
+                let actualValue: CodableValue = oldValue
+                
+                if let formSection = dynamicUIElements.first(where: { formSection in
+                        formSection.elements.contains(where: { element in
+                            let wrappedElement  = DynamicUIElementWrapper(element: element)
+                            return wrappedElement.id == key
+                        })
+                    }), let dynamicUIElement = formSection.elements.first(where: { element in
+                        let wrappedElement  = DynamicUIElementWrapper(element: element)
+                        return wrappedElement.id == key
+                    })
+                {
+                    changes += dynamicUIElement.compare(key: key, oldValue: oldValue, newValue: newValue, actualValue: oldValue)
+                }
+              }
+            }
+        return changes
     }
 }

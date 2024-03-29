@@ -18,6 +18,12 @@ extension Data {
     }
 }
 
+extension Int {
+    var codableValue: CodableValue {
+        return CodableValue.int(self)
+    }
+}
+
 
 extension MedicalRecordFile {
     public func singleSelectionParse(combinedString: String) -> [LabelValue] {

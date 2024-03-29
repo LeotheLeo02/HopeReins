@@ -11,13 +11,13 @@ import SwiftData
 
 extension MedicalRecordFile {
 
-    func addPastChanges(reason: String, changes: [ChangeDescription], author: String, modelContext: ModelContext) {
+    func addPastChanges(reason: String, changes: [DetailedChange], author: String, modelContext: ModelContext) {
         let newVersion = Version(date: Date.now, reason: reason, author: author)
         var groupedDescriptions = [String: String]()
         var actualValues = [String: String]()
 
         for change in changes {
-            let changeDescription = "\(change.displayName): \(change.oldValue.stringValue)"
+            let changeDescription = "\(change.label): \(change.oldValue.stringValue)"
             // Update the description for the change
             if let existing = groupedDescriptions[change.id] {
                 groupedDescriptions[change.id] = "\(existing)\n\(changeDescription)"

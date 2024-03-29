@@ -18,6 +18,7 @@ struct MultiSelectOthers: View {
         GridItem(.adaptive(minimum: 200)),
         GridItem(.adaptive(minimum: 200))
     ]
+    
     var body: some View {
             Text(title)
                 .bold()

@@ -10,7 +10,6 @@ import SwiftUI
 struct FormSectionContent: View {
     @Environment(\.modelContext) var modelContext
     @State var wrappedElement: DynamicUIElementWrapper
-    var changeDescriptions: [ChangeDescription]
     @Binding var selectedVersion: Version?
     @Binding var selectedFieldChange: String?
     @ObservedObject var uiManagement: UIManagement

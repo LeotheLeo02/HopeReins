@@ -11,7 +11,7 @@ struct ReviewChangesView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @ObservedObject var uiManagement: UIManagement
-    @State var changeDescriptions: [ChangeDescription]
+    @State var changeDescriptions: [DetailedChange]
     @State var reason: String = ""
     var body: some View {
         ScrollView {
@@ -44,6 +44,7 @@ struct ReviewChangesView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     uiManagement.record.properties = uiManagement.modifiedProperties
+                    uiManagement.refreshUI()
                     uiManagement.record.addPastChanges(reason: reason, changes: changeDescriptions, author: uiManagement.username, modelContext: modelContext)
                     dismiss()
                 }, label: {
@@ -63,16 +64,16 @@ struct ReviewChangesView: View {
 }
 
 struct ChangeDescriptionView: View {
-    var changeDescription: ChangeDescription
+    var changeDescription: DetailedChange
     var body: some View {
         VStack {
             HStack {
-                Text("\(changeDescription.displayName.isEmpty ? changeDescription.id : changeDescription.displayName)")
+                Text("\(changeDescription.label.isEmpty ? changeDescription.id : changeDescription.label)")
                     .frame(minWidth: 100, maxWidth: 200)
                     .bold()
                 ChangeFieldView(value: changeDescription.oldValue, isOldChangeLabel: true)
                     .frame(minWidth: 100, maxWidth: 200)
-                ChangeFieldView(value: changeDescription.value, isOldChangeLabel: false)
+                ChangeFieldView(value: changeDescription.newValue, isOldChangeLabel: false)
                     .frame(minWidth: 100, maxWidth: 200)
             }
             Divider()

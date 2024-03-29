@@ -12,7 +12,6 @@ struct SectionElement: View {
     @Binding var selectedVersion: Version?
     @Binding var selectedFieldChange: String?
     @ObservedObject var uiManagement: UIManagement
-    var changeDescriptions: [ChangeDescription]
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -31,12 +30,12 @@ struct SectionElement: View {
                             get: { self.selectedFieldChange == wrappedElement.id },
                             set: { show in if !show { self.selectedFieldChange = nil } }
                         )) {
-                            FormSectionContent(wrappedElement: wrappedElement, changeDescriptions: changeDescriptions, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement)
+                            FormSectionContent(wrappedElement: wrappedElement, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement)
                         }
                     }
                     DynamicElementView(wrappedElement: wrappedElement.element)
                 }
-                if changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
+                if uiManagement.changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
                     Text("Modified")
                         .font(.caption)
                         .italic()

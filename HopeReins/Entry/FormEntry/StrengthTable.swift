@@ -21,7 +21,7 @@ struct StrengthTable: View {
         } else {
             self._tableData = State(initialValue: self.combineTableData(combinedString: self.combinedString))
         }
-       
+        print("Alive: \(combinedString.wrappedValue)")
     }
 
     var body: some View {
@@ -42,7 +42,7 @@ struct StrengthTable: View {
                 Divider()
                 ForEach(tableData, id: \.id) { rowData in
                     GridRow(alignment: .center) {
-                        EntryRowView(rowData: rowData, combinedString: $combinedString, tableData: $tableData) {
+                        EntryRowView(rowData: rowData, tableData: $tableData) {
                             updateCombinedString()
                         }
                         .gridCellColumns(5)
@@ -81,7 +81,15 @@ struct StrengthTable: View {
         .frame(minWidth: 500, maxWidth: 1000)
         .onChange(of: combinedString) { oldValue, newValue in
             self.tableData = self.combineTableData(combinedString: self.combinedString)
+            print(_combinedString.wrappedValue)
         }
+//        .onAppear {
+//            if combinedString.isEmpty {
+//                self.tableData = self.createInitialTableData(with: customLabels)
+//            } else {
+//                self.tableData = self.combineTableData(combinedString: self.combinedString)
+//            }
+//        }
 
         
         
@@ -148,7 +156,6 @@ struct StrengthTable: View {
 struct EntryRowView: View {
     @Environment(\.isEditable) var isEditable: Bool
     @ObservedObject var rowData: TableCellData
-    @Binding var combinedString: String
     @Binding var tableData: [TableCellData]
     @FocusState var labelIsFocused: Bool
     let updateParentCombinedString: () -> Void

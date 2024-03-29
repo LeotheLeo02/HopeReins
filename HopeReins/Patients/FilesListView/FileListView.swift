@@ -63,9 +63,10 @@ struct FileListView: View {
                 fileButton(file)
             }
         } label: {
-            Label(group.0, systemImage: "\(group.1.count).circle.fill")
-                .font(.headline)
+            Label(group.0, systemImage: "\(group.1.count).circle")
         }
+        .font(.title3)
+        .fontWeight(.medium)
     }
 
     private func fileButton(_ file: MedicalRecordFile) -> some View {

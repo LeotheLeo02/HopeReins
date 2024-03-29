@@ -13,62 +13,56 @@ public var defaultUELabels: [String] = ["Shoulder Elevation (in scapular pain)",
 
 extension MedicalRecordFile {
     
+//    func compareProperties(with other: [String: CodableValue]) -> [ChangeDescription] {
+//        var changes = [ChangeDescription]()
+//        
+//        for (key, oldValue) in self.properties {
+//            if let newValue = other[key], oldValue != newValue {
+//                let cleanedKey = cleanKey(key)
+//                let actualValue: CodableValue = .string(oldValue)
+//                
+//                switch (oldValue, newValue) {
+//                case (.string(let oldStringValue), .string(let newStringValue)):
+//                    let detailedChanges = compareStringValues(key: key, oldValue: oldStringValue, newValue: newStringValue)
+//                    changes.append(contentsOf: detailedChanges)
+//                    
+//                    
+//                case (.data(let oldDataValue), .data(let newDataValue)):
+//                    if oldDataValue != newDataValue {
+//                        changes.append(ChangeDescription(displayName: cleanedKey, id: key, oldValue: oldDataValue.codableValue, value: newDataValue.codableValue, actualValue: oldValue))
+//                    }
+//                    
+//                default:
+//                    break
+//                }
+//            }
+//        }
+//        
+//        return changes
+//    }
     
-    func compareProperties(with other: [String: CodableValue]) -> [ChangeDescription] {
-        var changes = [ChangeDescription]()
-        
-        for (key, oldValue) in self.properties {
-            if let newValue = other[key], oldValue != newValue {
-                switch oldValue {
-                case .string(_):
-                    if key.contains("SS") {
-                        for change in compareSingleSelection(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                            changes.append(ChangeDescription(displayName: change.label,id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
-                        }
-                    } else if key.contains("TE") {
-                        for change in compareTextEntries(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
-                        }
-                    } else if key.contains("Table") {
-                        for change in compareLETable(tableType: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
-                        }
-                    } else if key.contains("MSO") {
-                        for change in compareMultiSelectOthers(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
-                        }
-                    } else if key.contains("MST") {
-                        for change in compareMultiSelectWithTitle(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
-                        }
-                    } else if key.contains("DAT") {
-                        for change in compareDailyNoteTable(oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue) {
-                            changes.append(ChangeDescription(displayName: change.label, id: key, oldValue: change.oldValue.codableValue, value: change.newValue.codableValue, actualValue: oldValue))
-                            print(change)
-                        }
-                    } else {
-                        changes.append(ChangeDescription(displayName: "", id: key, oldValue: oldValue.stringValue.codableValue, value: newValue.stringValue.codableValue, actualValue: oldValue))
-                    }
-                case .data(let data):
-                    changes.append(ChangeDescription(displayName: key, id: key, oldValue: oldValue.dataValue.codableValue, value: newValue.dataValue.codableValue, actualValue: oldValue))
-                case .int(_):
-                    print("Int")
-                case .double(_):
-                    print("Double")
-                case .bool(_):
-                    print("Bool")
-                case .date(_):
-                    changes.append(ChangeDescription(displayName: key, id: key, oldValue: CodableValue.date(oldValue.dateValue), value: CodableValue.date(newValue.dateValue), actualValue: CodableValue.date(oldValue.dateValue)))
-                }
-            }
+    
+    private func cleanKey(_ key: String) -> String {
+        if key.contains("SS") {
+            return key.replacingOccurrences(of: "SS", with: "").trimmingCharacters(in: .whitespaces)
+        } else if key.contains("TE") {
+            return key.replacingOccurrences(of: "TE", with: "").trimmingCharacters(in: .whitespaces)
+        } else if key.contains("Table") {
+            return key.replacingOccurrences(of: "Table", with: "").trimmingCharacters(in: .whitespaces)
+        } else if key.contains("MSO") {
+            return key.replacingOccurrences(of: "MSO", with: "").trimmingCharacters(in: .whitespaces)
+        } else if key.contains("MST") {
+            return key.replacingOccurrences(of: "MST", with: "").trimmingCharacters(in: .whitespaces)
+        } else if key.contains("DAT") {
+            return key.replacingOccurrences(of: "DAT", with: "").trimmingCharacters(in: .whitespaces)
+        } else {
+            return key
         }
-        return changes
     }
     
+
     
-    
-    
-    func compareAndDescribeChangesDailyNote(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareAndDescribeChangesDailyNote(key: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         let oldTableData = decodeDailyNote(oldCombinedString)
         let newTableData = decodeDailyNote(newCombinedString)
         
@@ -77,7 +71,7 @@ extension MedicalRecordFile {
         for oldTableDatum in oldTableData {
             for newTableDatum in newTableData {
                 if oldTableDatum.value != newTableDatum.value {
-                    changes.append(DetailedChange(label: oldTableDatum.label, oldValue: oldTableDatum.value, newValue: newTableDatum.value))
+                    changes.append(DetailedChange(label: oldTableDatum.label, id: key, oldValue: oldTableDatum.value.codableValue, newValue: newTableDatum.value.codableValue, actualValue: actualValue))
                 }
             }
         }
@@ -101,7 +95,7 @@ extension MedicalRecordFile {
     }
 
     
-    func compareLETable(tableType: String, oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareLETable(key: String, tableType: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         var defaultTable: [LabelValue] = []
         
         if tableType.contains("LE") {
@@ -123,24 +117,24 @@ extension MedicalRecordFile {
         for (label, newLabelValue) in newDataDict {
             if let oldLabelValue = oldDataDict[label] {
                 if oldLabelValue.value != newLabelValue.value {
-                    changes.append(DetailedChange(label: label, oldValue: oldLabelValue.value, newValue: newLabelValue.value))
+                    changes.append(DetailedChange(label: label, id: key, oldValue: oldLabelValue.value.codableValue, newValue: newLabelValue.value.codableValue, actualValue: actualValue))
                 }
             } else {
-                changes.append(DetailedChange(label: label, oldValue: "Not Indicated", newValue: newLabelValue.value))
+                changes.append(DetailedChange(label: label, id: key, oldValue: "Not Indicated".codableValue, newValue: newLabelValue.value.codableValue, actualValue: actualValue))
             }
         }
         
         // Check for removed rows
         for (oldLabel, oldLabelValue) in oldDataDict {
             if newDataDict[oldLabel] == nil {
-                changes.append(DetailedChange(label: oldLabel, oldValue: oldLabelValue.value, newValue: "Deleted"))
+                changes.append(DetailedChange(label: oldLabel, id: key, oldValue: oldLabelValue.value.codableValue, newValue: "Deleted".codableValue, actualValue: actualValue))
             }
         }
         
         return changes
     }
     
-    func compareMultiSelectWithTitle(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareMultiSelectWithTitle(key: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         let oldData = decodeMultiSelectWithTitle(boolString: oldCombinedString)
         let newData = decodeMultiSelectWithTitle(boolString: newCombinedString)
         
@@ -154,7 +148,7 @@ extension MedicalRecordFile {
         for newEntry in newData {
             let oldValue = oldDict[newEntry.label]
             if oldValue != newEntry.value {
-                let change = DetailedChange(label: newEntry.label, oldValue: oldValue ?? "False", newValue: newEntry.value.isEmpty ? "True" : newEntry.value)
+                let change = DetailedChange(label: newEntry.label, id: key, oldValue: (oldValue ?? "False").codableValue, newValue: (newEntry.value.isEmpty ? "True" : newEntry.value).codableValue, actualValue: actualValue)
                 changes.append(change)
             }
         }
@@ -162,7 +156,7 @@ extension MedicalRecordFile {
         // Check for removals
         for oldEntry in oldData {
             if newDict[oldEntry.label] == nil {
-                let change = DetailedChange(label: oldEntry.label, oldValue: oldEntry.value, newValue: "False")
+                let change = DetailedChange(label: oldEntry.label, id: key, oldValue: oldEntry.value.codableValue, newValue: "False".codableValue, actualValue: actualValue)
                 changes.append(change)
             }
         }
@@ -170,7 +164,7 @@ extension MedicalRecordFile {
         return changes
     }
     
-    func compareSingleSelection(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareSingleSelection(key: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         let oldData = singleSelectionParse(combinedString: oldCombinedString)
         let newData = singleSelectionParse(combinedString: newCombinedString)
         
@@ -186,7 +180,7 @@ extension MedicalRecordFile {
             
             if oldValue != newValue {
                 // If the value has changed or the label is new
-                changes.append(DetailedChange(label: newLabelValue.label, oldValue: oldValue ?? "Not Indicated", newValue: newValue))
+                changes.append(DetailedChange(label: newLabelValue.label, id: key, oldValue: (oldValue ?? "Not Indicated").codableValue, newValue: newValue.codableValue, actualValue: actualValue))
             }
         }
         
@@ -194,14 +188,14 @@ extension MedicalRecordFile {
         for oldLabelValue in oldData {
             if newDataDict[oldLabelValue.label] == nil {
                 // If a label in old data does not exist in new data
-                changes.append(DetailedChange(label: oldLabelValue.label, oldValue: oldLabelValue.value, newValue: ""))
+                changes.append(DetailedChange(label: oldLabelValue.label, id: key, oldValue: oldLabelValue.value.codableValue, newValue: "".codableValue, actualValue: actualValue))
             }
         }
         
         return changes
     }
     
-    func compareTextEntries(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareTextEntries(key: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         let oldData = textEntriesParse(combinedString: oldCombinedString)
         let newData = textEntriesParse(combinedString: newCombinedString)
         
@@ -217,7 +211,7 @@ extension MedicalRecordFile {
             
             if oldValue != newValue {
                 // If the value has changed or the label is new
-                changes.append(DetailedChange(label: newLabelValue.label, oldValue: oldValue ?? "", newValue: newValue))
+                changes.append(DetailedChange(label: newLabelValue.label, id: key, oldValue: (oldValue ?? "").codableValue, newValue: newValue.codableValue, actualValue: actualValue))
             }
         }
         
@@ -225,7 +219,7 @@ extension MedicalRecordFile {
         for oldLabelValue in oldData {
             if newDataDict[oldLabelValue.label] == nil {
                 // If a label in old data does not exist in new data
-                changes.append(DetailedChange(label: oldLabelValue.label, oldValue: oldLabelValue.value, newValue: ""))
+                changes.append(DetailedChange(label: oldLabelValue.label, id: key, oldValue: oldLabelValue.value.codableValue, newValue: "".codableValue, actualValue: actualValue))
             }
         }
         
@@ -233,7 +227,7 @@ extension MedicalRecordFile {
     }
     
     
-    func compareMultiSelectOthers(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareMultiSelectOthers(key: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         let oldData = decodeMultiSelectOthers(oldCombinedString)
         let newData = decodeMultiSelectOthers(newCombinedString)
         
@@ -247,7 +241,7 @@ extension MedicalRecordFile {
         for newEntry in newData {
             let oldValue = oldDict[newEntry.label]
             if oldValue != newEntry.value {
-                let change = DetailedChange(label: newEntry.label, oldValue: oldValue ?? "None", newValue: newEntry.value)
+                let change = DetailedChange(label: newEntry.label, id: key, oldValue: (oldValue ?? "None").codableValue, newValue: newEntry.value.codableValue, actualValue: actualValue)
                 changes.append(change)
             }
         }
@@ -255,7 +249,7 @@ extension MedicalRecordFile {
         // Check for removals
         for oldEntry in oldData {
             if newDict[oldEntry.label] == nil {
-                let change = DetailedChange(label: oldEntry.label, oldValue: oldEntry.value, newValue: "Removed")
+                let change = DetailedChange(label: oldEntry.label, id: key, oldValue: oldEntry.value.codableValue, newValue: "Removed".codableValue, actualValue: actualValue)
                 changes.append(change)
             }
         }
@@ -264,7 +258,7 @@ extension MedicalRecordFile {
     }
     
     
-    func compareDailyNoteTable(oldCombinedString: String, newCombinedString: String) -> [DetailedChange] {
+    func compareDailyNoteTable(key: String, oldCombinedString: String, newCombinedString: String, actualValue: CodableValue) -> [DetailedChange] {
         var oldTableData = decodeDailyNoteTable(oldCombinedString)
         let newTableData = decodeDailyNoteTable(newCombinedString)
         
@@ -288,7 +282,7 @@ extension MedicalRecordFile {
                 
                 // Check if any field within the table cell has changed
                 if oldEntry.number != newEntry.number {
-                    changes.append(DetailedChange(label: oldEntry.code, oldValue: oldEntry.number.description, newValue: newEntry.number.description))
+                    changes.append(DetailedChange(label: oldEntry.code, id: key, oldValue: oldEntry.number.description.codableValue, newValue: newEntry.number.description.codableValue, actualValue: actualValue))
                 }
             }
         }

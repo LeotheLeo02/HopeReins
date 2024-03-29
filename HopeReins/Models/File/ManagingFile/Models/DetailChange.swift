@@ -7,8 +7,10 @@
 
 import Foundation
 
-struct DetailedChange {
+struct DetailedChange: Hashable {
     var label: String
-    var oldValue: String
-    var newValue: String
+    var id: String
+    var oldValue: CodableValue
+    var newValue: CodableValue
+    var actualValue: CodableValue
 }
