@@ -15,8 +15,8 @@ extension UIManagement {
         // TODO: ensure that date is working properly
         let uiElements: [FormSection] = [
             FormSection(title: "Personal Info", elements: [
-                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
-                .textField(title: "MRN Number", binding: stringBinding(for: "MRN Number")),
+                .textField(title: "File Name", binding: stringBinding(for: "File Name"), isRequired: true),
+                .textField(title: "MRN Number", binding: stringBinding(for: "MRN Number"), isRequired: true),
                 .datePicker(title: "Date of Birth", hourAndMinute: false, binding: dateBinding(for: "Date of Birth")),
                 .textField(title: "Address", binding: stringBinding(for: "Address")),
                 .textField(title: "City", binding: stringBinding(for: "City")),
@@ -55,7 +55,7 @@ extension UIManagement {
     func getUploadFile() -> [FormSection] {
         let uiElements: [FormSection] = [
             FormSection(title: "Upload File", elements: [
-                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
+                .textField(title: "File Name", binding: stringBinding(for: "File Name"), isRequired: true),
                 .fileUploadButton(title: "File Data", dataValue: dataBinding(for: "File Data"))
             ])
         ]
@@ -66,7 +66,7 @@ extension UIManagement {
     func getRidingLessonPlan() -> [FormSection] {
         let uiElements : [FormSection] = [
             FormSection(title: "Riding Lesson Plan", elements: [
-                .textField(title: "File Name", binding: stringBinding(for: "File Name")),
+                .textField(title: "File Name", binding: stringBinding(for: "File Name"), isRequired: true),
                 .datePicker(title: "Date", hourAndMinute: false, binding: dateBinding(for: "Date")),
                 .textField(title: "Objective", binding: stringBinding(for: "Objective")),
                 .textField(title: "Preparation", binding: stringBinding(for: "Preparation")),
@@ -82,7 +82,7 @@ extension UIManagement {
     func getEvaluation() -> [FormSection]{
         let uiElements: [FormSection] = [
             FormSection(title: "File Name", elements: [
-                .textField(title: "File Name", binding: stringBinding(for: "File Name"))
+                .textField(title: "File Name", binding: stringBinding(for: "File Name"), isRequired: true)
             ]),
             FormSection(title: "Medical/Functional Information", elements: [
                 .textField(title: "Education Level", binding: stringBinding(for: "Education Level")),

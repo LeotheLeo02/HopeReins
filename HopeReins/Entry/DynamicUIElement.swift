@@ -7,14 +7,20 @@
 
 import SwiftUI
 
+
+public var defaultLEROMLables: [String] = ["Knee Flexion", "Knee Extension", "Hip Flexion", "Hip Extension", "Hip Abduction", "Hip Internal Rot.", "Hip External Rot", "Ankle Dorsifl.", "Ankle Plantar"]
+
+public var defaultUELabels: [String] = ["Shoulder Elevation (in scapular pain)", "Shoulder Abduction", "Shoulder Extension", "Shoulder Internal Rotation", "Shoulder External Rotation", "Elbow Flexion", "Elbow Extension", "Wrist Flection", "Wrist Extension", "Wrist Pronation"]
+
+
 struct DynamicElementView: View {
     @State var wrappedElement: DynamicUIElement
     @State var change: PastChange?
     var body: some View {
         VStack(alignment: .leading) {
             switch wrappedElement {
-            case .textField(let title, let binding):
-                BasicTextField(title: title, text: bindingForChange(type: String.self, originalBinding: binding))
+            case .textField(let title, let binding, let isRequired):
+                BasicTextField(title: title, isRequired: isRequired, text: bindingForChange(type: String.self, originalBinding: binding))
             case .datePicker(let title, let hourAndMinute, let binding):
                 DateSelection(title: title, hourAndMinute: hourAndMinute, date: bindingForChange(type: Date.self, originalBinding: binding))
             case .numberField(let title, let binding):
@@ -38,9 +44,6 @@ struct DynamicElementView: View {
                     OriginalValueView(id: change!.fieldID, value: change!.propertyChange, displayName: change!.displayName)
                 } else {
                     DailyNoteTable(combinedString: combinedString)
-                        .onAppear {
-                            print(combinedString.wrappedValue)
-                        }
                 }
             case .fileUploadButton(title: let title, dataValue: let dataValue):
                 PropertyHeader(title: title)
@@ -60,7 +63,7 @@ struct DynamicElementView: View {
 }
 
 enum DynamicUIElement: Hashable {
-    case textField(title: String, binding: Binding<String>)
+    case textField(title: String, binding: Binding<String>, isRequired: Bool = false)
     case datePicker(title: String, hourAndMinute: Bool, binding: Binding<Date>)
     case numberField(title: String, binding: Binding<Int>)
     case sectionHeader(title: String)
@@ -77,7 +80,7 @@ enum DynamicUIElement: Hashable {
     
     static func == (lhs: DynamicUIElement, rhs: DynamicUIElement) -> Bool {
            switch (lhs, rhs) {
-           case let (.textField(title1, _), .textField(title2, _)),
+           case let (.textField(title1, _, _), .textField(title2, _, _)),
                 let (.numberField(title1, _), .numberField(title2, _)):
                return title1 == title2
            case (.sectionHeader(let title1), .sectionHeader(let title2)):
@@ -90,7 +93,7 @@ enum DynamicUIElement: Hashable {
     
     func hash(into hasher: inout Hasher) {
         switch self {
-        case .textField(let title, _),
+        case .textField(let title, _, _),
                 .numberField(let title, _),
                 .sectionHeader(let title),
                 .strengthTable(let title, _),
@@ -124,7 +127,7 @@ struct DynamicUIElementWrapper: Hashable {
 
     init(element: DynamicUIElement) {
         switch element {
-        case .textField(let title, _),
+        case .textField(let title, _, _),
              .numberField(let title, _),
              .sectionHeader(let title),
              .datePicker(let title, _, _),
@@ -169,7 +172,7 @@ extension DynamicElementView {
 extension DynamicUIElement {
     func compare(key: String, oldValue: CodableValue, newValue: CodableValue, actualValue: CodableValue) -> [DetailedChange] {
         switch self {
-        case .textField(let title, _):
+        case .textField(let title, _, _):
             return [DetailedChange(label: title, id: key, oldValue: oldValue, newValue: newValue, actualValue: actualValue)]
         case .datePicker(let title, _, _):
             return [DetailedChange(label: title, id: key, oldValue: oldValue, newValue: newValue, actualValue: actualValue)]

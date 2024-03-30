@@ -10,10 +10,18 @@ import SwiftUI
 struct BasicTextField: View {
     @Environment(\.isEditable) var isEditable: Bool
     var title: String
+    var isRequired: Bool
     @Binding var text: String
     var body: some View {
         VStack(alignment: .leading) {
-            PropertyHeader(title: title)
+            HStack {
+                PropertyHeader(title: title)
+                if isRequired {
+                    Text("*")
+                        .font(.title2)
+                        .foregroundStyle(.red)
+                }
+            }
             TextField("", text: $text, axis: .vertical)
                 .padding(.bottom)
                 .labelsHidden()

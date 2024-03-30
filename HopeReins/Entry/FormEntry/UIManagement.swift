@@ -9,8 +9,14 @@ import SwiftUI
 import SwiftData
 
 class UIManagement: ObservableObject {
+    
+    let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotherapy", "Therapeutic Exercise", "Postural Alignment Training"]
+    
+    let problemsLabels: [String] = ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"]
+    
     @Published var modifiedProperties: [String : CodableValue]
     @Published var dynamicUIElements: [FormSection] = []
+    @Published var errorMessage: String = ""
     @Published var record: MedicalRecordFile
     @Published var isIncrementalFileType: PhysicalTherapyFormType?
     @Published var isRevaluation: Bool = false
@@ -24,9 +30,6 @@ class UIManagement: ObservableObject {
         return []
     }
     
-    let treatmentsLabels: [String] = ["Balance Training", "Gait Training", "Therapeutic Activity", "Coordination Activities", "Sensory Processing", "ADL Training", "Praxis Activities", "Bilateral Integration Activities", "Proximal Stabalization Training", "Neuromuscular Re-Education", "HEP Training", "Developmental Skills", "Motor Control Training", "Equipment Assessment/Training", "Hippotherapy", "Therapeutic Exercise", "Postural Alignment Training"]
-    
-    let problemsLabels: [String] = ["Decreased Strength", "Diminished Endurance", "Dependence with Mobility", "Dependence with ADLs", "Decreased APROM/PROM", "Impaired Coordination/Motor Control", "Dependence with Transition/Transfers", "Impaired Safety Awareness", "Neurologically Impaired Functional Skills", "Developmental Deficits-Gross/Fine Motor", "Impared Balance-Static/Dynamic", "Impaired Sensory Processing/Praxis"]
     
     init(modifiedProperties: [String : CodableValue], record: MedicalRecordFile, username: String, patient: Patient?, isAdding: Bool, modelContext: ModelContext) {
         self.modifiedProperties = modifiedProperties
@@ -42,6 +45,7 @@ class UIManagement: ObservableObject {
     func refreshUI() {
         self.dynamicUIElements = getUIElements()
     }
+    
     func updateGoalsFromLatestRecord(modelContext: ModelContext) {
         let reEvaluationRawValue = PhysicalTherapyFormType.reEvaluation.rawValue
         let pocRawValue = PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue
@@ -62,6 +66,27 @@ class UIManagement: ObservableObject {
     }
     
     func addFile(modelContext: ModelContext) {
+        let requiredFields = dynamicUIElements.flatMap { section in
+            section.elements.compactMap { element -> String? in
+                switch element {
+                case .textField(let title, _, let isRequired):
+                    if isRequired && modifiedProperties[title]?.stringValue.isEmpty == true {
+                        return title
+                    }
+                default:
+                    break
+                }
+                return nil
+            }
+        }
+        
+        if !requiredFields.isEmpty {
+            errorMessage = "The following required fields are missing: \(requiredFields.joined(separator: ", "))"
+            return
+        }
+        
+        errorMessage = ""
+        
         record.setUpSignature(addedBy: username, modelContext: modelContext)
         if isIncrementalFileType != nil {
             setIncrementalFileName(modelContext: modelContext)
@@ -76,42 +101,6 @@ class UIManagement: ObservableObject {
         }
         modelContext.insert(record)
        try? modelContext.save()
-    }
-    
-    func revertToVersion(selectedVersion: Version?, modelContext: ModelContext) {
-        record.revertToPastChange(fieldId: nil, version: selectedVersion!, revertToAll: true, modelContext: modelContext)
-        modifiedProperties = record.properties
-    }
-    
-    
-    func revertToPastVersion(selectedVersion: Version?, selectedFieldChange: String?, change: PastChange, revertToAll: Bool, modelContext: ModelContext) -> Bool {
-        var isLastChange: Bool = false
-        if  revertToPastChange(fieldId: selectedFieldChange, version: selectedVersion!, revertToAll: revertToAll, modelContext: modelContext) {
-            record.versions.removeAll{ $0 == selectedVersion! }
-            modelContext.delete(selectedVersion!)
-            isLastChange = true
-        }
-        record.properties = modifiedProperties
-        
-        return isLastChange
-    }
-    
-    
-    func revertToPastChange(fieldId: String?, version: Version, revertToAll: Bool, modelContext: ModelContext) -> Bool {
-        if revertToAll {
-            version.changes.forEach { change in
-                self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
-            }
-        } else if let fieldId = fieldId, let change = version.changes.first(where: { $0.fieldID == fieldId }) {
-            self.modifiedProperties[change.fieldID] = convertToCodableValue(type: change.type, propertyChange: change.propertyChange)
-            version.changes.removeAll { $0 == change }
-            modelContext.delete(change)
-            try? modelContext.save()
-            return version.changes.isEmpty
-        }
-        
-        try? modelContext.save()
-        return false
     }
     
     func setIncrementalFileName(modelContext: ModelContext) {
@@ -147,57 +136,6 @@ class UIManagement: ObservableObject {
         default:
             return []
         }
-    }
-    
-    func stringBinding(for key: String, defaultValue: String = "") -> Binding<String> {
-        Binding<String>(
-            get: {
-                if self.modifiedProperties[key] == nil {
-                    self.modifiedProperties[key] = .string(defaultValue)
-                }
-                return self.modifiedProperties[key]?.stringValue ?? defaultValue
-            },
-            set: { self.modifiedProperties[key] = .string($0) }
-        )
-    }
-
-    func intBinding(for key: String, defaultValue: Int = 0) -> Binding<Int> {
-        Binding<Int>(
-            get: {
-                if self.modifiedProperties[key] == nil {
-                    self.modifiedProperties[key] = .int(defaultValue)
-                }
-                return self.modifiedProperties[key]?.intValue ?? defaultValue
-            },
-            set: { self.modifiedProperties[key] = .int($0) }
-        )
-    }
-
-
-    func dataBinding(for key: String, defaultValue: Data = .init()) -> Binding<Data?> {
-        Binding<Data?>(
-            get: {
-                if self.modifiedProperties[key] == nil {
-                    self.modifiedProperties[key] = .data(defaultValue)
-                }
-                return self.modifiedProperties[key]?.dataValue ?? defaultValue
-            },
-            set: { self.modifiedProperties[key] = .data($0!) }
-        )
-    }
-
-
-    
-    func dateBinding(for key: String, defaultValue: Date = .now) -> Binding<Date> {
-        Binding<Date>(
-            get: {
-                if self.modifiedProperties[key] == nil {
-                    self.modifiedProperties[key] = .date(defaultValue)
-                }
-                return self.modifiedProperties[key]?.dateValue ?? defaultValue
-            },
-            set: { self.modifiedProperties[key] = .date($0) }
-        )
     }
 
 }

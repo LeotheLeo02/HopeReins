@@ -74,13 +74,6 @@ struct DailyNoteTable: View {
                 .foregroundStyle(.windowBackground)
                 .shadow(radius: 3)
         )
-//        .onAppear {
-//            if combinedString.isEmpty {
-//                self.tableData = self.createInitialTableData()
-//            } else {
-//                self.tableData = self.combineTableData(combinedString: self.combinedString)
-//            }
-//        }
         .frame(minWidth: 400, maxWidth: 800)
         .onChange(of: combinedString) { oldValue, newValue in
             self.tableData = self.combineTableData(combinedString: self.combinedString)
@@ -99,7 +92,6 @@ struct DailyNoteTable: View {
         } else {
             combinedString = tableData.map { $0.combinedStringRepresentation }.joined(separator: "//")
         }
-//        print(combinedString)
     }
     private func removeLastRow() {
         if let lastIndex = tableData.lastIndex(where: { $0.isEditable }) {

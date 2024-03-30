@@ -47,6 +47,12 @@ struct DynamicFormView: View  {
 
                     }
                     .padding([.top, .horizontal])
+                } else {
+                    if !uiManagement.errorMessage.isEmpty {
+                        Text(uiManagement.errorMessage)
+                            .foregroundStyle(.red)
+                            .padding([.top, .horizontal])
+                    }
                 }
                 ScrollView {
                     VStack(alignment: .leading) {
@@ -112,7 +118,7 @@ struct DynamicFormView: View  {
             toolbarContent()
         }
         .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
-            uiManagement.refreshUI()
+                uiManagement.refreshUI()
         }
     }
     
@@ -130,7 +136,9 @@ struct DynamicFormView: View  {
             ToolbarItem(placement: .automatic) {
                 Button {
                     uiManagement.addFile(modelContext: modelContext)
-                    dismiss()
+                    if uiManagement.errorMessage.isEmpty {
+                        dismiss()
+                    }
                 } label: {
                     HStack {
                         Text("Add File")

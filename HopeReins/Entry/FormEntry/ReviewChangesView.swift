@@ -16,7 +16,7 @@ struct ReviewChangesView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .center) {
-                BasicTextField(title: "Title For Change(s)", text: $reason)
+                BasicTextField(title: "Title For Change(s)", isRequired: false, text: $reason)
                 Grid(alignment: .center) {
                     GridRow(alignment: .center) {
                         Text("Property")
