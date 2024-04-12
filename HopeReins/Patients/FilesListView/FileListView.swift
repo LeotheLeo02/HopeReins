@@ -33,7 +33,7 @@ struct FileListView: View {
             }
         }
         .sheet(isPresented: $showEditSheet, content: {
-            FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient)
+            FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient, files: files)
         })
     }
     

@@ -11,7 +11,7 @@ struct FormAddView: View {
     @Binding var selectedSpecificForm: FormType?
     var patient: Patient
     var user: User
-    
+    var files: [MedicalRecordFile]
     var body: some View {
         Group {
             if let formType = selectedSpecificForm {
@@ -33,6 +33,6 @@ struct FormAddView: View {
         
         let record = MedicalRecordFile(fileType: fileType)
         
-        return DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: patient, isAdding: true, modelContext: modelContext))
+        return DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: patient, isAdding: true, modelContext: modelContext), files: files)
     }
 }

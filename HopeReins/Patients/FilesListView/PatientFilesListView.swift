@@ -93,7 +93,7 @@ struct PatientFilesListView: View {
                     formTypePicker
                     formTypeContent
                 } else {
-                    FilteredFilesList(user: user, filteredFiles: filteredFiles, isEditable: !showDeadFiles, patient: patient)
+                    FilteredFilesList(user: user, filteredFiles: filteredFiles, files: files, isEditable: !showDeadFiles, patient: patient)
                 }
             }
             .padding()
@@ -106,11 +106,12 @@ struct PatientFilesListView: View {
             }
         })
         .sheet(isPresented: $showPatientInfo, content: {
-            DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile, username: user.username, patient: patient, isAdding: false, modelContext: modelContext))
+            DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile, username: user.username, patient: patient, isAdding: false, modelContext: modelContext), files: files)
+                .frame(minWidth: 1000)
                 .environment(\.isEditable, !showDeadFiles)
         })
         .sheet(isPresented: $addFile, content: {
-            FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user)
+            FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user, files: [])
                 .frame(minWidth: 500, minHeight: 300)
         })
         .navigationTitle(showDeadFiles ? "Existing Files" : "Patients")
@@ -198,6 +199,7 @@ struct FilteredFilesList: View {
     @State var showEditSheet: Bool = false
     var user: User
     var filteredFiles: [MedicalRecordFile]
+    var files: [MedicalRecordFile]
     var isEditable: Bool
     var patient: Patient
     var body: some View {
@@ -212,7 +214,7 @@ struct FilteredFilesList: View {
             }
         }
         .sheet(isPresented: $showEditSheet, content: {
-            FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient)
+            FormEditView(file: $selectedFile, isEditable: isEditable, user: user, patient: patient, files: files)
         })
         
     }

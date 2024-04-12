@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SectionElement: View {
+    @Environment(\.isEditable) var isEditable
     @State var wrappedElement: DynamicUIElementWrapper
     @Binding var selectedVersion: Version?
     @Binding var selectedFieldChange: String?

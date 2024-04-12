@@ -28,15 +28,15 @@ struct StrengthTable: View {
             Grid(alignment: .center)  {
                 GridRow {
                         Text("* = pain")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                         Text("MMT R")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                         Text("MMT L")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                         Text("A/PROM (R)")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                         Text("A/PROM (L)")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                 }
                 Divider()
                 ForEach(tableData, id: \.id) { rowData in
@@ -77,7 +77,7 @@ struct StrengthTable: View {
                 .foregroundStyle(.windowBackground)
                 .shadow(radius: 3)
         )
-        .frame(minWidth: 500, maxWidth: 1000)
+        .frame(minWidth: 375, maxWidth: 1000)
         .onChange(of: combinedString) { oldValue, newValue in
             self.tableData = self.combineTableData(combinedString: self.combinedString)
         }
@@ -167,7 +167,7 @@ struct EntryRowView: View {
                             .font(.subheadline)
                     }
                 }
-                .frame(minWidth: 100, maxWidth: 200)
+                .frame(minWidth: 75, maxWidth: 200)
                 
                 StrengthPickerView(value: $rowData.value1)
                     .disabled(!isEditable)

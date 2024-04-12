@@ -45,10 +45,12 @@ struct PastChangeSelectionView: View {
                 if selectedVersion == nil {
                     Image(systemName: "checkmark")
                         .bold()
+                    
                 }
-                Spacer()
-                Text("Current Version")
-                    .font(.subheadline)
+                VStack(alignment: .leading) {
+                    Text("Current Version")
+                        .font(.subheadline)
+                }
                 Spacer()
             }
             .padding(5)

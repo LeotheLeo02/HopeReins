@@ -36,7 +36,8 @@ struct PatientsView: View {
                 .searchable(text: $searchQuery, prompt: "Patient Name, MRN Number")
                 .sheet(isPresented: $addPatient, content: {
                     let record = MedicalRecordFile(fileType: "Patient")
-                    DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: nil, isAdding: true, modelContext: modelContext))
+                    DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: nil, isAdding: true, modelContext: modelContext), files: [])
+                        .frame(minWidth: 1000)
                 })
             }
             .padding([.horizontal, .top])
@@ -99,6 +100,7 @@ struct PatientsView: View {
 }
 
 struct PatientFilesView: View {
+    @Environment(\.modelContext) var modelContext
     var user: User
     var patient: Patient
     var body: some View {
@@ -114,7 +116,7 @@ struct PatientFilesView: View {
             HStack {
                 Image(systemName: "trash.fill")
                     .foregroundStyle(.red)
-                Text("Deleted Files")
+                Text("Deleted Files (\(getCountOfDeadFiles()))")
                 Spacer()
                 Image(systemName: "chevron.right")
             }
@@ -123,5 +125,12 @@ struct PatientFilesView: View {
         .buttonStyle(.borderless)
         .padding(5)
         .background(.bar)
+    }
+    
+    func getCountOfDeadFiles() -> Int {
+        let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.isDead == true })
+        let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+        
+        return count
     }
 }

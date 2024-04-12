@@ -8,8 +8,10 @@
 import SwiftUI
 import SwiftData
 
+
+
 struct DynamicFormView: View  {
-    
+    @Environment(\.isEditable) var isEditable
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @StateObject var uiManagement: UIManagement
@@ -20,106 +22,132 @@ struct DynamicFormView: View  {
     @State var reviewChanges: Bool = false
     @State var isRevertingVersion: Bool = false
     @State var showRevertAlert: Bool = false
+    var files: [MedicalRecordFile]
+    @State private var selectedFile: MedicalRecordFile?
     
     var body: some View {
-        ScrollViewReader { proxy in
-            VStack(alignment: .leading) {
-                if !uiManagement.isAdding {
-                    HStack {
-                        Button(action: {
-                            self.onPrint()
-                        }, label: {
-                            HStack {
-                                Text("Print")
-                                Image(systemName: "printer.fill")
+        HStack {
+            ScrollViewReader { proxy in
+                VStack(alignment: .leading) {
+                    if !uiManagement.isAdding && !files.isEmpty  {
+                        HStack {
+                            Button(action: {
+                                self.onPrint()
+                            }, label: {
+                                HStack {
+                                    Text("Print")
+                                    Image(systemName: "printer.fill")
+                                }
+                            })
+                            Spacer()
+                            PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
+                            Menu {
+                                CategorizedFormsView(selectedFile: $selectedFile, files: files, formType: .riding(.coverLetter))
+                                CategorizedFormsView(selectedFile: $selectedFile, files: files, formType: .physicalTherapy(.dailyNote))
+                            } label: {
+                                Image(systemName: "macwindow.badge.plus")
                             }
-                        })
-                        Spacer()
-                        PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
-                        Button {
+                            .font(.largeTitle)
+                            .buttonStyle(.borderless)
+                            .help("Open another file")
                             
-                        } label: {
-                            Image(systemName: "macwindow.badge.plus")
-                                .font(.title2)
+                            
                         }
-                        .buttonStyle(.borderless)
-                        .help("Open another file")
-
-                    }
-                    .padding([.top, .horizontal])
-                } else {
-                    if !uiManagement.errorMessage.isEmpty {
-                        Text(uiManagement.errorMessage)
-                            .foregroundStyle(.red)
-                            .padding([.top, .horizontal])
-                    }
-                }
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
-                            if uiManagement.dynamicUIElements.count == 1 {
-                                sectionContent(section: section)
-                            } else {
-                                DisclosureGroup(
-                                    content: {
-                                        sectionContent(section: section)
-                                            .onAppear {
-                                                proxy.scrollTo(section.title)
-                                            }
-                                    },
-                                    label: {
-                                        HStack {
-                                            SectionHeader(title: section.title)
-                                            let changesCount = countChangesInSection(section)
-                                            if changesCount > 0 {
-                                                Text("\(changesCount) changes")
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.red)
-                                            }
-                                        }
-                                    }
-                                )
-                                .id(section.title)
+                        .padding([.top, .horizontal])
+                    } else {
+                            if !uiManagement.errorMessage.isEmpty {
+                                Text(uiManagement.errorMessage)
+                                    .foregroundStyle(.red)
+                                    .padding([.top, .horizontal])
                             }
+                        }
+                        ScrollView {
+                            VStack(alignment: .leading) {
+                                ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
+                                    if uiManagement.dynamicUIElements.count == 1 {
+                                        sectionContent(section: section)
+                                    } else {
+                                        DisclosureGroup(
+                                            content: {
+                                                sectionContent(section: section)
+                                                    .onAppear {
+                                                        proxy.scrollTo(section.title)
+                                                    }
+                                            },
+                                            label: {
+                                                HStack {
+                                                    SectionHeader(title: section.title)
+                                                    let changesCount = countChangesInSection(section)
+                                                    if changesCount > 0 {
+                                                        Text("\(changesCount) changes")
+                                                            .font(.subheadline)
+                                                            .foregroundColor(.red)
+                                                    }
+                                                }
+                                            }
+                                        )
+                                        .id(section.title)
+                                    }
+                                }
+                                
+                            }
+                            .alert(isPresented: $showRevertAlert) {
+                                if isRevertingVersion {
+                                    Alert(
+                                        title: Text("Revert To Version \(selectedVersion!.reason)"),
+                                        message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
+                                        primaryButton: .destructive(Text("Revert")) {
+                                            uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
+                                            selectedVersion = nil
+                                        },
+                                        secondaryButton: .cancel()
+                                    )
+                                } else {
+                                    Alert(
+                                        title: Text("Revert Changes"),
+                                        message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
+                                        primaryButton: .destructive(Text("Undo")) {
+                                            dismiss()
+                                        },
+                                        secondaryButton: .cancel()
+                                    )
+                                }
+                            }
+                            .sheet(isPresented: $reviewChanges, content: {
+                                ReviewChangesView(uiManagement: uiManagement, changeDescriptions: uiManagement.changeDescriptions)
+                            })
+                            .padding()
+                        }
+                        .toolbar {
+                            toolbarContent()
                         }
                         
+                        
                     }
-                    .alert(isPresented: $showRevertAlert) {
-                        if isRevertingVersion {
-                            Alert(
-                                title: Text("Revert To Version \(selectedVersion!.reason)"),
-                                message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
-                                primaryButton: .destructive(Text("Revert")) {
-                                    uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
-                                    selectedVersion = nil
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        } else {
-                            Alert(
-                                title: Text("Revert Changes"),
-                                message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
-                                primaryButton: .destructive(Text("Undo")) {
-                                    dismiss()
-                                },
-                                secondaryButton: .cancel()
-                            )
+                }
+                if selectedFile != nil {
+                    Divider()
+                    VStack(alignment: .leading) {
+                        Button {
+                            selectedFile = nil
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.title3)
                         }
+                        .buttonStyle(.borderless)
+                        
+                        DynamicFormView(uiManagement: UIManagement(modifiedProperties: selectedFile!.properties, record: selectedFile!, username: uiManagement.username, patient: uiManagement.patient, isAdding: false, modelContext: modelContext), files: [])
+                            .id(selectedFile!.id)
+                            .environment(\.isEditable, false)
                     }
-                    .sheet(isPresented: $reviewChanges, content: {
-                        ReviewChangesView(uiManagement: uiManagement, changeDescriptions: uiManagement.changeDescriptions)
-                    })
-                    .padding()
+                    .padding(.vertical)
                 }
             }
-        }
-        .frame(minWidth: 650, minHeight: 600)
-        .toolbar {
-            toolbarContent()
-        }
-        .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
+        
+            .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
                 uiManagement.refreshUI()
         }
+        
     }
     
     @ViewBuilder
@@ -174,18 +202,18 @@ struct DynamicFormView: View  {
                 
             }
         }
-        ToolbarItem(placement: .cancellationAction) {
-            Button {
-                if !uiManagement.changeDescriptions.isEmpty {
-                    isRevertingVersion = false
-                    showRevertAlert.toggle()
-                } else {
-                    dismiss()
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    if !uiManagement.changeDescriptions.isEmpty {
+                        isRevertingVersion = false
+                        showRevertAlert.toggle()
+                    } else {
+                        dismiss()
+                    }
+                } label: {
+                    Text("Cancel")
                 }
-            } label: {
-                Text("Cancel")
             }
-        }
         
     }
     func getCountOfFields() -> Int {
@@ -202,5 +230,64 @@ struct DynamicFormView: View  {
         }
         return changesInSection.reduce(0, +)
     }
-
+    
 }
+
+struct CategorizedFormsView: View {
+    @Binding var selectedFile: MedicalRecordFile?
+    var files: [MedicalRecordFile]
+    var formType: FormType
+    
+    private var fileGroups: [(String, [MedicalRecordFile])] {
+        subcategories(for: formType).map { subcategory in
+            (subcategory, filesForSubcategory(subcategory: subcategory))
+        }
+    }
+    
+    private func filesForSubcategory(subcategory: String) -> [MedicalRecordFile] {
+        let filteredFiles = files.filter { $0.fileType == subcategory }
+        
+        let sortedFiles = filteredFiles.sorted {
+            $0.addedSignature!.dateModified > $1.addedSignature!.dateModified
+        }
+        
+        return sortedFiles
+    }
+    
+    private func subcategories(for formType: FormType) -> [String] {
+        switch formType {
+        case .physicalTherapy:
+            return PhysicalTherapyFormType.allCases.map { $0.rawValue }
+        case .riding:
+            return RidingFormType.allCases.map { $0.rawValue }
+        }
+    }
+    
+    var body: some View {
+        Menu {
+            ForEach(fileGroups, id: \.0) { group in
+                if !group.1.isEmpty {
+                    Section(header: Text(group.0)) {
+                        ForEach(group.1, id: \.id) { file in
+                            Button {
+                                selectedFile = nil
+                                selectedFile = file
+                            } label: {
+                                Text(file.properties["File Name"]!.stringValue + "\(selectedFile?.id == file.id ? " (Currently Viewing)" : "")")
+                            }
+                            .disabled(selectedFile?.id == file.id)
+                        }
+                    }
+                }
+            }
+        } label: {
+            switch formType {
+            case .physicalTherapy:
+                Text("Physical Therapy")
+            case .riding:
+                Text("Adaptive Riding")
+            }
+        }
+    }
+}
+

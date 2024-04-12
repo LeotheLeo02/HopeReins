@@ -26,13 +26,13 @@ struct DailyNoteTable: View {
             Grid(alignment: .center) {
                 GridRow {
                     Text("#")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                     Text("Code")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                     Text("CPT")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                     Text("O Procedure")
-                        .frame(minWidth: 100, maxWidth: 200)
+                        .frame(minWidth: 75, maxWidth: 200)
                 }
                 Divider()
                 ForEach(tableData, id: \.id) { rowData in
@@ -74,7 +74,7 @@ struct DailyNoteTable: View {
                 .foregroundStyle(.windowBackground)
                 .shadow(radius: 3)
         )
-        .frame(minWidth: 400, maxWidth: 800)
+        .frame(minWidth: 300, maxWidth: 800)
         .onChange(of: combinedString) { oldValue, newValue in
             self.tableData = self.combineTableData(combinedString: self.combinedString)
         }
@@ -146,35 +146,35 @@ struct EntryRowDailyNoteTable: View {
         HStack {
             RestrictedNumberField(range: range, number: $rowData.number)
                 .multilineTextAlignment(.center)
-                .frame(minWidth: 100, maxWidth: 200)
+                .frame(minWidth: 75, maxWidth: 200)
             
             if rowData.isEditable {
                 TextField("Code", text: $rowData.code)
-                    .frame(minWidth: 100, maxWidth: 200)
+                    .frame(minWidth: 75, maxWidth: 200)
                     .multilineTextAlignment(.center)
             } else {
                 Text(rowData.code)
-                    .frame(minWidth: 100, maxWidth: 200)
+                    .frame(minWidth: 75, maxWidth: 200)
                     .multilineTextAlignment(.center)
             }
             
             if rowData.isEditable {
                 TextField("CPT", text: $rowData.cpt)
-                    .frame(minWidth: 100, maxWidth: 200)
+                    .frame(minWidth: 75, maxWidth: 200)
                     .multilineTextAlignment(.center)
             } else {
                 Text(rowData.cpt)
-                    .frame(minWidth: 100, maxWidth: 200)
+                    .frame(minWidth: 75, maxWidth: 200)
                     .multilineTextAlignment(.center)
             }
             
             if rowData.isEditable {
                 TextField("Procedure", text: $rowData.procedire)
-                    .frame(minWidth: 100, maxWidth: 200)
+                    .frame(minWidth: 75, maxWidth: 200)
                     .multilineTextAlignment(.center)
             } else {
                 Text(rowData.procedire)
-                    .frame(minWidth: 100, maxWidth: 200)
+                    .frame(minWidth: 75, maxWidth: 200)
                     .multilineTextAlignment(.center)
             }
             

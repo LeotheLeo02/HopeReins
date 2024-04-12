@@ -14,6 +14,7 @@ public var defaultUELabels: [String] = ["Shoulder Elevation (in scapular pain)",
 
 
 struct DynamicElementView: View {
+    @Environment(\.isEditable) var isEditable
     @State var wrappedElement: DynamicUIElement
     @State var change: PastChange?
     var body: some View {
@@ -58,7 +59,7 @@ struct DynamicElementView: View {
                 TextEntries(combinedString: bindingForChange(type: String.self, originalBinding: combinedString), title: title)
             }
         }
-        .environment(\.isEditable, (change == nil))
+        .environment(\.isEditable, isEditable && change == nil)
     }
 }
 
