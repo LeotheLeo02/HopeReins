@@ -26,23 +26,74 @@ struct FilePreview: View {
 struct ListItemLabel: View {
     @Environment(\.modelContext) var modelContext
     var file: MedicalRecordFile
-    
+
     var body: some View {
         HStack {
+            fileIcon
+            fileName
+            Spacer()
+            fileDetails
+        }
+        .padding()
+    }
+
+    private var fileIcon: some View {
+        Group {
             if isUploadFile(fileType: file.fileType) {
-                FilePreview(data: file.properties["File Data"]!.dataValue, size: 30)
+                FilePreview(data: fileData, size: 30)
             } else {
-                Image(systemName: "doc.fill")
-                    .font(.title3)
+                Image(systemName: "doc.text.fill")
+                    .font(.title2)
                     .foregroundStyle(Color(.primary))
             }
-            Text(file.properties["File Name"]?.stringValue ?? "None")
-            Spacer()
-            Text("\(file.digitalSignature?.modification.rawValue ?? "") By: \(file.digitalSignature?.author ?? "") \(file.digitalSignature?.dateModified.formatted() ?? "")")
-                .font(.caption2.italic())
         }
-        .font(.subheadline.bold())
-        .padding()
+    }
+
+    private var fileData: Data {
+        file.properties["File Data"]?.dataValue ?? Data()
+    }
+
+    private var fileName: some View {
+        Text(file.properties["File Name"]?.stringValue ?? "None")
+            .font(.callout)
+            .fontWeight(.medium)
+    }
+
+    private var fileDetails: some View {
+        VStack(alignment: .trailing) {
+            Text(fileAddedInfo)
+                .fontWeight(.medium)
+            if isFileEdited {
+                fileEditedInfo
+            }
+        }
+        .font(.footnote)
+    }
+
+    private var fileAddedInfo: String {
+        let author = file.addedSignature?.author ?? ""
+        let date = file.addedSignature?.dateModified.formatted() ?? ""
+        return "Added: \(author) \(date)"
+    }
+
+    private var isFileEdited: Bool {
+        file.digitalSignature?.modification == .edited
+    }
+
+    private var fileEditedInfo: some View {
+        VStack {
+            Text(fileUpdatedInfo)
+                .font(.caption.italic())
+                .foregroundStyle(.gray)
+                .fontWeight(.light)
+                .padding(.top, 2)
+        }
+    }
+
+    private var fileUpdatedInfo: String {
+        let author = file.digitalSignature?.author ?? ""
+        let date = file.digitalSignature?.dateModified.formatted() ?? ""
+        return "Updated: \(author) \(date)"
     }
 }
 

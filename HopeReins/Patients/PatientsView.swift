@@ -19,6 +19,13 @@ struct PatientsView: View {
     }
     @State var addPatient: Bool = false
     @State var searchQuery = ""
+    enum ViewMode: String, CaseIterable, Identifiable {
+        var id: Self { self }
+        case list
+        case grid
+    }
+    @SceneStorage("viewMode") private var mode: ViewMode = .grid
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -27,11 +34,23 @@ struct PatientsView: View {
                         .font(.largeTitle.bold())
                         .foregroundStyle(.gray)
                 }
-                LazyVGrid(columns: columns, content: {
-                    ForEach(filteredPatients) { patient in
-                        GridLabel(user: user, patient: patient, size: itemSize)
+                Group {
+                    switch mode {
+                    case .list:
+                        VStack(alignment: .leading) {
+                            ForEach(filteredPatients) { patient in
+                                ListLabel(user: user, patient: patient)
+                            }
+                        }
+                    case .grid:
+                        LazyVGrid(columns: columns, content: {
+                            ForEach(filteredPatients) { patient in
+                                GridLabel(user: user, patient: patient, size: itemSize)
+                            }
+                        })
                     }
-                })
+                }
+
                 .padding()
                 .searchable(text: $searchQuery, prompt: "Patient Name, MRN Number")
                 .sheet(isPresented: $addPatient, content: {
@@ -45,6 +64,9 @@ struct PatientsView: View {
                 ItemSizeSlider(size: $itemSize)
             }
             .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    DisplayModePicker(mode: $mode)
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
                         addPatient.toggle()
@@ -53,6 +75,29 @@ struct PatientsView: View {
                     })
                 }
             }
+        }
+    }
+    
+    private struct ListLabel: View {
+        var user: User
+        var patient: Patient
+        var body: some View {
+            NavigationLink {
+                PatientFilesView(user: user, patient: patient)
+            } label: {
+                HStack {
+                    Image(systemName: "person.fill")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .foregroundStyle(Color(.primary))
+                    Text(patient.personalFile.properties["File Name"]!.stringValue)
+                    Spacer()
+                }
+                .font(.title2)
+                .foregroundStyle(.primary)
+                .padding()
+            }
+            
         }
     }
     private struct GridLabel: View {
@@ -128,9 +173,44 @@ struct PatientFilesView: View {
     }
     
     func getCountOfDeadFiles() -> Int {
-        let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.isDead == true })
+        let optionalID = Optional(patient.id)
+        let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.isDead == true && $0.patient?.id == optionalID })
+
         let count = (try? modelContext.fetchCount(descriptor)) ?? 0
         
         return count
+    }
+}
+
+
+import SwiftUI
+
+struct DisplayModePicker: View {
+    @Binding var mode: PatientsView.ViewMode
+
+    var body: some View {
+        Picker("Display Mode", selection: $mode) {
+            ForEach(PatientsView.ViewMode.allCases) { viewMode in
+                viewMode.label
+            }
+        }
+        .pickerStyle(SegmentedPickerStyle())
+    }
+}
+
+extension PatientsView.ViewMode {
+
+    var labelContent: (name: String, systemImage: String) {
+        switch self {
+        case .list:
+            return ("List", "list.bullet")
+        case .grid:
+            return ("Grid", "square.grid.2x2")
+        }
+    }
+
+    var label: some View {
+        let content = labelContent
+        return Label(content.name, systemImage: content.systemImage)
     }
 }

@@ -105,9 +105,11 @@ class UIManagement: ObservableObject {
     
     func setIncrementalFileName(modelContext: ModelContext) {
         if let incrementalRawValue = isIncrementalFileType?.rawValue {
-            let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.fileType == incrementalRawValue })
-            let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-            modifiedProperties["File Name"] = "\(incrementalRawValue) \(count)".codableValue
+            if let patientId = patient?.id {
+                let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.fileType == incrementalRawValue && $0.patient?.id == patientId})
+                let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+                modifiedProperties["File Name"] = "\(incrementalRawValue) \(count+1)".codableValue
+            }
         }
         
     }

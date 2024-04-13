@@ -21,7 +21,7 @@ struct SetupUsersView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading){
                 if adminUser == nil || !adminUser!.isLoggedIn {
                     Text("Hope Reins EMR")
                         .font(.largeTitle.bold())
@@ -29,9 +29,11 @@ struct SetupUsersView: View {
                 if adminUser == nil {
                     createAdminAccountView()
                 }
-                PropertyHeader(title: "Create Users:")
+                Label("Create Users", systemImage: "person.fill.badge.plus")
+                    .font(.title3)
                 CreateUserView()
-                PropertyHeader(title: "Users:")
+                Label("Users", systemImage: "person.3.fill")
+                    .font(.title3)
                 ForEach(users.filter { $0.isAdmin == false }) { user in
                     userItemLabel(user: user)
                 }
@@ -87,7 +89,7 @@ struct SetupUsersView: View {
             }
             .buttonStyle(.bordered)
         }
-        .padding(.vertical)
+        .padding(.vertical, .pi)
         Divider()
     }
 }
@@ -106,8 +108,10 @@ struct CreateUserView: View {
                 Button(action: {
                     createUser()
                 }, label: {
-                    Label("Create User", systemImage: "person.fill.badge.plus")
+                    Text("Add User")
                 })
+                .buttonStyle(.borderedProminent)
+                .disabled(username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
         .padding()

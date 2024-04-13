@@ -54,98 +54,102 @@ struct DynamicFormView: View  {
                             
                         }
                         .padding([.top, .horizontal])
-                    } else {
-                            if !uiManagement.errorMessage.isEmpty {
-                                Text(uiManagement.errorMessage)
-                                    .foregroundStyle(.red)
-                                    .padding([.top, .horizontal])
-                            }
-                        }
-                        ScrollView {
-                            VStack(alignment: .leading) {
-                                ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
-                                    if uiManagement.dynamicUIElements.count == 1 {
-                                        sectionContent(section: section)
-                                    } else {
-                                        DisclosureGroup(
-                                            content: {
-                                                sectionContent(section: section)
-                                                    .onAppear {
-                                                        proxy.scrollTo(section.title)
-                                                    }
-                                            },
-                                            label: {
-                                                HStack {
-                                                    SectionHeader(title: section.title)
-                                                    let changesCount = countChangesInSection(section)
-                                                    if changesCount > 0 {
-                                                        Text("\(changesCount) changes")
-                                                            .font(.subheadline)
-                                                            .foregroundColor(.red)
-                                                    }
+                    }
+                    if !uiManagement.errorMessage.isEmpty {
+                        Text(uiManagement.errorMessage)
+                            .foregroundStyle(.red)
+                            .padding([.top, .horizontal])
+                    }
+                    ScrollView {
+                        VStack(alignment: .leading) {
+                            ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
+                                if uiManagement.dynamicUIElements.count == 1 {
+                                    sectionContent(section: section)
+                                } else {
+                                    DisclosureGroup(
+                                        content: {
+                                            sectionContent(section: section)
+                                                .onAppear {
+                                                    proxy.scrollTo(section.title)
+                                                }
+                                        },
+                                        label: {
+                                            HStack {
+                                                SectionHeader(title: section.title)
+                                                let changesCount = countChangesInSection(section)
+                                                let modificationCount = countModificationsInSection(section)
+                                                if changesCount > 0 {
+                                                    Text("\(changesCount) changes")
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.red)
+                                                } else if modificationCount > 0 {
+                                                    Text("\(changesCount) modifications")
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.red)
                                                 }
                                             }
-                                        )
-                                        .id(section.title)
-                                    }
-                                }
-                                
-                            }
-                            .alert(isPresented: $showRevertAlert) {
-                                if isRevertingVersion {
-                                    Alert(
-                                        title: Text("Revert To Version \(selectedVersion!.reason)"),
-                                        message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
-                                        primaryButton: .destructive(Text("Revert")) {
-                                            uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
-                                            selectedVersion = nil
-                                        },
-                                        secondaryButton: .cancel()
+                                        }
                                     )
-                                } else {
-                                    Alert(
-                                        title: Text("Revert Changes"),
-                                        message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
-                                        primaryButton: .destructive(Text("Undo")) {
-                                            dismiss()
-                                        },
-                                        secondaryButton: .cancel()
-                                    )
+                                    .id(section.title)
                                 }
                             }
-                            .sheet(isPresented: $reviewChanges, content: {
-                                ReviewChangesView(uiManagement: uiManagement, changeDescriptions: uiManagement.changeDescriptions)
-                            })
-                            .padding()
+                            
                         }
-                        .toolbar {
-                            toolbarContent()
+                        .alert(isPresented: $showRevertAlert) {
+                            if isRevertingVersion {
+                                Alert(
+                                    title: Text("Revert To Version \(selectedVersion!.reason)"),
+                                    message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
+                                    primaryButton: .destructive(Text("Revert")) {
+                                        uiManagement.revertToVersion(selectedVersion: selectedVersion, modelContext: modelContext)
+                                        selectedVersion = nil
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            } else {
+                                Alert(
+                                    title: Text("Revert Changes"),
+                                    message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
+                                    primaryButton: .destructive(Text("Undo")) {
+                                        dismiss()
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            }
                         }
-                        
-                        
+                        .sheet(isPresented: $reviewChanges, content: {
+                            ReviewChangesView(uiManagement: uiManagement, changeDescriptions: uiManagement.changeDescriptions)
+                        })
+                        .padding()
                     }
-                }
-                if selectedFile != nil {
-                    Divider()
-                    VStack(alignment: .leading) {
-                        Button {
-                            selectedFile = nil
-                        } label: {
-                            Image(systemName: "xmark")
-                                .font(.title3)
-                        }
-                        .buttonStyle(.borderless)
-                        
-                        DynamicFormView(uiManagement: UIManagement(modifiedProperties: selectedFile!.properties, record: selectedFile!, username: uiManagement.username, patient: uiManagement.patient, isAdding: false, modelContext: modelContext), files: [])
-                            .id(selectedFile!.id)
-                            .environment(\.isEditable, false)
+                    .toolbar {
+                        toolbarContent()
                     }
-                    .padding(.vertical)
+                    
+                    
                 }
             }
+            if selectedFile != nil {
+                Divider()
+                VStack(alignment: .leading) {
+                    Button {
+                        selectedFile = nil
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.title3)
+                    }
+                    .buttonStyle(.borderless)
+                    
+                    DynamicFormView(uiManagement: UIManagement(modifiedProperties: selectedFile!.properties, record: selectedFile!, username: uiManagement.username, patient: uiManagement.patient, isAdding: false, modelContext: modelContext), files: [])
+                        .id(selectedFile!.id)
+                        .environment(\.isEditable, false)
+                }
+                .padding(.vertical)
+            }
+        }
         
-            .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
-                uiManagement.refreshUI()
+        .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
+            uiManagement.refreshUI()
         }
         
     }
@@ -202,18 +206,18 @@ struct DynamicFormView: View  {
                 
             }
         }
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    if !uiManagement.changeDescriptions.isEmpty {
-                        isRevertingVersion = false
-                        showRevertAlert.toggle()
-                    } else {
-                        dismiss()
-                    }
-                } label: {
-                    Text("Cancel")
+        ToolbarItem(placement: .cancellationAction) {
+            Button {
+                if !uiManagement.changeDescriptions.isEmpty {
+                    isRevertingVersion = false
+                    showRevertAlert.toggle()
+                } else {
+                    dismiss()
                 }
+            } label: {
+                Text("Cancel")
             }
+        }
         
     }
     func getCountOfFields() -> Int {
@@ -229,6 +233,17 @@ struct DynamicFormView: View  {
             return nil
         }
         return changesInSection.reduce(0, +)
+    }
+    
+    func countModificationsInSection(_ section: FormSection) -> Int {
+        let wrappedElements = section.elements.map(DynamicUIElementWrapper.init)
+        let changeDescriptions = uiManagement.changeDescriptions
+        print(changeDescriptions)
+        let changesInSection = wrappedElements.compactMap { wrappedElement -> Int? in
+            return uiManagement.changeDescriptions.filter { $0.id == wrappedElement.id }.count
+        }
+        
+        return 0
     }
     
 }

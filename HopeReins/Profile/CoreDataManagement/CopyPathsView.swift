@@ -11,7 +11,7 @@ import CoreData
 struct CopyPathsView: View {
     @Environment(\.modelContext) var modelContext
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Configure Backup Operations:")
                 .bold()
             Button {

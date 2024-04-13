@@ -266,7 +266,7 @@ extension DynamicUIElement {
         let newDataDict = Dictionary(uniqueKeysWithValues: newLabelValues.map { ($0.label, $0) })
         
         // Define the specific order of labels
-        let labelOrder = ["PTNEUR15", "THERA15", "PTGAIT15", "THEREX", "MANUAL"]
+        let labelOrder = ["NEURO", "THER ACT", "GAIT", "THEREX", "MANUAL"]
         
         // Process changes for the labels in the specific order
         for label in labelOrder {
@@ -305,7 +305,7 @@ extension DynamicUIElement {
     }
     
     func createDefaultDailyNoteTable() -> [LabelValue] {
-        let labels = ["PTNEUR15", "THERA15", "PTGAIT15", "THEREX", "MANUAL"]
+        let labels = ["NEURO", "THER ACT", "GAIT", "THEREX", "MANUAL"]
         
         var labelValues = [LabelValue]()
         

@@ -191,9 +191,6 @@ extension UIManagement {
                 .textField(title: "Discharge Planning", binding: stringBinding(for: "Discharge Planning")),
                 .textField(title: "Therapist Signature", binding: stringBinding(for: "Therapist Signature")),
                 .datePicker(title: "Therapist Signature Date", hourAndMinute: false, binding: dateBinding(for: "Therapist Signature Date"))
-            ]),
-            FormSection(title: "UE Strength Table", elements: [
-                .strengthTable(title: "UE Arm Strength Table", combinedString: stringBinding(for: "UE Arm Strength Table"))
             ])
         ]
         

@@ -13,24 +13,30 @@ struct PatientSearchCriteria {
 }
 
 extension PatientsView {
+    
+    func lastName(from fileName: String) -> String {
+        let components = fileName.split(separator: " ")
+        return components.last.map(String.init) ?? ""
+    }
+
     var filteredPatients: [Patient] {
-        if searchQuery.isEmpty {
-            return patients
-        } else {
-            let criteria = parseSearchText(searchQuery)
-            return patients.filter { patient in
-                var matches = true
+        let filtered = patients.filter { patient in
+            var matches = true
 
-                if let name = criteria.name {
-                    matches = matches && patient.personalFile.properties["File Name"]!.stringValue.localizedCaseInsensitiveContains(name)
-                }
-
-                if let mrn = criteria.mrn {
-                    matches = matches && patient.personalFile.properties["MRN Number"]!.stringValue.description.contains("\(mrn)")
-                }
-
-                return matches
+            if let name = parseSearchText(searchQuery).name {
+                matches = matches && patient.personalFile.properties["File Name"]!.stringValue.localizedCaseInsensitiveContains(name)
             }
+
+            if let mrn = parseSearchText(searchQuery).mrn {
+                matches = matches && patient.personalFile.properties["MRN Number"]!.stringValue.description.contains("\(mrn)")
+            }
+
+            return matches
+        }
+
+        return filtered.sorted {
+            lastName(from: $0.personalFile.properties["File Name"]!.stringValue) <
+            lastName(from: $1.personalFile.properties["File Name"]!.stringValue)
         }
     }
 

@@ -19,11 +19,11 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             if user.isAdmin {
-                VStack {
+                VStack(alignment: .leading) {
                     Picker(selection: $settingsType) {
                         Text("Profile")
                             .tag(SettingsType.profile)
-                        Text("Data")
+                        Text("Data Management")
                             .tag(SettingsType.coreData)
                     } label: {
                         Text("Settings")
@@ -49,6 +49,10 @@ struct ProfileInfoView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .aspectRatio(contentMode: .fit)
                 Text(user.username)
                     .font(.largeTitle.bold())
                 if user.isAdmin {

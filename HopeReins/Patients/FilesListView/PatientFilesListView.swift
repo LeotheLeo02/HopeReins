@@ -107,7 +107,7 @@ struct PatientFilesListView: View {
         })
         .sheet(isPresented: $showPatientInfo, content: {
             DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile, username: user.username, patient: patient, isAdding: false, modelContext: modelContext), files: files)
-                .frame(minWidth: 1000)
+                .frame(minWidth: 1000, minHeight: 500)
                 .environment(\.isEditable, !showDeadFiles)
         })
         .sheet(isPresented: $addFile, content: {
@@ -135,21 +135,36 @@ struct PatientFilesListView: View {
             Button {
                 showPatientInfo.toggle()
             } label: {
-                Label("Personal Info", systemImage: "person.text.rectangle.fill")
+                Label("Patient Info", systemImage: "person.text.rectangle.fill")
             }
         }
     }
     
+    func countForFormType(_ mainType: FormType) -> Int {
+        switch mainType {
+        case .physicalTherapy:
+            // Aggregate counts for all Physical Therapy form types
+            return PhysicalTherapyFormType.allCases.reduce(0) { count, type in
+                count + files.filter { $0.fileType ==  type.rawValue }.count
+            }
+        case .riding:
+            // Aggregate counts for all Riding form types
+            return RidingFormType.allCases.reduce(0) { count, type in
+                count + files.filter { $0.fileType == type.rawValue }.count
+            }
+        }
+    }
+
+
     private var formTypePicker: some View {
-        Picker(selection: $selectedFormType) {
-            Text("Adaptive Riding").tag(FormType.riding(.coverLetter))
-            Text("Physical Therapy").tag(FormType.physicalTherapy(.referral))
-        } label: {
-            Text("Form Type")
+        Picker("Form Type", selection: $selectedFormType) {
+            Text("Adaptive Riding (\(countForFormType(.riding(.coverLetter))) files)").tag(FormType.riding(.coverLetter))
+            Text("Physical Therapy (\(countForFormType(.physicalTherapy(.physicalTherapyPlanOfCare))) files)").tag(FormType.physicalTherapy(.referral))
         }
         .labelsHidden()
-        .pickerStyle(.segmented)
+        .pickerStyle(SegmentedPickerStyle())
     }
+
     
     private var formTypeContent: some View {
         Group {

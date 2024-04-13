@@ -65,7 +65,7 @@ struct FileListView: View {
         } label: {
             Label(group.0, systemImage: "\(group.1.count).circle")
         }
-        .font(.title3)
+        .font(.title2)
         .fontWeight(.medium)
     }
 
@@ -100,6 +100,7 @@ struct FileListView: View {
     
     private func deleteFileButton(_ file: MedicalRecordFile) -> some View {
         Button {
+            selectedFile = file
             showDeletionConfirmation.toggle()
         } label: {
             Text("Delete File")
@@ -109,9 +110,9 @@ struct FileListView: View {
     private func deleteFileAlert(_ file: MedicalRecordFile) -> Alert {
         Alert(
             title: Text("Confirm Delete"),
-            message: Text("Are you sure you want to delete \"\(file.properties["File Name"]!.stringValue)\"? This action cannot be undone."),
+            message: Text("Are you sure you want to delete \"\(selectedFile!.properties["File Name"]!.stringValue)\"? This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
-                file.isDead = true
+                selectedFile!.isDead = true
             },
             secondaryButton: .cancel()
         )
