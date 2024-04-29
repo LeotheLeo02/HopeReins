@@ -142,6 +142,7 @@ struct EntryRowDailyNoteTable: View {
     @Binding var tableData: [DailyNoteTableCell]
     let updateParentCombinedString: () -> Void
     var range: ClosedRange<Int> = 1...9
+    
     var body: some View {
         HStack {
             RestrictedNumberField(range: range, number: $rowData.number)

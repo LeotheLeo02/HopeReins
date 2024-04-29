@@ -103,15 +103,15 @@ struct FileListView: View {
             selectedFile = file
             showDeletionConfirmation.toggle()
         } label: {
-            Text("Delete File")
+            Text("Move to Trash")
         }
     }
 
     private func deleteFileAlert(_ file: MedicalRecordFile) -> Alert {
         Alert(
-            title: Text("Confirm Delete"),
-            message: Text("Are you sure you want to delete \"\(selectedFile!.properties["File Name"]!.stringValue)\"? This action cannot be undone."),
-            primaryButton: .destructive(Text("Delete")) {
+            title: Text("Confirm Deletion"),
+            message: Text("Are you sure you want to delete \"\(selectedFile!.properties["File Name"]!.stringValue)\"?"),
+            primaryButton: .destructive(Text("Move to Trash")) {
                 selectedFile!.isDead = true
             },
             secondaryButton: .cancel()

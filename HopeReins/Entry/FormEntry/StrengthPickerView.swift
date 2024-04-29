@@ -31,17 +31,15 @@ struct StrengthPickerView: View {
         StrengthIndicator(value: "5", label: "(Normal Maximal resistance")
     ]
     var body: some View {
-        Menu {
+        Picker(selection: $value){
             ForEach(strengthIndicators) { strengthIndicator in
-                Button {
-                    value = strengthIndicator.value
-                } label: {
                     Text(strengthIndicator.value + "\t" + strengthIndicator.label)
-                }
+                    .tag(strengthIndicator.value)
             }
         } label: {
-            Text(value)
+            Text("")
         }
+        .labelsHidden()
     }
 }
 

@@ -28,6 +28,7 @@ struct SetupUsersView: View {
                 }
                 if adminUser == nil {
                     createAdminAccountView()
+                        .padding(.vertical)
                 }
                 Label("Create Users", systemImage: "person.fill.badge.plus")
                     .font(.title3)
@@ -66,12 +67,19 @@ struct SetupUsersView: View {
     
     @ViewBuilder
     func createAdminAccountView() -> some View {
-        PropertyHeader(title: "Create Admin Account")
-        SecureField("Password", text: $adminPassword)
-        Button("Create Admin Account") {
-            let newAdmin = User(username: "Admin", password: adminPassword, isAdmin: true)
-            modelContext.insert(newAdmin)
-            adminUser = newAdmin
+        VStack(alignment: .leading) {
+            PropertyHeader(title: "Create Admin Account")
+            SecureField("Password", text: $adminPassword)
+            HStack {
+                Spacer()
+                Button("Create Account") {
+                    let newAdmin = User(username: "Admin", password: adminPassword, isAdmin: true)
+                    modelContext.insert(newAdmin)
+                    adminUser = newAdmin
+                }
+                .disabled(adminPassword.isEmpty)
+                .buttonStyle(.borderedProminent)
+            }
         }
     }
     

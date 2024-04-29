@@ -154,6 +154,16 @@ struct PatientFilesView: View {
     @Environment(\.modelContext) var modelContext
     var user: User
     var patient: Patient
+    @Query var deadFiles: [MedicalRecordFile]
+    init(user: User, patient: Patient) {
+        self.user = user
+        self.patient = patient
+        let optionalID = Optional(patient.id)
+        let predicate = #Predicate<MedicalRecordFile> { file in
+            file.isDead == true && file.patient?.id == optionalID
+        }
+        _deadFiles = Query(filter: predicate, sort: \MedicalRecordFile.id)
+    }
     var body: some View {
         PatientFilesListView(patient: patient, user: user, showDeadFiles: false)
             .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -167,7 +177,7 @@ struct PatientFilesView: View {
             HStack {
                 Image(systemName: "trash.fill")
                     .foregroundStyle(.red)
-                Text("Deleted Files (\(getCountOfDeadFiles()))")
+                Text("Deleted Files (\(deadFiles.count))")
                 Spacer()
                 Image(systemName: "chevron.right")
             }
@@ -178,14 +188,6 @@ struct PatientFilesView: View {
         .background(.bar)
     }
     
-    func getCountOfDeadFiles() -> Int {
-        let optionalID = Optional(patient.id)
-        let descriptor = FetchDescriptor<MedicalRecordFile>(predicate: #Predicate { $0.isDead == true && $0.patient?.id == optionalID })
-
-        let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-        
-        return count
-    }
 }
 
 

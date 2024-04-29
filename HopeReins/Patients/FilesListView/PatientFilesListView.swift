@@ -71,7 +71,6 @@ struct PatientFilesListView: View {
     @State var showPatientInfo: Bool = false
     @State var selectedSpecificForm: FormType?
     @Query(sort: \MedicalRecordFile.fileType) var files: [MedicalRecordFile]
-    
     init(patient: Patient, user: User, showDeadFiles: Bool) {
         self.patient = patient
         self.patientId = patient.id
