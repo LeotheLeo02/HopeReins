@@ -60,5 +60,25 @@ extension PatientsView {
 
         return criteria
     }
+    
+    var searchSuggestions: [String] {
+        guard !searchQuery.isEmpty else { return [] }
+        
+        let lowercasedSearchText = searchQuery.lowercased()
+        var suggestions = Set<String>()
+        
+        suggestions.formUnion(patients
+            .map { $0.personalFile.properties["File Name"]!.stringValue}
+            .filter{ $0.lowercased().contains(lowercasedSearchText)}
+        )
+        
+        suggestions.formUnion(patients
+            .map { $0.personalFile.properties["MRN Number"]!.stringValue}
+            .filter{ $0.lowercased().contains(lowercasedSearchText)}
+        )
+        
+        
+        return Array(suggestions)
+    }
 
 }

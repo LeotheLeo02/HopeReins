@@ -51,6 +51,7 @@ struct ReEvalFillInInput: View {
             HStack {
                 Text("to:")
                 DatePicker("", selection: $toDate)
+                    .disabled(!isEditable)
             }
             HStack {
                 Text("Treatments missed:")

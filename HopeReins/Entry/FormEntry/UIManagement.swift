@@ -73,6 +73,10 @@ class UIManagement: ObservableObject {
                     if isRequired && modifiedProperties[title]?.stringValue.isEmpty == true {
                         return title
                     }
+                case .fileUploadButton(let title, _, let isRequired):
+                    if isRequired && modifiedProperties[title]?.dataValue == nil {
+                        return title
+                    }
                 default:
                     break
                 }

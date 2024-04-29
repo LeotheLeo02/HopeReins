@@ -53,10 +53,16 @@ struct PatientsView: View {
 
                 .padding()
                 .searchable(text: $searchQuery, prompt: "Patient Name, MRN Number")
+                .searchSuggestions({
+                    ForEach(searchSuggestions, id:\.self) { suggestion in
+                        Text(suggestion)
+                            .searchCompletion(suggestion)
+                    }
+                })
                 .sheet(isPresented: $addPatient, content: {
                     let record = MedicalRecordFile(fileType: "Patient")
                     DynamicFormView(uiManagement: UIManagement(modifiedProperties: record.properties, record: record, username: user.username, patient: nil, isAdding: true, modelContext: modelContext), files: [])
-                        .frame(minWidth: 1000)
+                        .frame(minWidth: 1000, minHeight: 500)
                 })
             }
             .padding([.horizontal, .top])

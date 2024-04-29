@@ -23,7 +23,7 @@ struct Print_Preview: View {
                             .font(.largeTitle)
                             .fontWeight(.medium)
                         Spacer()
-                        Text(uiManagement.patient!.personalFile.properties["Date of Birth"]!.dateValue.formatted(date: .numeric, time: .omitted))
+                        Text("DOB: \(uiManagement.patient!.personalFile.properties["Date of Birth"]!.dateValue.formatted(date: .numeric, time: .omitted))")
                             .bold()
                     }
                 }

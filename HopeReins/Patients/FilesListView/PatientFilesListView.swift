@@ -112,7 +112,7 @@ struct PatientFilesListView: View {
         })
         .sheet(isPresented: $addFile, content: {
             FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user, files: [])
-                .frame(minWidth: 500, minHeight: 300)
+                .frame(minWidth: 1000, minHeight: 500)
         })
         .navigationTitle(showDeadFiles ? "Existing Files" : "Patients")
         .toolbar {

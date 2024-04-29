@@ -17,18 +17,18 @@ struct StrengthPickerView: View {
     @Binding var value: String
     @State var strengthIndicators: [StrengthIndicator] =
     [
-        StrengthIndicator(value: "0", label: "No contractions felt in muscle"),
-        StrengthIndicator(value: "1", label: "Tendon becomes prominent or feeble contraction felt in the muscle, but no visible movement of the part."),
-        StrengthIndicator(value: "2-", label: "Move through partial range of motion"),
-        StrengthIndicator(value: "2", label: "Moves through the complete range of motion"),
-        StrengthIndicator(value: "2+", label: "Moves through the partial range of motion"),
-        StrengthIndicator(value: "3-", label: "Gradual release from test position"),
-        StrengthIndicator(value: "3", label: "Holds test position (no added pressure)"),
-        StrengthIndicator(value: "3+", label: "Holds test position against slight pressure"),
-        StrengthIndicator(value: "4-", label: "Holds test position against slight to moderate pressure"),
-        StrengthIndicator(value: "4", label: "Holds test position against moderate pressure"),
-        StrengthIndicator(value: "4+", label: "Holds test position against moderate to strong pressure"),
-        StrengthIndicator(value: "5", label: "Holds test positiion against strong pressure")
+        StrengthIndicator(value: "1", label: "No visible or palpable contraction"),
+        StrengthIndicator(value: "2.", label: "(Trace) Visible or palpable contraction, but no ROM"),
+        StrengthIndicator(value: "2-", label: "(Poor-) Partial ROM, gravity eliminated"),
+        StrengthIndicator(value: "3.", label: "(Poor) Full ROM, gravity eliminated"),
+        StrengthIndicator(value: "2+", label: "(Poor+) Slight resistance in gravity eliminated OR <1/2 range against gravity"),
+        StrengthIndicator(value: "3-", label: "(Fair-)>1/2 but < full ROM, against gravity"),
+        StrengthIndicator(value: "4.", label: "(Fair) Full ROM against gravity"),
+        StrengthIndicator(value: "3+", label: "(Fair+) Full ROM against gravity, slight resistance"),
+        StrengthIndicator(value: "4-", label: "(Good-) Full ROM against gravity, mild resistance"),
+        StrengthIndicator(value: "5.", label: "(Good) Full ROM against gravity, moderate resistance"),
+        StrengthIndicator(value: "4+", label: "(Good+) Full ROM against gravity, almost full resistance"),
+        StrengthIndicator(value: "5", label: "(Normal Maximal resistance")
     ]
     var body: some View {
         Menu {

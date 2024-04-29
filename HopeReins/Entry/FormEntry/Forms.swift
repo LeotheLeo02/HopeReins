@@ -56,7 +56,7 @@ extension UIManagement {
         let uiElements: [FormSection] = [
             FormSection(title: "Upload File", elements: [
                 .textField(title: "File Name", binding: stringBinding(for: "File Name"), isRequired: true),
-                .fileUploadButton(title: "File Data", dataValue: dataBinding(for: "File Data"))
+                .fileUploadButton(title: "File Data", dataValue: dataBinding(for: "File Data"), isRequired: true)
             ])
         ]
         return uiElements

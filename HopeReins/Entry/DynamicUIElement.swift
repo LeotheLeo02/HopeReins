@@ -46,8 +46,15 @@ struct DynamicElementView: View {
                 } else {
                     DailyNoteTable(combinedString: combinedString)
                 }
-            case .fileUploadButton(title: let title, dataValue: let dataValue):
-                PropertyHeader(title: title)
+            case .fileUploadButton(title: let title, dataValue: let dataValue, let isRequired):
+                HStack {
+                    PropertyHeader(title: title)
+                    if isRequired {
+                        Text("*")
+                            .font(.title2)
+                            .foregroundStyle(.red)
+                    }
+                }
                 FileUploadButton(fileData: (change != nil) ? .constant(convertToCodableValue(type: change!.type, propertyChange: change!.propertyChange).dataValue) :  dataValue)
             case .physicalTherapyFillIn(title: let title, combinedString: let combinedString):
                 RecommendedPhysicalTherapyFillIn(combinedString: bindingForChange(type: String.self, originalBinding: combinedString))
@@ -73,7 +80,7 @@ enum DynamicUIElement: Hashable {
     case multiSelectWithTitle(combinedString: Binding<String>, labels: [String], title: String)
     case multiSelectOthers(combinedString: Binding<String>, labels: [String], title: String)
     case dailyNoteTable(title: String, combinedString: Binding<String>)
-    case fileUploadButton(title: String, dataValue: Binding<Data?>)
+    case fileUploadButton(title: String, dataValue: Binding<Data?>, isRequired: Bool = false)
     case physicalTherapyFillIn(title: String, combinedString: Binding<String>)
     case reEvalFillin(title: String, combinedString: Binding<String>)
     case dailyNoteFillin(title: String, combinedString: Binding<String>)
@@ -99,7 +106,7 @@ enum DynamicUIElement: Hashable {
                 .sectionHeader(let title),
                 .strengthTable(let title, _),
                 .dailyNoteTable(let title, _),
-                .fileUploadButton(let title, _),
+                .fileUploadButton(let title, _, _),
                 .physicalTherapyFillIn(let title, _),
                 .reEvalFillin(let title, _),
                 .dailyNoteFillin(let title, _),
@@ -137,7 +144,7 @@ struct DynamicUIElementWrapper: Hashable {
              .strengthTable(let title, _),
              .dailyNoteTable(let title, _),
              .singleSelectDescription(let title,_, _, _),
-             .fileUploadButton(let title, _),
+             .fileUploadButton(let title, _, _),
              .physicalTherapyFillIn(let title, _),
              .reEvalFillin(let title, _),
              .dailyNoteFillin(let title, _),
@@ -187,7 +194,7 @@ extension DynamicUIElement {
             return self.compareMultiSelectOthers(key: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue, actualValue: actualValue)
         case .dailyNoteTable(_, _):
             return self.compareAndDescribeChangesDailyNote(key: key, oldCombinedString: oldValue.stringValue, newCombinedString: newValue.stringValue, actualValue: actualValue)
-        case .fileUploadButton(let title, _):
+        case .fileUploadButton(let title, _, _):
             return [DetailedChange(label: title, id: key, oldValue: oldValue, newValue: newValue, actualValue: actualValue)]
         case .physicalTherapyFillIn(let title, _):
             return [DetailedChange(label: title, id: key, oldValue: oldValue, newValue: newValue, actualValue: actualValue)]

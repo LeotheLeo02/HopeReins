@@ -42,7 +42,7 @@ struct TextEntries: View {
             if entries.isEmpty {
                 Text("No \(title)")
                     .foregroundStyle(.gray)
-                    .bold()
+                    .fontWeight(.medium)
             } else {
                 ForEach(entries.indices, id: \.self) { index in
                     HStack {
@@ -122,7 +122,13 @@ struct TextEntry: View {
                 Text(entry.value)
                     .foregroundStyle(.gray)
             } else {
-                TextField("", text: $entry.value, axis: .vertical)
+                TextField("", text: Binding(
+                    get: { entry.value },
+                    set: { newValue in
+                        entry.value = newValue
+                        updateParentCombinedString()
+                    }
+                ), axis: .vertical)
                     .padding(.bottom)
                     .labelsHidden()
                     .focused($isFocused)
@@ -130,9 +136,6 @@ struct TextEntry: View {
         }
         .onAppear {
             isFocused = true
-        }
-        .onChange(of: entry.value) { _ in
-            updateParentCombinedString()
         }
     }
 }
