@@ -174,7 +174,7 @@ struct EntryRowView: View {
                 StrengthPickerView(value: $rowData.value2)
                     .disabled(!isEditable)
                 HStack {
-                    TextField("", text: $rowData.value3)
+                    LargeTextField(text: $rowData.value3)
                     Button(action: {
                         rowData.isPainValue3.toggle()
                         updateParentCombinedString()
@@ -187,7 +187,7 @@ struct EntryRowView: View {
                 }
                 .disabled(!isEditable)
                 HStack {
-                    TextField("", text: $rowData.value4)
+                    LargeTextField(text: $rowData.value4)
                     Button(action: {
                         rowData.isPainValue4.toggle()
                         updateParentCombinedString()

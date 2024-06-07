@@ -106,11 +106,11 @@ struct PatientFilesListView: View {
         })
         .sheet(isPresented: $showPatientInfo, content: {
             DynamicFormView(uiManagement: UIManagement(modifiedProperties: patient.personalFile.properties, record: patient.personalFile, username: user.username, patient: patient, isAdding: false, modelContext: modelContext), files: files)
-                .frame(minWidth: 1000, minHeight: 500)
+                .frame(minWidth: 1000, minHeight: 500, maxHeight: .infinity)
                 .environment(\.isEditable, !showDeadFiles)
         })
         .sheet(isPresented: $addFile, content: {
-            FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user, files: [])
+            FormAddView(selectedSpecificForm: $selectedSpecificForm, patient: patient, user: user, files: files)
                 .frame(minWidth: 1000, minHeight: 500)
         })
         .navigationTitle(showDeadFiles ? "Existing Files" : "Patients")

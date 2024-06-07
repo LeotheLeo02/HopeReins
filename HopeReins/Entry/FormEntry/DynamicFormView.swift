@@ -10,6 +10,10 @@ import SwiftData
 
 
 
+enum ActiveAlert {
+    case revertVersion, revertChanges, cancelSave
+}
+
 struct DynamicFormView: View  {
     @Environment(\.isEditable) var isEditable
     @Environment(\.dismiss) var dismiss
@@ -20,8 +24,8 @@ struct DynamicFormView: View  {
     @State var selectedVersion: Version?
     @State var selectedFieldChange: String?
     @State var reviewChanges: Bool = false
-    @State var isRevertingVersion: Bool = false
-    @State var showRevertAlert: Bool = false
+    @State var activeAlert: ActiveAlert = .revertVersion
+    @State var showAlert: Bool = false
     var files: [MedicalRecordFile]
     @State private var selectedFile: MedicalRecordFile?
     
@@ -29,18 +33,22 @@ struct DynamicFormView: View  {
         HStack {
             ScrollViewReader { proxy in
                 VStack(alignment: .leading) {
-                    if !uiManagement.isAdding && !files.isEmpty  {
+                    if !files.isEmpty {
                         HStack {
-                            Button(action: {
-                                self.onPrint()
-                            }, label: {
-                                HStack {
-                                    Text("Print")
-                                    Image(systemName: "printer.fill")
-                                }
-                            })
+                            if !uiManagement.isAdding {
+                                Button(action: {
+                                    self.onPrint()
+                                }, label: {
+                                    HStack {
+                                        Text("Print")
+                                        Image(systemName: "printer.fill")
+                                    }
+                                })
+                            }
                             Spacer()
-                            PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
+                            if !uiManagement.isEntry {
+                                PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
+                            }
                             Menu {
                                 CategorizedFormsView(selectedFile: $selectedFile, files: files, formType: .riding(.coverLetter))
                                 CategorizedFormsView(selectedFile: $selectedFile, files: files, formType: .physicalTherapy(.dailyNote))
@@ -50,7 +58,6 @@ struct DynamicFormView: View  {
                             .font(.largeTitle)
                             .buttonStyle(.borderless)
                             .help("Open another file")
-                            
                             
                         }
                         .padding([.top, .horizontal])
@@ -65,6 +72,7 @@ struct DynamicFormView: View  {
                             ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
                                 if uiManagement.dynamicUIElements.count == 1 {
                                     sectionContent(section: section)
+
                                 } else {
                                     DisclosureGroup(
                                         content: {
@@ -95,9 +103,10 @@ struct DynamicFormView: View  {
                             }
                             
                         }
-                        .alert(isPresented: $showRevertAlert) {
-                            if isRevertingVersion {
-                                Alert(
+                        .alert(isPresented: $showAlert) {
+                            switch activeAlert {
+                            case .revertVersion:
+                                return Alert(
                                     title: Text("Revert To Version \(selectedVersion!.reason)"),
                                     message: Text("Are you sure you want to revert all your changes to this version. You can't undo this action."),
                                     primaryButton: .destructive(Text("Revert")) {
@@ -106,11 +115,20 @@ struct DynamicFormView: View  {
                                     },
                                     secondaryButton: .cancel()
                                 )
-                            } else {
-                                Alert(
+                            case .revertChanges:
+                                return  Alert(
                                     title: Text("Revert Changes"),
                                     message: Text("Are you sure you want to revert all your changes. You can't undo this action."),
                                     primaryButton: .destructive(Text("Undo")) {
+                                        dismiss()
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            case .cancelSave:
+                                return  Alert(
+                                    title: Text("Incomplete Form"),
+                                    message: Text("The form will not save due to incompleteness. Do you want to discard this file? You can't undo this action."),
+                                    primaryButton: .destructive(Text("Discard")) {
                                         dismiss()
                                     },
                                     secondaryButton: .cancel()
@@ -132,13 +150,20 @@ struct DynamicFormView: View  {
             if selectedFile != nil {
                 Divider()
                 VStack(alignment: .leading) {
-                    Button {
-                        selectedFile = nil
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.title3)
+                    HStack {
+                        Button {
+                            selectedFile = nil
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.title3)
+                        }
+                        .buttonStyle(.borderless)
+                        Spacer()
+                        Label("Viewing", systemImage: "eye")
+                            .font(.subheadline)
+                            .foregroundStyle(.gray)
                     }
-                    .buttonStyle(.borderless)
+                    .padding(.trailing)
                     
                     DynamicFormView(uiManagement: UIManagement(modifiedProperties: selectedFile!.properties, record: selectedFile!, username: uiManagement.username, patient: uiManagement.patient, isAdding: false, modelContext: modelContext), files: [])
                         .id(selectedFile!.id)
@@ -147,39 +172,28 @@ struct DynamicFormView: View  {
                 .padding(.vertical)
             }
         }
-        
         .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
             uiManagement.refreshUI()
+            if uiManagement.isAdding {
+                print(files.count)
+                uiManagement.validateRequiredFields()
+            }
         }
-        
     }
     
     @ViewBuilder
     func sectionContent(section: FormSection) -> some View {
         ForEach(section.elements.map(DynamicUIElementWrapper.init), id: \.id) { wrappedElement in
             SectionElement(wrappedElement: wrappedElement, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement)
+            
         }
         .padding(3)
     }
     
     @ToolbarContentBuilder
     func toolbarContent() -> some ToolbarContent {
-        if uiManagement.isAdding {
-            ToolbarItem(placement: .automatic) {
-                Button {
-                    uiManagement.addFile(modelContext: modelContext)
-                    if uiManagement.errorMessage.isEmpty {
-                        dismiss()
-                    }
-                } label: {
-                    HStack {
-                        Text("Add File")
-                        Image(systemName: "doc.badge.plus")
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-            }
-        } else if !uiManagement.changeDescriptions.isEmpty {
+
+        if !uiManagement.changeDescriptions.isEmpty {
             ToolbarItem(placement: .automatic) {
                 Button {
                     reviewChanges.toggle()
@@ -195,8 +209,8 @@ struct DynamicFormView: View  {
         if selectedVersion != nil {
             ToolbarItem(placement: .automatic) {
                 Button {
-                    isRevertingVersion = true
-                    showRevertAlert.toggle()
+                    activeAlert = .revertVersion
+                    showAlert.toggle()
                 } label: {
                     HStack {
                         Image(systemName: "arrowshape.turn.up.backward.fill")
@@ -206,17 +220,27 @@ struct DynamicFormView: View  {
                 
             }
         }
+        
         ToolbarItem(placement: .cancellationAction) {
-            Button {
-                if !uiManagement.changeDescriptions.isEmpty {
-                    isRevertingVersion = false
-                    showRevertAlert.toggle()
-                } else {
-                    dismiss()
+            if !uiManagement.changeDescriptions.isEmpty || (uiManagement.isEntry && uiManagement.isAdding) {
+                Button("Cancel") {
+                    if !uiManagement.changeDescriptions.isEmpty {
+                        activeAlert = .revertChanges
+                        showAlert.toggle()
+                    } else if uiManagement.isEntry && uiManagement.isAdding {
+                        activeAlert = .cancelSave
+                        showAlert.toggle()
+                    }
                 }
-            } label: {
-                Text("Cancel")
             }
+        }
+        ToolbarItem(placement: .confirmationAction) {
+            Button {
+                dismiss()
+            } label: {
+                Text("Done")
+            }
+            .disabled(uiManagement.isEntry && uiManagement.isAdding || !uiManagement.changeDescriptions.isEmpty)
         }
         
     }

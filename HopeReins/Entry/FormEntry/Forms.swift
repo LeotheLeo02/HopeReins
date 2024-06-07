@@ -43,7 +43,9 @@ extension UIManagement {
                 .textField(title: "Emergency City", binding: stringBinding(for: "Emergency City")),
                 .textField(title: "Emergency Zip", binding: stringBinding(for: "Emergency Zip")),
                 .textField(title: "Emergency Physician", binding: stringBinding(for: "Emergency Physician")),
-                .textField(title: "Emergency Phone", binding: stringBinding(for: "Emergency Phone")),
+                .textField(title: "Physician Office Name", binding: stringBinding(for: "Physician Office Name")),
+                .textField(title: "Physician Phone", binding: stringBinding(for: "Emergency Phone")),
+                .textField(title: "Physician Fax", binding: stringBinding(for: "Physician Fax")),
                 .textField(title: "Hospital of Preference", binding: stringBinding(for: "Hospital of Preference"))
             ])
         ]

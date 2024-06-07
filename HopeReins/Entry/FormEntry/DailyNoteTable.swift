@@ -81,7 +81,7 @@ struct DailyNoteTable: View {
     }
     
     private func addNewRow() {
-        let newRow = DailyNoteTableCell(number: 1, code: "00000", cpt: "0", procedire: "Other", isEditable: true)
+        let newRow = DailyNoteTableCell(number: 0, code: "00000", cpt: "0", procedire: "Other", isEditable: true)
         tableData.append(newRow)
         updateCombinedString()
     }
@@ -128,11 +128,11 @@ struct DailyNoteTable: View {
     }
     
     var initialTableData: [DailyNoteTableCell] = [
-        DailyNoteTableCell(number: 1, code: "NEURO", cpt: "97112", procedire: "PT NEUROMUSCULAR RE_ED 15 MIN", isEditable: false),
-        DailyNoteTableCell(number: 1, code: "THER ACT", cpt: "97530", procedire: "PT_THEREPEUTIC ACTCTY 15 MIN", isEditable: false),
-        DailyNoteTableCell(number: 1, code: "GAIT", cpt: "97116", procedire: "PT GAIT TRAINING 15 MIN", isEditable: false),
-        DailyNoteTableCell(number: 1, code: "THEREX", cpt: "97110", procedire: "PT-THEREAPEUTIC EXERCISE 15 MIN", isEditable: false),
-        DailyNoteTableCell(number: 1, code: "MANUAL", cpt: "97140", procedire: "PT-MANUAL THERAPY", isEditable: false)
+        DailyNoteTableCell(number: 0, code: "NEURO", cpt: "97112", procedire: "PT NEUROMUSCULAR RE_ED 15 MIN", isEditable: false),
+        DailyNoteTableCell(number: 0, code: "THER ACT", cpt: "97530", procedire: "PT_THEREPEUTIC ACTCTY 15 MIN", isEditable: false),
+        DailyNoteTableCell(number: 0, code: "GAIT", cpt: "97116", procedire: "PT GAIT TRAINING 15 MIN", isEditable: false),
+        DailyNoteTableCell(number: 0, code: "THEREX", cpt: "97110", procedire: "PT-THEREAPEUTIC EXERCISE 15 MIN", isEditable: false),
+        DailyNoteTableCell(number: 0, code: "MANUAL", cpt: "97140", procedire: "PT-MANUAL THERAPY", isEditable: false)
     ]
 }
 
@@ -141,7 +141,7 @@ struct EntryRowDailyNoteTable: View {
     @ObservedObject var rowData: DailyNoteTableCell
     @Binding var tableData: [DailyNoteTableCell]
     let updateParentCombinedString: () -> Void
-    var range: ClosedRange<Int> = 1...9
+    var range: ClosedRange<Int> = 0...9
     
     var body: some View {
         HStack {

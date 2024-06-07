@@ -23,12 +23,14 @@ class UIManagement: ObservableObject {
     @Published var username: String
     @Published var patient: Patient?
     @Published var isAdding: Bool
+    @Published var isEntry: Bool = false
     var changeDescriptions: [DetailedChange] {
-        if !isAdding {
+        if !isAdding && !isEntry {
             return self.compareStringValues()
         }
         return []
     }
+    var modelContext: ModelContext
     
     
     init(modifiedProperties: [String : CodableValue], record: MedicalRecordFile, username: String, patient: Patient?, isAdding: Bool, modelContext: ModelContext) {
@@ -37,6 +39,8 @@ class UIManagement: ObservableObject {
         self.username = username
         self.patient = patient
         self.isAdding = isAdding
+        self.isEntry = isAdding
+        self.modelContext = modelContext
         self.dynamicUIElements = getUIElements()
         if isRevaluation && isAdding {
             self.updateGoalsFromLatestRecord(modelContext: modelContext)
@@ -65,27 +69,28 @@ class UIManagement: ObservableObject {
         }
     }
     
-    func addFile(modelContext: ModelContext) {
-        let requiredFields = dynamicUIElements.flatMap { section in
-            section.elements.compactMap { element -> String? in
+    
+    func validateRequiredFields() {
+        let requiredFieldsFilled = dynamicUIElements.allSatisfy { section in
+            section.elements.allSatisfy { element in
                 switch element {
                 case .textField(let title, _, let isRequired):
-                    if isRequired && modifiedProperties[title]?.stringValue.isEmpty == true {
-                        return title
-                    }
+                    return !isRequired || (modifiedProperties[title]?.stringValue.isEmpty == false)
                 case .fileUploadButton(let title, _, let isRequired):
-                    if isRequired && modifiedProperties[title]?.dataValue == nil {
-                        return title
-                    }
+                    return !isRequired || (modifiedProperties[title]?.dataValue != nil)
                 default:
-                    break
+                    return true
                 }
-                return nil
             }
         }
         
-        if !requiredFields.isEmpty {
-            errorMessage = "The following required fields are missing: \(requiredFields.joined(separator: ", "))"
+        if requiredFieldsFilled {
+            addFileAutomatically()
+        }
+    }
+    
+    private func addFileAutomatically() {
+        if !isAdding {
             return
         }
         
@@ -104,8 +109,52 @@ class UIManagement: ObservableObject {
             patient!.files.append(record)
         }
         modelContext.insert(record)
-       try? modelContext.save()
+        try? modelContext.save()
+        
+        isAdding = false
     }
+    
+//    func addFile(modelContext: ModelContext) {
+//        let requiredFields = dynamicUIElements.flatMap { section in
+//            section.elements.compactMap { element -> String? in
+//                switch element {
+//                case .textField(let title, _, let isRequired):
+//                    if isRequired && modifiedProperties[title]?.stringValue.isEmpty == true {
+//                        return title
+//                    }
+//                case .fileUploadButton(let title, _, let isRequired):
+//                    if isRequired && modifiedProperties[title]?.dataValue == nil {
+//                        return title
+//                    }
+//                default:
+//                    break
+//                }
+//                return nil
+//            }
+//        }
+//        
+//        if !requiredFields.isEmpty {
+//            errorMessage = "The following required fields are missing: \(requiredFields.joined(separator: ", "))"
+//            return
+//        }
+//        
+//        errorMessage = ""
+//        
+//        record.setUpSignature(addedBy: username, modelContext: modelContext)
+//        if isIncrementalFileType != nil {
+//            setIncrementalFileName(modelContext: modelContext)
+//        }
+//        record.properties = modifiedProperties
+//        if patient == nil {
+//            let newPatient = Patient(personalFile: record)
+//            modelContext.insert(newPatient)
+//            newPatient.files.append(record)
+//        } else {
+//            patient!.files.append(record)
+//        }
+//        modelContext.insert(record)
+//       try? modelContext.save()
+//    }
     
     func setIncrementalFileName(modelContext: ModelContext) {
         if let incrementalRawValue = isIncrementalFileType?.rawValue {

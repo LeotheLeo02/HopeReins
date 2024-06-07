@@ -122,16 +122,15 @@ struct TextEntry: View {
                 Text(entry.value)
                     .foregroundStyle(.gray)
             } else {
-                TextField("", text: Binding(
+                LargeTextField(text:  Binding(
                     get: { entry.value },
                     set: { newValue in
                         entry.value = newValue
                         updateParentCombinedString()
-                    }
-                ), axis: .vertical)
-                    .padding(.bottom)
-                    .labelsHidden()
-                    .focused($isFocused)
+                    }))
+                .focused($isFocused)
+                .padding(.bottom)
+
             }
         }
         .onAppear {

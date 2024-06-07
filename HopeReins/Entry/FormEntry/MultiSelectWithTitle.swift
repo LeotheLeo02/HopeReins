@@ -146,8 +146,7 @@ struct DescriptionView: View {
             })
             .buttonStyle(.plain)
             Text(toggleElement.title)
-            TextField("Description", text: $toggleElement.description, axis: .vertical)
-                .disabled(!isEditable)
+            LargeTextField(text: $toggleElement.description)
                 .onChange(of: toggleElement.description) { newValue in
                     toggleElement.isToggled = !newValue.isEmpty || toggleElement.buttonClicked // Update isToggled based on description and buttonClicked
                     coordinator.updateString(index: index, newValue: newValue)

@@ -79,7 +79,7 @@ struct DynamicTextField: View {
         if !isEditable {
             Text(text)
         } else {
-            TextField(label, text: $text)
+            LargeTextField(text: $text)
         }
     }
 }

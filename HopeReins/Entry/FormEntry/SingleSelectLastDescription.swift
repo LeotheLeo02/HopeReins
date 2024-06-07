@@ -41,8 +41,7 @@ struct SingleSelectLastDescription: View {
                     .disabled(!isEditable)
                     
                     if selectionDescription.selection != "Not Indicated" {
-                        TextField("Description...", text: $selectionDescription.description, axis: .vertical)
-                        .disabled(!isEditable)
+                        LargeTextField(text: $selectionDescription.description)
                     }
                 }
             }
@@ -53,7 +52,7 @@ struct SingleSelectLastDescription: View {
                 .foregroundStyle(.windowBackground)
                 .shadow(radius: 3)
         )
-        .onChange(of: selectionsDescriptions) { newValue in
+        .onChange(of: selectionsDescriptions) {
             updateCombinedString()
         }
         
@@ -83,5 +82,28 @@ struct SingleSelectLastDescription: View {
     private func updateCombinedString() {
         let components = selectionsDescriptions.map { "\($0.title)::\($0.selection)~~\($0.description)" }
         combinedString = components.joined(separator: ", ")
+    }
+}
+
+
+struct LargeTextField: View {
+    @Environment(\.isEditable) var isEditable: Bool
+    @Binding var text: String
+    var body: some View {
+        VStack {
+            if !isEditable {
+                Text(text)
+                    .frame(maxWidth: .infinity)
+            } else {
+                TextEditor(text: $text)
+            }
+        }
+        .font(.body)
+        .padding(5)
+        .scrollContentBackground(.hidden)
+        .background(.gray.opacity(0.15))
+        .clipShape(.rect(cornerRadius: 8))
+        .scrollClipDisabled()
+        .multilineTextAlignment(.leading)
     }
 }

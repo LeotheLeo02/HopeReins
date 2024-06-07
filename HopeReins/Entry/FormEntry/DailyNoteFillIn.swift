@@ -26,7 +26,6 @@ struct DailyNoteFillIn: View {
     
     init(combinedString: Binding<String>) {
         self._combinedString = combinedString
-        
         let components = self.extractComponents(from: combinedString.wrappedValue, dateFormatter: dateFormatter)
         self._extractedOnDate = State(initialValue: components.onDate)
         self._extractedFromDate = State(initialValue: components.fromDate)
@@ -44,33 +43,31 @@ struct DailyNoteFillIn: View {
                 Text("from:")
                 DatePicker("", selection: $extractedFromDate, displayedComponents: .hourAndMinute)
                     .disabled(!isEditable)
+                    .onChange(of: extractedFromDate) { _ in
+                        ensureSameDay()
+                    }
             }
             HStack {
                 Text("to:")
                 DatePicker("", selection: $extractedToDate, displayedComponents: .hourAndMinute)
                     .disabled(!isEditable)
+                    .onChange(of: extractedToDate) { _ in
+                        ensureSameDay()
+                    }
             }
         }
         .padding()
-        .onChange(of: extractedOnDate) { newValue in
-            updateCombinedString()
-        }
-        .onChange(of: extractedFromDate) { _ in
-            updateCombinedString()
-        }
-        .onChange(of: extractedToDate) { _ in
+        .onChange(of: extractedOnDate) { _ in
+            ensureSameDay()
             updateCombinedString()
         }
     }
 
     func updateCombinedString() {
-        combinedString = "on \(dateFormatter.string(from: extractedOnDate)) from \(dateFormatter.string(from: extractedFromDate)) to \(dateFormatter.string(from: extractedToDate))"
+        combinedString = "On \(dateFormatter.string(from: extractedOnDate)) from \(dateFormatter.string(from: extractedFromDate)) to \(dateFormatter.string(from: extractedToDate))"
     }
     
     func extractComponents(from string: String, dateFormatter: DateFormatter) -> (onDate: Date, fromDate: Date, toDate: Date) {
-        let onDateRegex = try! NSRegularExpression(pattern: "On (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2})")
-        let dateRangeRegex = try! NSRegularExpression(pattern: "from (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2}) to (\\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2} [APMapm]{2})")
-        
         var onDate = Date()
         var fromDate = Date()
         var toDate = Date()
@@ -88,6 +85,19 @@ struct DailyNoteFillIn: View {
         }
         
         return (onDate, fromDate, toDate)
+    }
+
+    func ensureSameDay() {
+        let calendar = Calendar.current
+        let onDateComponents = calendar.dateComponents([.year, .month, .day], from: extractedOnDate)
+        
+        if let newFromDate = calendar.date(bySettingHour: calendar.component(.hour, from: extractedFromDate), minute: calendar.component(.minute, from: extractedFromDate), second: 0, of: extractedOnDate) {
+            extractedFromDate = newFromDate
+        }
+        
+        if let newToDate = calendar.date(bySettingHour: calendar.component(.hour, from: extractedToDate), minute: calendar.component(.minute, from: extractedToDate), second: 0, of: extractedOnDate) {
+            extractedToDate = newToDate
+        }
     }
 }
 

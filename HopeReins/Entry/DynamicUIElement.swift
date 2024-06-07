@@ -14,14 +14,15 @@ public var defaultUELabels: [String] = ["Shoulder Elevation (in scapular pain)",
 
 
 struct DynamicElementView: View {
-    @Environment(\.isEditable) var isEditable
+    @Environment(\.isEditable) var isEditable: Bool
     @State var wrappedElement: DynamicUIElement
     @State var change: PastChange?
+    @State var text: String = ""
     var body: some View {
         VStack(alignment: .leading) {
             switch wrappedElement {
             case .textField(let title, let binding, let isRequired):
-                BasicTextField(title: title, isRequired: isRequired, text: bindingForChange(type: String.self, originalBinding: binding))
+                BasicTextEditor(title: title, isRequired: isRequired, mainText: bindingForChange(type: String.self, originalBinding: binding))
             case .datePicker(let title, let hourAndMinute, let binding):
                 DateSelection(title: title, hourAndMinute: hourAndMinute, date: bindingForChange(type: Date.self, originalBinding: binding))
             case .numberField(let title, let binding):
@@ -66,6 +67,7 @@ struct DynamicElementView: View {
                 TextEntries(combinedString: bindingForChange(type: String.self, originalBinding: combinedString), title: title)
             }
         }
+        
         .environment(\.isEditable, isEditable && change == nil)
     }
 }
@@ -174,6 +176,7 @@ extension DynamicElementView {
             return originalBinding
         }
     }
+    
 }
 
 

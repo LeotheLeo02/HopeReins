@@ -13,6 +13,7 @@ struct SectionElement: View {
     @Binding var selectedVersion: Version?
     @Binding var selectedFieldChange: String?
     @ObservedObject var uiManagement: UIManagement
+    @State var text: String = ""
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -34,7 +35,9 @@ struct SectionElement: View {
                             FormSectionContent(wrappedElement: wrappedElement, selectedVersion: $selectedVersion, selectedFieldChange: $selectedFieldChange, uiManagement: uiManagement)
                         }
                     }
+                    
                     DynamicElementView(wrappedElement: wrappedElement.element)
+                    
                 }
                 if uiManagement.changeDescriptions.first(where: { $0.id == wrappedElement.id }) != nil {
                     Text("Modified")

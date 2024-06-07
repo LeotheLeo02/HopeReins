@@ -71,8 +71,7 @@ struct MultiSelectOthers: View {
                     }
                 }
                 HStack {
-                    TextField("Other...", text: $otherString, axis: .vertical)
-                        .disabled(!isEditable)
+                    LargeTextField(text: $otherString)
                     Spacer()
                     Button(action: {
                         addOtherString()
