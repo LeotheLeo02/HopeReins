@@ -72,7 +72,7 @@ struct PastChangeSelectionView: View {
                 VStack(alignment: .leading) {
                     Text(pastVersion.reason)
                         .font(.subheadline)
-                    Text("Modified by \(pastVersion.author) \(pastVersion.date.formatted())")
+                    Text("Modified by \(pastVersion.author) \(formatDate(pastVersion.date))")
                         .font(.caption2)
                 }
             }

@@ -330,7 +330,6 @@ extension DynamicUIElement {
     func decodeDailyNote(_ combinedString: String) -> [LabelValue] {
         var labelValues: [LabelValue] = [LabelValue]()
         let entries = combinedString.components(separatedBy: "//")
-        print(entries)
 
         
         var index = 0

@@ -46,7 +46,7 @@ struct DynamicFormView: View  {
                                 })
                             }
                             Spacer()
-                            if !uiManagement.isEntry {
+                            if !uiManagement.isAdding {
                                 PastChangeSelectionView(showPastChanges: $showPastChanges, selectedVersion: $selectedVersion, pastVersions: uiManagement.record.versions)
                             }
                             Menu {
@@ -69,10 +69,12 @@ struct DynamicFormView: View  {
                     }
                     ScrollView {
                         VStack(alignment: .leading) {
-                            ForEach(uiManagement.dynamicUIElements, id: \.title) { section in
-                                if uiManagement.dynamicUIElements.count == 1 {
+                            if let section = uiManagement.dynamicUIElements.first {
+                                sectionContent(section: section)
+                            }
+                            ForEach(Array(uiManagement.dynamicUIElements.enumerated()).dropFirst(), id: \.element.title) { index, section in
+                                if uiManagement.dynamicUIElements.count == 2 {
                                     sectionContent(section: section)
-
                                 } else {
                                     DisclosureGroup(
                                         content: {
@@ -174,9 +176,10 @@ struct DynamicFormView: View  {
         }
         .onChange(of: uiManagement.modifiedProperties) { oldValue, newValue in
             uiManagement.refreshUI()
-            if uiManagement.isAdding {
-                print(files.count)
-                uiManagement.validateRequiredFields()
+        }
+        .onAppear {
+            if uiManagement.isAdding && uiManagement.isRevaluation {
+                transferGoalsFromLatestEval()
             }
         }
     }
@@ -194,7 +197,7 @@ struct DynamicFormView: View  {
     func toolbarContent() -> some ToolbarContent {
 
         if !uiManagement.changeDescriptions.isEmpty {
-            ToolbarItem(placement: .automatic) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     reviewChanges.toggle()
                 } label: {
@@ -222,25 +225,37 @@ struct DynamicFormView: View  {
         }
         
         ToolbarItem(placement: .cancellationAction) {
-            if !uiManagement.changeDescriptions.isEmpty || (uiManagement.isEntry && uiManagement.isAdding) {
+            if !uiManagement.changeDescriptions.isEmpty || uiManagement.isAdding {
                 Button("Cancel") {
-                    if !uiManagement.changeDescriptions.isEmpty {
+                    if uiManagement.isAdding {
+                        if uiManagement.isEmptyNewFile {
+                            dismiss()
+                        } else {
+                            activeAlert = .cancelSave
+                            showAlert.toggle()
+                        }
+                    } else if !uiManagement.changeDescriptions.isEmpty {
                         activeAlert = .revertChanges
                         showAlert.toggle()
-                    } else if uiManagement.isEntry && uiManagement.isAdding {
-                        activeAlert = .cancelSave
-                        showAlert.toggle()
+                    } else {
+                        dismiss()
                     }
                 }
             }
         }
+        
         ToolbarItem(placement: .confirmationAction) {
             Button {
+                if uiManagement.isAdding {
+                    uiManagement.addFile()
+                }
+                uiManagement.record.properties = uiManagement.modifiedProperties
+                uiManagement.refreshUI()
                 dismiss()
             } label: {
                 Text("Done")
             }
-            .disabled(uiManagement.isEntry && uiManagement.isAdding || !uiManagement.changeDescriptions.isEmpty)
+            .disabled((uiManagement.isAdding && !uiManagement.isFileComplete) || !uiManagement.changeDescriptions.isEmpty)
         }
         
     }
@@ -262,7 +277,6 @@ struct DynamicFormView: View  {
     func countModificationsInSection(_ section: FormSection) -> Int {
         let wrappedElements = section.elements.map(DynamicUIElementWrapper.init)
         let changeDescriptions = uiManagement.changeDescriptions
-        print(changeDescriptions)
         let changesInSection = wrappedElements.compactMap { wrappedElement -> Int? in
             return uiManagement.changeDescriptions.filter { $0.id == wrappedElement.id }.count
         }
@@ -330,3 +344,27 @@ struct CategorizedFormsView: View {
     }
 }
 
+
+extension DynamicFormView {
+    func transferGoalsFromLatestEval() {
+        let reEvaluationRawValue = PhysicalTherapyFormType.reEvaluation.rawValue
+        let pocRawValue = PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue
+        
+        var fetchRequest = FetchDescriptor<MedicalRecordFile>(
+            predicate: #Predicate { record in
+                (record.fileType == reEvaluationRawValue) || (record.fileType == pocRawValue) && (record.isDead == false)
+            },
+            sortBy: [SortDescriptor(\.addedSignature?.dateModified, order: .reverse)]
+        )
+        fetchRequest.fetchLimit = 1
+        
+        
+        if let latestRecord = try? modelContext.fetch(fetchRequest).first {
+            if let shortTermGoals = latestRecord.properties["TE Short Term Goals"],
+               let longTermGoals = latestRecord.properties["TE Long Term Goals"] {
+                uiManagement.modifiedProperties["TE Short Term Goals"] = shortTermGoals
+                uiManagement.modifiedProperties["TE Long Term Goals"] = longTermGoals
+            }
+        }
+    }
+}

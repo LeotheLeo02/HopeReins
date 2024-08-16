@@ -36,11 +36,16 @@ struct SingleSelectLastDescription: View {
                         ForEach(labels, id: \.self) { label in
                             Text(label).tag(label)
                         }
+                        if !selectionDescription.selection.isEmpty {
+                            Text("None").tag("")
+                        }
                     }
                     .labelsHidden()
                     .disabled(!isEditable)
-                    
-                    if selectionDescription.selection != "Not Indicated" {
+                    .onChange(of: selectionDescription.selection) { _, newValue in
+                            updateCombinedString()
+                    }
+                    if selectionDescription.selection != "" {
                         LargeTextField(text: $selectionDescription.description)
                     }
                 }
@@ -52,19 +57,15 @@ struct SingleSelectLastDescription: View {
                 .foregroundStyle(.windowBackground)
                 .shadow(radius: 3)
         )
-        .onChange(of: selectionsDescriptions) {
-            updateCombinedString()
-        }
         
         .onChange(of: combinedString) { oldValue, newValue in
-            self.selectionsDescriptions = self.parseCombinedString(combinedString, titles: titles)
+                self.selectionsDescriptions = self.parseCombinedString(combinedString, titles: titles)
         }
     }
     
     func parseCombinedString(_ combinedString: String, titles: [String]) -> [SelectionDescription] {
         var result: [SelectionDescription] = []
         let components = combinedString.components(separatedBy: ", ")
-        
         for title in titles {
             if let component = components.first(where: { $0.hasPrefix("\(title)::") }) {
                 let parts = component.split(separator: "~~", maxSplits: 1, omittingEmptySubsequences: true).map(String.init)
@@ -72,7 +73,7 @@ struct SingleSelectLastDescription: View {
                 let description = parts.count > 1 ? parts[1] : ""
                 result.append(SelectionDescription(title: title, selection: selection, description: description))
             } else {
-                result.append(SelectionDescription(title: title, selection: "Not Indicated", description: ""))
+                result.append(SelectionDescription(title: title, selection: "", description: ""))
             }
         }
         

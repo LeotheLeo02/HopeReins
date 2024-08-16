@@ -98,6 +98,23 @@ public enum CodableValue: Codable, Equatable, Hashable {
 }
 
 extension CodableValue {
+    var isInitialValue: Bool {
+        switch self {
+        case .int(let value):
+            return value == 0
+        case .string(let value):
+            return value.isEmpty
+        case .double(let value):
+            return value == 0.0
+        case .bool(let value):
+            return !value
+        case .date(let value):
+            return value == Date(timeIntervalSince1970: 0)
+        case .data(let value):
+            return value.isEmpty
+        }
+    }
+    
     var stringValue: String {
         get {
             if case .string(let value) = self { return value }

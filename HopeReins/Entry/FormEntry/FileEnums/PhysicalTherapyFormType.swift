@@ -15,4 +15,5 @@ enum PhysicalTherapyFormType: String, CaseIterable, Hashable {
     case medicalForm = "Medical Form"
     case missedVisit = "Missed Visit"
     case referral = "Physicians Referral"
+    case discharge = "Discharge Note"
 }

@@ -28,7 +28,8 @@ extension PatientFilesListView {
                 
                 // Check if the file date matches
                 if let date = criteria.date {
-                    matches = matches && Calendar.current.isDate(file.addedSignature!.dateModified, inSameDayAs: date)
+                    let fileDate = getFileDate(file)
+                    matches = matches && Calendar.current.isDate(fileDate, inSameDayAs: date)
                 }
                 
                 // Check if the file type matches
@@ -39,6 +40,30 @@ extension PatientFilesListView {
                 return matches
             }
         }
+    }
+    
+    private func getFileDate(_ file: MedicalRecordFile) -> Date {
+        if let dateOfServiceString = file.properties["Date of Service"]?.stringValue,
+           let formattedDate = formatPerformedDateWithDate(from: dateOfServiceString) {
+            return formattedDate
+        } else {
+            return file.addedSignature!.dateModified
+        }
+    }
+    
+    private func formatPerformedDateWithDate(from combinedString: String) -> Date? {
+        let onDateRegex = try! NSRegularExpression(pattern: "On (\\d{4}-\\d{2}-\\d{2})")
+        
+        if let onDateMatch = onDateRegex.firstMatch(in: combinedString, options: [], range: NSRange(location: 0, length: combinedString.utf16.count)) {
+            let onDateString = String(combinedString[Range(onDateMatch.range(at: 1), in: combinedString)!])
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            
+            return dateFormatter.date(from: onDateString)
+        }
+        
+        return nil
     }
     
     
@@ -99,13 +124,25 @@ extension PatientFilesListView {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .none
-        
-        suggestions.formUnion(files
-            .filter { $0.fileType != "Patient" } // Filter out files with fileType = "Patient"
-            .map { dateFormatter.string(from: $0.digitalSignature!.dateModified) }
-            .filter { $0.contains(searchText) })
+
+        suggestions.formUnion(
+            files
+                .filter { $0.fileType != "Patient" }
+                .map { file in
+                    // Try to extract and format "Date of Service"
+                    if let dateOfServiceString = file.properties["Date of Service"]?.stringValue,
+                       let formattedDate = formatPerformedDateFromString(from: dateOfServiceString) {
+                        return formattedDate
+                    } else {
+                        return dateFormatter.string(from: file.addedSignature!.dateModified)
+                    }
+                }
+                .filter { $0.contains(searchText) }
+        )
         
         return Array(suggestions)
         
     }
+    
+
 }

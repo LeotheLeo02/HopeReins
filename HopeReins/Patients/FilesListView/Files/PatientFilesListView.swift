@@ -169,9 +169,9 @@ struct PatientFilesListView: View {
         Group {
             switch selectedFormType {
             case .physicalTherapy(_):
-                FileListView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles, patient: patient)
+                FileSectionView(files: files, user: user, formType: .physicalTherapy(.evaluation), isEditable: !showDeadFiles, patient: patient)
             case .riding(_):
-                FileListView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles, patient: patient)
+                FileSectionView(files: files, user: user, formType: .riding(.releaseStatement), isEditable: !showDeadFiles, patient: patient)
             }
         }
     }

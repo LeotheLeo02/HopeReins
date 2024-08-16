@@ -1,5 +1,5 @@
 //
-//  FileListView.swift
+//  FileSectionView.swift
 //  HopeReins
 //
 //  Created by Nathanael Suarez on 1/1/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FileListView: View {
+struct FileSectionView: View {
     @Environment(\.modelContext) var modelContext
     @State var selectedFile: MedicalRecordFile? = nil
     @State var showEditSheet: Bool = false

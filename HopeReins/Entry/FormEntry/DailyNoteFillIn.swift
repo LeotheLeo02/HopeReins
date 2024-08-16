@@ -33,38 +33,60 @@ struct DailyNoteFillIn: View {
     }
 
     var body: some View {
-        HStack {
+        VStack(alignment: .leading) {
+            PropertyHeader(title: "Date Performed")
             HStack {
-                Text("On")
-                DatePicker("", selection: $extractedOnDate, displayedComponents: .date)
-                    .disabled(!isEditable)
-            }
-            HStack {
-                Text("from:")
-                DatePicker("", selection: $extractedFromDate, displayedComponents: .hourAndMinute)
-                    .disabled(!isEditable)
-                    .onChange(of: extractedFromDate) { _ in
-                        ensureSameDay()
-                    }
-            }
-            HStack {
-                Text("to:")
-                DatePicker("", selection: $extractedToDate, displayedComponents: .hourAndMinute)
-                    .disabled(!isEditable)
-                    .onChange(of: extractedToDate) { _ in
-                        ensureSameDay()
-                    }
+                HStack {
+                    Text("On")
+                    DatePicker("", selection: $extractedOnDate, displayedComponents: .date)
+                        .disabled(!isEditable)
+                }
+                HStack {
+                    Text("from:")
+                    DatePicker("", selection: $extractedFromDate, displayedComponents: .hourAndMinute)
+                        .disabled(!isEditable)
+                        .onChange(of: extractedFromDate) { _ in
+                            ensureSameDay()
+                        }
+                }
+                HStack {
+                    Text("to:")
+                    DatePicker("", selection: $extractedToDate, displayedComponents: .hourAndMinute)
+                        .disabled(!isEditable)
+                        .onChange(of: extractedToDate) { _ in
+                            ensureSameDay()
+                        }
+                }
             }
         }
-        .padding()
-        .onChange(of: extractedOnDate) { _ in
+        .onChange(of: extractedOnDate) {
             ensureSameDay()
             updateCombinedString()
+        }
+        
+        .onChange(of: extractedToDate) {
+            ensureSameDay()
+            updateCombinedString()
+        }
+        .onChange(of: extractedFromDate) {
+            ensureSameDay()
+            updateCombinedString()
+        }
+        
+        .onChange(of: combinedString) {
+            updateComponents()
         }
     }
 
     func updateCombinedString() {
         combinedString = "On \(dateFormatter.string(from: extractedOnDate)) from \(dateFormatter.string(from: extractedFromDate)) to \(dateFormatter.string(from: extractedToDate))"
+    }
+    
+    func updateComponents() {
+        let components = self.extractComponents(from: combinedString, dateFormatter: dateFormatter)
+        self.extractedOnDate = components.onDate
+        self.extractedFromDate = components.fromDate
+        self.extractedToDate = components.toDate
     }
     
     func extractComponents(from string: String, dateFormatter: DateFormatter) -> (onDate: Date, fromDate: Date, toDate: Date) {
@@ -89,7 +111,6 @@ struct DailyNoteFillIn: View {
 
     func ensureSameDay() {
         let calendar = Calendar.current
-        let onDateComponents = calendar.dateComponents([.year, .month, .day], from: extractedOnDate)
         
         if let newFromDate = calendar.date(bySettingHour: calendar.component(.hour, from: extractedFromDate), minute: calendar.component(.minute, from: extractedFromDate), second: 0, of: extractedOnDate) {
             extractedFromDate = newFromDate
@@ -97,6 +118,12 @@ struct DailyNoteFillIn: View {
         
         if let newToDate = calendar.date(bySettingHour: calendar.component(.hour, from: extractedToDate), minute: calendar.component(.minute, from: extractedToDate), second: 0, of: extractedOnDate) {
             extractedToDate = newToDate
+        }
+        
+        if extractedFromDate >= extractedToDate {
+            if let adjustedToDate = calendar.date(byAdding: .hour, value: 1, to: extractedFromDate) {
+                extractedToDate = adjustedToDate
+            }
         }
     }
 }

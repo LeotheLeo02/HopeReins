@@ -8,7 +8,14 @@
 import SwiftUI
 
 extension UIManagement {
-    
+    //MARK: - Service Date Property
+    func getServiceDateProperty() -> [FormSection] {
+        return [
+            FormSection(title: "Date of Service", elements: [
+                .dailyNoteFillin(title: "Date of Service", combinedString: stringBinding(for: "Date of Service"))
+            ])
+        ]
+    }
     //MARK: - Patient File
     func getPatientFile() -> [FormSection] {
         // TODO: Add int fields and number fields types
@@ -99,8 +106,8 @@ extension UIManagement {
                 .textField(title: "Seizures", binding: stringBinding(for: "Seizures")),
             ]),
             FormSection(title: "Strength & A/PROM", elements: [
-                .textField(title: "S Upper Extremities", binding: stringBinding(for: "S Upper Extremity")),
-                .textField(title: "S Lower Extremities", binding: stringBinding(for: "S Lower Extremity")),
+                .textField(title: "Upper Extremities", binding: stringBinding(for: "Upper Extremity")),
+                .textField(title: "Lower Extremities", binding: stringBinding(for: "Lower Extremity")),
                 .textField(title: "Trunk Musculature", binding: stringBinding(for: "Trunk Musculature")),
                 .sectionHeader(title: "Upper Extremity Strength"),
                 .strengthTable(title: "UE Arm Strength Table", combinedString: stringBinding(for: "UE Arm Strength Table")),
@@ -134,7 +141,7 @@ extension UIManagement {
             ]),
             FormSection(title: "Mobility", elements: [
                 .multiSelectOthers(combinedString: stringBinding(for: "Locomotion"), labels: ["Ambulation", "Non-Mobile", "Wheel Chair"], title: "Locomotion"),
-                .multiSelectWithTitle(combinedString: stringBinding(for: "Assistance & Distance"), labels: ["Independent", "Supervision for safety", "Minimal", "Maximal", "SBA", "CGA", "Moderate", "Dependent"], title: "Assistance & Distance"),
+                .multiSelectWithTitle(combinedString: stringBinding(for: "Assistance & Distance"), labels: ["Independent", "Supervision for safety", "SBA", "CGA", "Minimal", "Moderate", "Maximal", "Dependent"], title: "Assistance & Distance"),
                 .singleSelectDescription(title: "Surfaces", titles: ["Level", "Ramp", "Curb", "Stairs", "Uneven terrain"], labels: ["Independent", "SBA", "CGA", "Min", "Mod", "Max"], combinedString: stringBinding(for: "Surfaces")),
                 .textField(title: "Gait Deviations", binding: stringBinding(for: "Gait Deviations")),
                 .textField(title: "Wheelchair Skills", binding: stringBinding(for: "Wheelchair Skills"))
@@ -188,7 +195,7 @@ extension UIManagement {
             FormSection(title: "Treatment Plan", elements: [
                 .sectionHeader(title: "Treatment Plan to address goal attainment will include, but not limited to"),
                 .multiSelectOthers(combinedString: stringBinding(for: "Goal Attainment"), labels: treatmentsLabels, title: "Goal Attainment"),
-                .singleSelectDescription(title: "Patient demonstrates", titles: ["Patient demonstrates"], labels: ["Good", "Fair", "Poor", "Rehab potential"], combinedString: stringBinding(for: "Patient demonstrates")),
+                .singleSelectDescription(title: "Patient demonstrates the following rehab potential", titles: ["Patient demonstrates the following rehab potential"], labels: ["Good", "Fair", "Poor"], combinedString: stringBinding(for: "Patient demonstrates")),
                 .physicalTherapyFillIn(title: "Physical Therapy Fill In", combinedString: stringBinding(for: "Physical Therapy Fill In")),
                 .textField(title: "Discharge Planning", binding: stringBinding(for: "Discharge Planning")),
                 .textField(title: "Therapist Signature", binding: stringBinding(for: "Therapist Signature")),
@@ -199,6 +206,7 @@ extension UIManagement {
         return uiElements
     }
     
+    //MARK: - ReEvaluation
     func getReEvaluation() -> [FormSection] {
         return  [
             FormSection(title: "Diagnosis", elements: [
@@ -226,10 +234,10 @@ extension UIManagement {
         ]
     }
     
+    //MARK: - Daily Note
     func getDailyNote() -> [FormSection] {
         return [
-            FormSection(title: "Progress Timeline + SOAP", elements: [
-                .dailyNoteFillin(title: "Progress Timeline", combinedString: stringBinding(for: "Progress Timeline")),
+            FormSection(title: "SOAP", elements: [
                 .textField(title: "S:", binding: stringBinding(for: "S:")),
                 .textField(title: "O:", binding: stringBinding(for: "O:")),
                 .textField(title: "A:", binding: stringBinding(for: "A:")),
@@ -237,6 +245,25 @@ extension UIManagement {
             ]),
             FormSection(title: "Treatment Codes", elements: [
                 .dailyNoteTable(title: "Daily Note", combinedString: stringBinding(for: "Daily Note"))
+            ])
+        ]
+    }
+    
+    //MARK: - Missed Visit
+    func getMissedVisit() -> [FormSection] {
+        return [
+            FormSection(title: "Missed Visit", elements: [
+                .textField(title: "Reason for absence", binding: stringBinding(for: "Reason for absence"), isRequired: true)
+            ])
+        ]
+    }
+    
+    //MARK: - Discharge Note
+    func getDischargeNote() -> [FormSection] {
+        return [
+            FormSection(title: "Discharge Note", elements: [
+                .textField(title: "File Name", binding: stringBinding(for: "File Name"), isRequired: true),
+                .textField(title: "Discharge Note", binding: stringBinding(for: "Discharge Note"), isRequired: true)
             ])
         ]
     }

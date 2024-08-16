@@ -23,13 +23,36 @@ class UIManagement: ObservableObject {
     @Published var username: String
     @Published var patient: Patient?
     @Published var isAdding: Bool
-    @Published var isEntry: Bool = false
+    
+    // Checks for any changes if not adding
     var changeDescriptions: [DetailedChange] {
-        if !isAdding && !isEntry {
-            return self.compareStringValues()
+        if !isAdding {
+            return self.compareProperties()
         }
         return []
     }
+    
+    // Checks if all required properties are filled
+    var isFileComplete: Bool {
+        dynamicUIElements.allSatisfy { section in
+            section.elements.allSatisfy { element in
+                switch element {
+                case .textField(let title, _, let isRequired):
+                    return !isRequired || !(modifiedProperties[title]?.stringValue.isEmpty ?? true)
+                case .fileUploadButton(let title, _, let isRequired):
+                    return !isRequired || (modifiedProperties[title]?.dataValue.isEmpty == false)
+                default:
+                    return true
+                }
+            }
+        }
+    }
+    
+    // Checks if all properties are unchanged
+    var isEmptyNewFile: Bool {
+        !modifiedProperties.contains { !$0.value.isInitialValue }
+    }
+
     var modelContext: ModelContext
     
     
@@ -39,61 +62,15 @@ class UIManagement: ObservableObject {
         self.username = username
         self.patient = patient
         self.isAdding = isAdding
-        self.isEntry = isAdding
         self.modelContext = modelContext
         self.dynamicUIElements = getUIElements()
-        if isRevaluation && isAdding {
-            self.updateGoalsFromLatestRecord(modelContext: modelContext)
-        }
     }
+    
     func refreshUI() {
         self.dynamicUIElements = getUIElements()
     }
     
-    func updateGoalsFromLatestRecord(modelContext: ModelContext) {
-        let reEvaluationRawValue = PhysicalTherapyFormType.reEvaluation.rawValue
-        let pocRawValue = PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue
-        
-        var fetchRequest = FetchDescriptor<MedicalRecordFile>(
-            predicate: #Predicate { record in
-                (record.fileType == reEvaluationRawValue) || (record.fileType == pocRawValue) && (record.isDead == false)
-            },
-            sortBy: [SortDescriptor(\.addedSignature?.dateModified, order: .reverse)]
-        )
-        fetchRequest.fetchLimit = 1
-        
-    
-        if let latestRecord = try? modelContext.fetch(fetchRequest).first {
-            modifiedProperties["TE Short Term Goals"] = latestRecord.properties["TE Short Term Goals"]
-            modifiedProperties["TE Long Term Goals"] = latestRecord.properties["TE Long Term Goals"]
-        }
-    }
-    
-    
-    func validateRequiredFields() {
-        let requiredFieldsFilled = dynamicUIElements.allSatisfy { section in
-            section.elements.allSatisfy { element in
-                switch element {
-                case .textField(let title, _, let isRequired):
-                    return !isRequired || (modifiedProperties[title]?.stringValue.isEmpty == false)
-                case .fileUploadButton(let title, _, let isRequired):
-                    return !isRequired || (modifiedProperties[title]?.dataValue != nil)
-                default:
-                    return true
-                }
-            }
-        }
-        
-        if requiredFieldsFilled {
-            addFileAutomatically()
-        }
-    }
-    
-    private func addFileAutomatically() {
-        if !isAdding {
-            return
-        }
-        
+    func addFile() {
         errorMessage = ""
         
         record.setUpSignature(addedBy: username, modelContext: modelContext)
@@ -110,51 +87,7 @@ class UIManagement: ObservableObject {
         }
         modelContext.insert(record)
         try? modelContext.save()
-        
-        isAdding = false
     }
-    
-//    func addFile(modelContext: ModelContext) {
-//        let requiredFields = dynamicUIElements.flatMap { section in
-//            section.elements.compactMap { element -> String? in
-//                switch element {
-//                case .textField(let title, _, let isRequired):
-//                    if isRequired && modifiedProperties[title]?.stringValue.isEmpty == true {
-//                        return title
-//                    }
-//                case .fileUploadButton(let title, _, let isRequired):
-//                    if isRequired && modifiedProperties[title]?.dataValue == nil {
-//                        return title
-//                    }
-//                default:
-//                    break
-//                }
-//                return nil
-//            }
-//        }
-//        
-//        if !requiredFields.isEmpty {
-//            errorMessage = "The following required fields are missing: \(requiredFields.joined(separator: ", "))"
-//            return
-//        }
-//        
-//        errorMessage = ""
-//        
-//        record.setUpSignature(addedBy: username, modelContext: modelContext)
-//        if isIncrementalFileType != nil {
-//            setIncrementalFileName(modelContext: modelContext)
-//        }
-//        record.properties = modifiedProperties
-//        if patient == nil {
-//            let newPatient = Patient(personalFile: record)
-//            modelContext.insert(newPatient)
-//            newPatient.files.append(record)
-//        } else {
-//            patient!.files.append(record)
-//        }
-//        modelContext.insert(record)
-//       try? modelContext.save()
-//    }
     
     func setIncrementalFileName(modelContext: ModelContext) {
         if let incrementalRawValue = isIncrementalFileType?.rawValue {
@@ -169,28 +102,37 @@ class UIManagement: ObservableObject {
     
     
     func getUIElements() -> [FormSection] {
+        var sections: [FormSection] = []
+        
         switch record.fileType {
         case _ where isUploadFile(fileType: record.fileType):
-            return getUploadFile()
+            sections = getUploadFile()
         case "Patient":
-            return getPatientFile()
+            sections = getPatientFile()
         case RidingFormType.ridingLessonPlan.rawValue:
-            return getRidingLessonPlan()
+            sections = getRidingLessonPlan()
         case PhysicalTherapyFormType.evaluation.rawValue:
-            return getEvaluation()
+            sections = getEvaluation()
         case PhysicalTherapyFormType.physicalTherapyPlanOfCare.rawValue:
             isIncrementalFileType = .physicalTherapyPlanOfCare
-            return getPhysicalTherapyPlanOfCare()
+            sections = getPhysicalTherapyPlanOfCare()
         case PhysicalTherapyFormType.reEvaluation.rawValue:
             isIncrementalFileType = .reEvaluation
             isRevaluation = true
-            return getReEvaluation()
+            sections = getReEvaluation()
         case PhysicalTherapyFormType.dailyNote.rawValue:
             isIncrementalFileType = .dailyNote
-            return getDailyNote()
+            sections = getDailyNote()
+        case PhysicalTherapyFormType.missedVisit.rawValue:
+            isIncrementalFileType = .missedVisit
+            sections = getMissedVisit()
+        case PhysicalTherapyFormType.discharge.rawValue:
+            sections = getDischargeNote()
         default:
-            return []
+            sections = []
         }
+        
+        return getServiceDateProperty() + sections
     }
 
 }
@@ -210,13 +152,11 @@ public func convertToCodableValue(type: String, propertyChange: String) -> Codab
 
 
 extension UIManagement {
-    private func compareStringValues() -> [DetailedChange] {
+    private func compareProperties() -> [DetailedChange] {
         var changes = [DetailedChange]()
         
         for (key, oldValue) in self.record.properties {
-            if let newValue = modifiedProperties[key], oldValue != newValue {
-                let actualValue: CodableValue = oldValue
-                
+            if let newValue = modifiedProperties[key], oldValue != newValue && !oldValue.isInitialValue {
                 if let formSection = dynamicUIElements.first(where: { formSection in
                         formSection.elements.contains(where: { element in
                             let wrappedElement  = DynamicUIElementWrapper(element: element)
