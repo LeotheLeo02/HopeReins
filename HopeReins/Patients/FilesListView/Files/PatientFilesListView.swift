@@ -97,7 +97,7 @@ struct PatientFilesListView: View {
             }
             .padding()
         }
-        .searchable(text: $searchText, prompt: "Date, File Type, Name")
+        .searchable(text: $searchText, prompt: "Date Added or Performed, File Type, Name")
         .searchSuggestions({
             ForEach(searchSuggestions, id:\.self) { suggestion in
                 Text(suggestion)

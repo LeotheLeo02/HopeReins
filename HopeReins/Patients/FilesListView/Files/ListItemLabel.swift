@@ -44,6 +44,22 @@ struct ListItemLabel: View {
             .font(.callout)
             .fontWeight(.medium)
     }
+    
+    private var dynamicForegroundStyleAdded: any ShapeStyle {
+        if dateOfServiceExists {
+            return isFileEdited ? .tertiary : .secondary
+        } else {
+            return isFileEdited ? .secondary : .primary
+        }
+    }
+    
+    private var dynamicFontStyleAdded: Font {
+        if dateOfServiceExists {
+            return isFileEdited ? .footnote : .subheadline
+        } else {
+            return isFileEdited ? .subheadline : .callout
+        }
+    }
 
     private var fileDetails: some View {
         VStack(alignment: .trailing) {
@@ -56,8 +72,8 @@ struct ListItemLabel: View {
                 fileEditedInfo
             }
             Text(fileAddedInfo)
-                .foregroundStyle(dateOfServiceExists ? (isFileEdited ? .tertiary : .secondary) : (isFileEdited ? .secondary : .primary))
-                .font(dateOfServiceExists ? (isFileEdited ? .footnote : .subheadline) : (isFileEdited ? .subheadline : .callout))
+                .foregroundStyle(dynamicForegroundStyleAdded)
+                .font(dynamicFontStyleAdded)
         }
         .font(.footnote)
     }
